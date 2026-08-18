@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>UZUM · СЛА приёмки</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --purple: #7000FF;
+    --purple-light: #9D4DFF;
+    --purple-dark: #320073;
+    --purple-glow: rgba(112, 0, 255, 0.8);
+    --bg-base: #030008;
+
+    --glass-bg: linear-gradient(150deg, rgba(50, 20, 90, 0.28), rgba(10, 2, 25, 0.45));
+    --glass-border-light: rgba(255, 255, 255, 0.35);
+    --glass-border-dark: rgba(255, 255, 255, 0.08);
+
+    --text-main: #FFFFFF;
+    --text-muted: #B8AEE0;
+    --text-dim: #6B5E8C;
+    --text-hint: #D7CDF2;
+
+    --green: #34C77B;
+    --green-glow: rgba(52, 199, 123, 0.7);
+    --red: #FF5C7A;
+    --red-glow: rgba(255, 92, 122, 0.6);
+    --yellow: #FFC24B;
+    --yellow-glow: rgba(255, 194, 75, 0.6);
+
+    --r-xl: 24px;
+    --r-lg: 16px;
+    --r-md: 12px;
+
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease: cubic-bezier(0.25, 1, 0.15, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; overscroll-behavior-y: none; height: 100%; }
+
+  body {
+    background-color: var(--bg-base);
+    font-family: "SF Pro Display", "Inter", -apple-system, sans-serif;
+    color: var(--text-main);
+    min-height: 100vh;
+    letter-spacing: -0.02em;
+    padding: 12px 12px 24px;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #vignette { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(103,0,230,0.5) 0%, rgba(76,0,185,0.22) 26%, transparent 52%),
+      radial-gradient(120% 90% at 50% -10%, rgba(112,0,255,0.28), transparent 55%),
+      radial-gradient(140% 100% at 50% 110%, rgba(0,0,0,0.65), transparent 50%);
+  }
+  #mesh { position: fixed; inset: 0; z-index: -1; pointer-events: none; filter: blur(60px) saturate(160%); overflow: hidden; }
+  @media (max-width: 480px) { #mesh { filter: blur(34px) saturate(150%); } }
+  #mesh span { position: absolute; border-radius: 50%; mix-blend-mode: screen; will-change: transform; }
+  #mesh .b1 { width: 80vw; height: 80vw; left: -10%; top: -10%; background: radial-gradient(circle, rgba(130,40,255,0.28), transparent 70%); animation: orbFloat1 26s infinite alternate var(--ease); }
+  #mesh .b2 { width: 70vw; height: 70vw; right: -20%; top: 40%; background: radial-gradient(circle, rgba(200,100,255,0.20), transparent 70%); animation: orbFloat2 32s infinite alternate-reverse var(--ease); }
+  #mesh .b3 { width: 90vw; height: 90vw; left: 10%; bottom: -30%; background: radial-gradient(circle, rgba(52, 199, 123, 0.13), transparent 70%); animation: orbFloat3 29s infinite alternate var(--ease); }
+  @keyframes orbFloat1 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(20vw, 15vh) scale(1.2); } }
+  @keyframes orbFloat2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-30vw, -20vh) scale(1.1); } }
+  @keyframes orbFloat3 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(10vw, -30vh) scale(1.3); } }
+
+  button, [type="button"] { background: transparent; border: none; font-family: inherit; color: inherit; cursor: pointer; outline: none; touch-action: manipulation; }
+
+  .wrap { max-width: 480px; margin: 0 auto; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
+  .stagger { opacity: 0; animation: riseIn 0.7s var(--spring) forwards; }
+  @keyframes riseIn { 0% { opacity: 0; transform: translateY(24px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 8px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #A855F7, var(--purple)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; color: #fff; box-shadow: 0 10px 25px var(--purple-glow), inset 0 2px 4px rgba(255,255,255,0.6); flex-shrink: 0; transition: transform 0.3s var(--spring); }
+  .brand-mark:active { transform: scale(0.9); }
+  .brand-name { font-size: 17px; font-weight: 800; }
+  .brand-sub { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+  .date-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(112,0,255,0.18); border: 1px solid rgba(157,77,255,0.35); color: var(--purple-light); font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 999px; }
+
+  .card { position: relative; background: var(--glass-bg); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border: 1px solid var(--glass-border-dark); border-top: 1px solid var(--glass-border-light); border-radius: var(--r-xl); padding: 18px; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.3); overflow: hidden; }
+
+  .card-head-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .section-label { font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; }
+  .norm-tag { font-size: 11px; font-weight: 800; color: var(--text-dim); background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 999px; }
+  .hint-text { font-size: 13px; color: var(--text-hint); font-weight: 600; line-height: 1.5; }
+
+  .mascot-wrap { display: flex; justify-content: center; padding: 6px 0 2px; }
+  .mascot-eyes { display: flex; gap: 18px; }
+  .eye { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #E8DFFF 40%, var(--purple-light) 100%); position: relative; box-shadow: 0 0 14px rgba(157,77,255,0.5), inset 0 -3px 6px rgba(50,0,115,0.3); transition: transform 0.15s var(--ease); }
+  .eye .pupil { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a2b7a, #1a0733 70%); top: 9px; left: 9px; transition: transform 0.12s var(--ease); }
+  .eye .pupil::after { content:''; position:absolute; width:4px; height:4px; border-radius:50%; background:#fff; top:2px; left:2px; opacity:0.9; }
+  .eye.blink { transform: scaleY(0.08); }
+  .mascot-status { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-dim); margin-top: 4px; height: 14px; transition: color 0.2s; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+  .field select, .field input, .field textarea {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--r-md);
+    padding: 13px 14px; font-size: 15px; font-weight: 700; color: var(--text-main); font-family: inherit;
+    -webkit-appearance: none; appearance: none; width: 100%; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field select:focus, .field input:focus, .field textarea:focus { outline: none; border-color: var(--purple-light); box-shadow: 0 0 0 3px rgba(157,77,255,0.2); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8AEE0' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 34px; }
+
+  /* ==== Кастомный дропдаун (вместо системного select) ==== */
+  .dd { position: relative; }
+  .dd-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--r-md); padding: 13px 14px; font-size: 15px; font-weight: 700; color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s; }
+  .dd-trigger.placeholder { color: var(--text-dim); font-weight: 600; }
+  .dd-trigger .dd-arrow { color: var(--text-muted); font-size: 12px; transition: transform 0.25s var(--spring); flex-shrink: 0; margin-left: 8px; }
+  .dd.open .dd-trigger { border-color: var(--purple-light); box-shadow: 0 0 0 3px rgba(157,77,255,0.2); }
+  .dd.open .dd-trigger .dd-arrow { transform: rotate(180deg); }
+
+  .dd-panel { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 60; background: linear-gradient(160deg, rgba(35,14,64,0.98), rgba(12,3,28,0.99)); backdrop-filter: blur(24px) saturate(180%); border: 1px solid rgba(157,77,255,0.3); border-radius: var(--r-lg); box-shadow: 0 24px 48px -8px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05) inset; padding: 8px; max-height: 0; opacity: 0; overflow: hidden; transform-origin: top center; transform: scaleY(0.9) translateY(-6px); transition: max-height 0.28s var(--ease), opacity 0.2s ease, transform 0.28s var(--spring); pointer-events: none; }
+  .dd.open .dd-panel { max-height: 320px; opacity: 1; transform: scaleY(1) translateY(0); pointer-events: auto; }
+
+  .dd-search { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--r-md); padding: 10px 12px; font-size: 14px; font-weight: 700; color: var(--text-main); font-family: inherit; margin-bottom: 6px; }
+  .dd-search:focus { outline: none; border-color: var(--purple-light); }
+
+  .dd-list { max-height: 250px; overflow-y: auto; }
+  .dd-item { padding: 11px 12px; border-radius: var(--r-md); font-size: 14px; font-weight: 700; color: var(--text-hint); cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .dd-item:active { transform: scale(0.99); }
+  .dd-item.hover, .dd-item:hover { background: rgba(157,77,255,0.18); color: #fff; }
+  .dd-item.selected { background: linear-gradient(135deg, rgba(157,77,255,0.35), rgba(112,0,255,0.25)); color: #fff; }
+  .dd-item.hidden { display: none; }
+  .dd-empty { text-align: center; padding: 16px; color: var(--text-dim); font-size: 13px; font-weight: 600; }
+
+  .toggle-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .toggle-opt { flex: 1; text-align: center; padding: 11px 8px; border-radius: var(--r-md); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); font-size: 12px; font-weight: 800; color: var(--text-muted); transition: all 0.2s var(--spring); }
+  .toggle-opt.active { background: linear-gradient(135deg, rgba(157,77,255,0.35), rgba(112,0,255,0.25)); border-color: var(--purple-light); color: #fff; box-shadow: 0 0 14px rgba(112,0,255,0.3); }
+  .toggle-opt:active { transform: scale(0.96); }
+
+  .duration-box { display: flex; align-items: center; justify-content: space-between; background: rgba(52,199,123,0.1); border: 1px solid rgba(52,199,123,0.25); border-radius: var(--r-md); padding: 12px 14px; margin-top: 4px; transition: all 0.3s; }
+  .duration-box .lbl { font-size: 12px; color: var(--text-muted); font-weight: 700; }
+  .duration-box .val { font-size: 18px; font-weight: 900; color: var(--green); }
+  .duration-box.warn { background: rgba(255,92,122,0.1); border-color: rgba(255,92,122,0.3); }
+  .duration-box.warn .val { color: var(--red); }
+
+  .btn { border: none; border-radius: var(--r-lg); padding: 16px; font-weight: 900; font-size: 14px; letter-spacing: 0.02em; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; width: 100%; text-shadow: 0 2px 5px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+  .btn.primary { background: linear-gradient(135deg, var(--purple-light), var(--purple)); box-shadow: 0 12px 24px -6px var(--purple-glow); }
+  .btn.primary:disabled { opacity: 0.4; box-shadow: none; }
+  .btn-click-shine { position: absolute; inset: 0; background: rgba(255,255,255,0.35); opacity: 0; border-radius: inherit; pointer-events: none; }
+  .btn-click-shine.flash { animation: shineFlash 0.4s ease-out; }
+  @keyframes shineFlash { 0% { opacity: 0.6; } 100% { opacity: 0; } }
+
+  .jira-input-row { display: flex; gap: 8px; }
+  .jira-input-row input { flex: 1; }
+  .jira-add-btn { flex-shrink: 0; width: 46px; height: 46px; border-radius: var(--r-md); background: rgba(157,77,255,0.2); border: 1px solid rgba(157,77,255,0.4); color: var(--purple-light); font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+  .jira-chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .jira-chip { display: flex; align-items: center; gap: 6px; background: rgba(112,0,255,0.15); border: 1px solid rgba(157,77,255,0.3); border-radius: 999px; padding: 6px 8px 6px 12px; font-size: 12px; font-weight: 700; color: var(--purple-light); }
+  .jira-chip a { color: inherit; text-decoration: none; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .jira-chip .rm { width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
+
+  .entry-list { display: flex; flex-direction: column; gap: 8px; }
+  .entry-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r-md); padding: 12px 14px; opacity: 0; animation: entryPop 0.5s var(--spring) forwards; }
+  @keyframes entryPop { 0% { opacity: 0; transform: translateX(-16px) scale(0.9); } 100% { opacity: 1; transform: translateX(0) scale(1); } }
+  .entry-item .pvz-name { font-weight: 800; font-size: 14px; }
+  .entry-item .entry-time { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+  .entry-item .status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; position: relative; }
+  .status-dot.ok { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+  .status-dot.ok::after { content:''; position:absolute; inset:-4px; border-radius:50%; border: 1.5px solid var(--green); opacity: 0.6; animation: pulseRing 1.6s ease-out infinite; }
+  .status-dot.bad { background: var(--red); box-shadow: 0 0 8px var(--red-glow); }
+  .status-dot.pending { background: var(--yellow); box-shadow: 0 0 8px var(--yellow-glow); }
+  @keyframes pulseRing { 0% { transform: scale(0.7); opacity: 0.7; } 100% { transform: scale(1.8); opacity: 0; } }
+  .entry-empty { text-align: center; padding: 20px 0; color: var(--text-dim); font-size: 13px; font-weight: 600; }
+  .entry-summary { display: flex; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: var(--text-dim); font-weight: 700; }
+  .entry-summary b { color: var(--text-main); }
+
+  #toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%) translateY(20px); background: rgba(20,10,35,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 14px 20px; font-size: 13px; font-weight: 700; color: #fff; z-index: 999; opacity: 0; pointer-events: none; transition: all 0.4s var(--spring); max-width: 90vw; text-align: center; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.error { border-color: rgba(255,92,122,0.4); }
+
+  .footer { text-align: center; padding: 8px 0 0; font-size: 11px; color: var(--text-dim); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div id="vignette"></div>
+<div id="mesh"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+<div class="wrap">
+
+  <div class="topbar stagger" style="animation-delay:0s">
+    <div class="brand">
+      <div class="brand-mark" id="brand-mark">U</div>
+      <div>
+        <div class="brand-name">СЛА приёмки</div>
+        <div class="brand-sub">Экосистема ПВЗ</div>
+      </div>
+    </div>
+    <div class="date-pill" id="today-pill">—</div>
+  </div>
+
+  <div class="card stagger" style="animation-delay:0.06s">
+    <div class="mascot-wrap">
+      <div class="mascot-eyes" id="mascot-eyes">
+        <div class="eye" id="eye-l"><div class="pupil" id="pupil-l"></div></div>
+        <div class="eye" id="eye-r"><div class="pupil" id="pupil-r"></div></div>
+      </div>
+    </div>
+    <div class="mascot-status" id="mascot-status">выбери ПВЗ...</div>
+  </div>
+
+  <div class="card stagger" style="animation-delay:0.1s">
+    <div class="card-head-row">
+      <div class="section-label">Внести данные</div>
+      <div class="norm-tag">Норматив 1ч</div>
+    </div>
+
+    <div class="field">
+      <label>ПВЗ</label>
+      <div class="dd" id="pvz-dd">
+        <button type="button" class="dd-trigger" id="pvz-dd-trigger">
+          <span id="pvz-dd-label">Выберите ПВЗ...</span>
+          <span class="dd-arrow">▾</span>
+        </button>
+        <div class="dd-panel" id="pvz-dd-panel">
+          <input type="text" class="dd-search" id="pvz-dd-search" placeholder="Поиск ПВЗ...">
+          <div class="dd-list" id="pvz-dd-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Факт приезда магистрали</label>
+      <div class="toggle-row">
+        <button type="button" class="toggle-opt active" data-target="arrive" data-mode="before_open">До открытия</button>
+        <button type="button" class="toggle-opt" data-target="arrive" data-mode="time">Указать время</button>
+      </div>
+      <input type="time" id="fact-arrive" style="display:none">
+    </div>
+
+    <div class="field">
+      <label>Факт уезда с ПВЗ</label>
+      <div class="toggle-row">
+        <button type="button" class="toggle-opt active" data-target="leave" data-mode="before_open">До открытия</button>
+        <button type="button" class="toggle-opt" data-target="leave" data-mode="time">Указать время</button>
+      </div>
+      <input type="time" id="fact-leave" style="display:none">
+    </div>
+
+    <div class="field">
+      <label>Начало приёмки <span style="color:var(--text-dim);font-weight:600">(всегда после открытия)</span></label>
+      <input type="time" id="start-time">
+    </div>
+
+    <div class="field">
+      <label>Окончание приёмки</label>
+      <input type="time" id="end-time">
+    </div>
+
+    <div class="field">
+      <label>Неприбывшие заказы (кол-во)</label>
+      <input type="number" id="missing-count" min="0" value="0" inputmode="numeric">
+    </div>
+
+    <div class="duration-box" id="duration-box" style="display:none">
+      <span class="lbl">Заняло по времени</span>
+      <span class="val" id="duration-val">—</span>
+    </div>
+
+    <div style="height:16px"></div>
+    <button type="button" class="btn primary" id="btn-submit" disabled>
+      <span class="btn-click-shine" id="submit-shine"></span>
+      <span id="submit-label">Сохранить в таблицу</span>
+    </button>
+  </div>
+
+  <div class="card stagger" style="animation-delay:0.14s">
+    <div class="section-label">Jira · вложения по ПВЗ</div>
+    <div class="hint-text" style="margin-bottom:12px">Вставь ссылку на тикет — если по приёмке был скан-конфликт или атипичный возврат</div>
+    <div class="jira-input-row">
+      <input type="text" id="jira-input" placeholder="https://jira.uzum.../browse/...">
+      <button type="button" class="jira-add-btn" id="jira-add">+</button>
+    </div>
+    <div class="jira-chip-list" id="jira-chip-list"></div>
+  </div>
+
+  <div class="card stagger" style="animation-delay:0.18s">
+    <div class="section-label">Сегодня уже внесли</div>
+    <div class="entry-list" id="entry-list">
+      <div class="entry-empty">Пока пусто — будь первым</div>
+    </div>
+    <div class="entry-summary" id="entry-summary" style="display:none">
+      Внесли: <b id="sum-done">0</b> · Осталось: <b id="sum-left">0</b> · Просрочка: <b id="sum-late">0</b>
+    </div>
+  </div>
+
+  <div class="footer">U · СЛА приёмки · синхронизировано с Google Таблицей</div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) { tg.ready(); tg.expand(); }
+
+  // ============ НАСТРОЙКИ ============
+  const API_URL = "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  const PVZ_LIST = [
+    "ТАШ-25","ТАШ-72","ТАШ-48","ТАШ-23","ТАШ-11","ТАШ-9","FrТАШ-164","ТАШ-154",
+    "ККС-1","ТАШ-140","ТАШ-60","ТАШ-81","FrТАШ-169","FrТАШ-173","КЕЛ-1","ТАШ-69",
+    "ТАШ-142","ТАШ-210","ТАШ-191","FrКИР-1","FrТАШ-227","FrКОК-1","FrТАШ-208",
+    "FrТАШ-243","FrТАШ-214","FrТАШ-240","FrТАШ-252","FrТАШ-297","FrХСН-1",
+    "FrТАШ-247","FrТАШ-277","FrКЕЛ-2","FrТАШ-219","FrТАШ-269","FrКЕЛ-3",
+    "FrШЕД-1","FrТАШ-395"
+  ];
+
+  // ============ ЗВУК (синтез, без сэмплов) ============
+  let actx = null;
+  function getCtx() {
+    if (!actx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) actx = new AC();
+    }
+    if (actx && actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  function tone(freq, dur, type, gainPeak, delay) {
+    const ctx = getCtx();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + (delay || 0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0, t0);
+    gain.gain.linearRampToValueAtTime(gainPeak || 0.12, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  }
+  const sfx = {
+    click: () => tone(520, 0.08, 'sine', 0.08),
+    toggle: () => tone(680, 0.07, 'triangle', 0.09),
+    select: () => { tone(440, 0.06, 'sine', 0.07); tone(660, 0.08, 'sine', 0.06, 0.04); },
+    success: () => { tone(523, 0.12, 'sine', 0.1); tone(659, 0.12, 'sine', 0.1, 0.08); tone(784, 0.18, 'sine', 0.11, 0.16); },
+    error: () => { tone(220, 0.16, 'sawtooth', 0.07); tone(180, 0.2, 'sawtooth', 0.06, 0.08); },
+    blink: () => tone(900, 0.03, 'sine', 0.02),
+    ddOpen: () => { tone(400, 0.05, 'sine', 0.06); tone(560, 0.06, 'sine', 0.05, 0.03); },
+    ddClose: () => tone(340, 0.06, 'sine', 0.05),
+    hover: () => tone(1100, 0.02, 'sine', 0.015),
+    chipAdd: () => { tone(700, 0.05, 'triangle', 0.07); tone(950, 0.07, 'triangle', 0.06, 0.03); },
+    chipRemove: () => tone(300, 0.06, 'triangle', 0.05),
+    warn: () => { tone(330, 0.1, 'square', 0.05); tone(330, 0.1, 'square', 0.05, 0.13); },
+    typing: () => tone(1400 + Math.random()*300, 0.015, 'sine', 0.012)
+  };
+
+  // ============ МАСКОТ (глазки) ============
+  const eyeL = document.getElementById('eye-l');
+  const eyeR = document.getElementById('eye-r');
+  const pupilL = document.getElementById('pupil-l');
+  const pupilR = document.getElementById('pupil-r');
+  const mascotStatus = document.getElementById('mascot-status');
+
+  function setMascotMood(text) { mascotStatus.textContent = text; }
+
+  function lookAt(clientX, clientY) {
+    [[eyeL, pupilL], [eyeR, pupilR]].forEach(([eye, pupil]) => {
+      const r = eye.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const dx = clientX - cx, dy = clientY - cy;
+      const dist = Math.min(5, Math.hypot(dx, dy) / 12);
+      const angle = Math.atan2(dy, dx);
+      pupil.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+    });
+  }
+  document.addEventListener('mousemove', e => lookAt(e.clientX, e.clientY));
+  document.addEventListener('touchmove', e => { if (e.touches[0]) lookAt(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+
+  function blink() {
+    eyeL.classList.add('blink'); eyeR.classList.add('blink');
+    setTimeout(() => { eyeL.classList.remove('blink'); eyeR.classList.remove('blink'); }, 140);
+  }
+  function scheduleBlink() {
+    const delay = 2200 + Math.random()*3500;
+    setTimeout(() => { blink(); scheduleBlink(); }, delay);
+  }
+  scheduleBlink();
+
+  // при фокусе на поле — глазки "смотрят" на него и меняют настроение
+  document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('focus', () => {
+      const r = el.getBoundingClientRect();
+      lookAt(r.left + r.width/2, r.top);
+      const label = el.closest('.field') ? el.closest('.field').querySelector('label') : null;
+      if (label) setMascotMood('заполняем: ' + label.textContent.toLowerCase());
+    });
+  });
+
+  // ============ ЭЛАСТИЧНЫЕ КНОПКИ ============
+  function elasticPress(el) {
+    el.style.transition = 'transform 0.08s ease-out';
+    el.style.transform = 'scale(0.94)';
+    setTimeout(() => {
+      el.style.transition = 'transform 0.4s var(--spring)';
+      el.style.transform = 'scale(1)';
+    }, 90);
+  }
+  function shineFlash(el) {
+    if (!el) return;
+    el.classList.remove('flash'); void el.offsetWidth;
+    el.classList.add('flash');
+  }
+
+  document.getElementById('brand-mark').addEventListener('click', function(){
+    elasticPress(this); sfx.click();
+    setMascotMood('привет! 👋');
+    setTimeout(() => setMascotMood(selectedPvz ? 'заполняем ' + selectedPvz : 'выбери ПВЗ...'), 1400);
+  });
+
+  // ============ ФОРМА ============
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2,'0');
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yyyy = now.getFullYear();
+  document.getElementById('today-pill').textContent = `${dd}.${mm}.${yyyy}`;
+
+  const startInput = document.getElementById('start-time');
+  const endInput = document.getElementById('end-time');
+  const durationBox = document.getElementById('duration-box');
+  const durationVal = document.getElementById('duration-val');
+  const submitBtn = document.getElementById('btn-submit');
+
+  // ---- Кастомный дропдаун ПВЗ ----
+  let selectedPvz = '';
+  const ddWrap = document.getElementById('pvz-dd');
+  const ddTrigger = document.getElementById('pvz-dd-trigger');
+  const ddLabel = document.getElementById('pvz-dd-label');
+  const ddPanel = document.getElementById('pvz-dd-panel');
+  const ddSearch = document.getElementById('pvz-dd-search');
+  const ddList = document.getElementById('pvz-dd-list');
+
+  PVZ_LIST.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'dd-item';
+    item.textContent = p;
+    item.dataset.value = p;
+    item.addEventListener('mouseenter', () => sfx.hover());
+    item.addEventListener('click', () => {
+      selectedPvz = p;
+      ddLabel.textContent = p;
+      ddTrigger.classList.remove('placeholder');
+      ddList.querySelectorAll('.dd-item').forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      closeDropdown();
+      sfx.select();
+      setMascotMood('заполняем ' + p);
+      validate();
+    });
+    ddList.appendChild(item);
+  });
+
+  function openDropdown() {
+    ddWrap.classList.add('open');
+    ddSearch.value = '';
+    ddList.querySelectorAll('.dd-item').forEach(i => i.classList.remove('hidden'));
+    setTimeout(() => ddSearch.focus(), 50);
+    sfx.ddOpen();
+  }
+  function closeDropdown() {
+    if (ddWrap.classList.contains('open')) sfx.ddClose();
+    ddWrap.classList.remove('open');
+  }
+  ddTrigger.addEventListener('click', () => {
+    ddWrap.classList.contains('open') ? closeDropdown() : openDropdown();
+  });
+  document.addEventListener('click', (e) => {
+    if (!ddWrap.contains(e.target)) closeDropdown();
+  });
+  ddSearch.addEventListener('input', () => {
+    const q = ddSearch.value.trim().toLowerCase();
+    let anyVisible = false;
+    ddList.querySelectorAll('.dd-item').forEach(i => {
+      const match = i.textContent.toLowerCase().includes(q);
+      i.classList.toggle('hidden', !match);
+      if (match) anyVisible = true;
+    });
+    ddList.querySelectorAll('.dd-empty').forEach(e => e.remove());
+    if (!anyVisible) {
+      const empty = document.createElement('div');
+      empty.className = 'dd-empty';
+      empty.textContent = 'ПВЗ не найден';
+      ddList.appendChild(empty);
+    }
+  });
+
+  // ---- Toggle "до открытия / время" для факта приезда и факта уезда ----
+  const toggleState = { arrive: 'before_open', leave: 'before_open' };
+  const toggleInputs = { arrive: document.getElementById('fact-arrive'), leave: document.getElementById('fact-leave') };
+
+  document.querySelectorAll('.toggle-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      const mode = btn.dataset.mode;
+      toggleState[target] = mode;
+      document.querySelectorAll(`.toggle-opt[data-target="${target}"]`).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const input = toggleInputs[target];
+      if (mode === 'time') {
+        input.style.display = 'block';
+        input.focus();
+      } else {
+        input.style.display = 'none';
+        input.value = '';
+      }
+      sfx.toggle(); elasticPress(btn);
+    });
+  });
+
+  function toMinutes(t) {
+    if (!t) return null;
+    const [h,m] = t.split(':').map(Number);
+    return h*60+m;
+  }
+
+  function updateDuration() {
+    const s = toMinutes(startInput.value);
+    const e = toMinutes(endInput.value);
+    if (s === null || e === null) {
+      durationBox.style.display = 'none';
+      return;
+    }
+    let diff = e - s;
+    if (diff < 0) diff += 24*60;
+    const h = Math.floor(diff/60), m = diff%60;
+    durationVal.textContent = `${h}ч ${String(m).padStart(2,'0')}м`;
+    durationBox.style.display = 'flex';
+    const isLate = diff > 60;
+    if (isLate && !durationBox.classList.contains('warn')) sfx.warn();
+    durationBox.classList.toggle('warn', isLate);
+  }
+  startInput.addEventListener('change', () => { sfx.click(); updateDuration(); });
+  endInput.addEventListener('change', () => { sfx.click(); updateDuration(); });
+
+  function validate() {
+    submitBtn.disabled = !selectedPvz;
+  }
+
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.toggle('error', !!isError);
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // ============ JIRA ЧИПЫ ============
+  const jiraInput = document.getElementById('jira-input');
+  const jiraAddBtn = document.getElementById('jira-add');
+  const jiraChipList = document.getElementById('jira-chip-list');
+  const jiraLinks = [];
+
+  function addJiraLink() {
+    const val = jiraInput.value.trim();
+    if (!val) return;
+    jiraLinks.push(val);
+    const chip = document.createElement('div');
+    chip.className = 'jira-chip';
+    let short = val;
+    try { short = val.split('/').filter(Boolean).pop() || val; } catch(e){}
+    chip.innerHTML = `<a href="${val}" target="_blank" rel="noopener">${short}</a><span class="rm">✕</span>`;
+    chip.querySelector('.rm').addEventListener('click', () => {
+      const idx = jiraLinks.indexOf(val);
+      if (idx > -1) jiraLinks.splice(idx, 1);
+      chip.remove();
+      sfx.chipRemove();
+    });
+    jiraChipList.appendChild(chip);
+    jiraInput.value = '';
+    sfx.chipAdd(); elasticPress(jiraAddBtn);
+  }
+  jiraAddBtn.addEventListener('click', addJiraLink);
+  jiraInput.addEventListener('keydown', e => { if (e.key === 'Enter') addJiraLink(); });
+
+  // ============ СПИСОК "СЕГОДНЯ ВНЕСЛИ" ============
+  let doneCount = 0;
+  function refreshSummary() {
+    const summary = document.getElementById('entry-summary');
+    const total = PVZ_LIST.length;
+    document.getElementById('sum-done').textContent = doneCount;
+    document.getElementById('sum-left').textContent = Math.max(0, total - doneCount);
+    document.getElementById('sum-late').textContent = document.querySelectorAll('.status-dot.bad').length;
+    summary.style.display = doneCount > 0 ? 'flex' : 'none';
+  }
+
+  const funnyPhrases = ['залетело красиво ✨', 'ещё один в копилку', 'вжух и готово', 'плюс один герой дня', 'записали, красавчик'];
+
+  function addEntryToList(data) {
+    const list = document.getElementById('entry-list');
+    const empty = list.querySelector('.entry-empty');
+    if (empty) empty.remove();
+
+    const item = document.createElement('div');
+    item.className = 'entry-item';
+    const missing = parseInt(data.missing, 10) || 0;
+    const dotClass = missing > 0 ? 'bad' : 'ok';
+    const arriveLabel = data.arriveMode === 'before_open' ? 'до откр.' : (data.factArrive || '—');
+    item.innerHTML = `
+      <div>
+        <div class="pvz-name">${data.pvz}</div>
+        <div class="entry-time">приёмка ${data.start || '—'}–${data.end || '—'} · приезд: ${arriveLabel} · неприб.: ${missing}</div>
+      </div>
+      <div class="status-dot ${dotClass}"></div>
+    `;
+    list.prepend(item);
+    doneCount++;
+    refreshSummary();
+  }
+
+  // ============ ОТПРАВКА ============
+  submitBtn.addEventListener('click', async () => {
+    const payload = {
+      date: `${dd}.${mm}.${yyyy}`,
+      pvz: selectedPvz,
+      arriveMode: toggleState.arrive,
+      factArrive: toggleState.arrive === 'time' ? document.getElementById('fact-arrive').value : '',
+      leaveMode: toggleState.leave,
+      factLeave: toggleState.leave === 'time' ? document.getElementById('fact-leave').value : '',
+      start: startInput.value,
+      end: endInput.value,
+      missing: document.getElementById('missing-count').value,
+      jira: jiraLinks.join(', ')
+    };
+
+    elasticPress(submitBtn);
+    shineFlash(document.getElementById('submit-shine'));
+    submitBtn.disabled = true;
+    document.getElementById('submit-label').textContent = 'Сохраняем...';
+
+    try {
+      if (!API_URL || API_URL.indexOf('PASTE_') === 0) {
+        await new Promise(r => setTimeout(r, 450));
+        addEntryToList(payload);
+        showToast('Демо-режим: подключи Apps Script ссылку в коде');
+      } else {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (result.ok) {
+          addEntryToList(payload);
+          showToast('Сохранено в таблицу ✓');
+          if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        } else {
+          throw new Error(result.error || 'Неизвестная ошибка');
+        }
+      }
+
+      sfx.success();
+      setMascotMood(funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)]);
+      blink(); setTimeout(blink, 220);
+
+      document.getElementById('fact-arrive').value = '';
+      document.getElementById('fact-leave').value = '';
+      startInput.value = ''; endInput.value = '';
+      document.getElementById('missing-count').value = '0';
+      durationBox.style.display = 'none';
+    } catch (err) {
+      sfx.error();
+      showToast('Ошибка: ' + err.message, true);
+      setMascotMood('что-то пошло не так...');
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+    } finally {
+      document.getElementById('submit-label').textContent = 'Сохранить в таблицу';
+      validate();
+    }
+  });
+
+  // разблокировка AudioContext по первому тапу (политика браузеров)
+  document.body.addEventListener('touchstart', getCtx, { once: true });
+  document.body.addEventListener('click', getCtx, { once: true });
+})();
+</script>
+</body>
+</html>
