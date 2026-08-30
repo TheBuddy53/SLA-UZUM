@@ -1835,6 +1835,26 @@ function formatTime(value) {
   return value;
 }
 
+// Функция для красивого вывода времени из Date или строки
+function formatTime(value) {
+  if (!value) return '';
+  // Если пришёл объект Date (из Google Sheets)
+  if (value instanceof Date) {
+    var h = value.getHours();
+    var m = value.getMinutes();
+    return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
+  }
+  // Если строка типа "1899-12-30T07:01:49.000Z" — вытаскиваем время
+  if (typeof value === 'string' && value.includes('T')) {
+    var timePart = value.split('T')[1];
+    if (timePart) {
+      return timePart.substring(0, 5); // берём "HH:MM"
+    }
+  }
+  // Если строка типа "07:01" — возвращаем как есть
+  return value;
+}
+
 function addEntryToList(data) {
   const list = document.getElementById('entry-list');
   const empty = list.querySelector('.entry-empty');
