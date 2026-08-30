@@ -1822,36 +1822,45 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     } catch(e) {}
   }
 
-  function addEntryToList(data) {
-    const list = document.getElementById('entry-list');
-    const empty = list.querySelector('.entry-empty');
-    if (empty) empty.remove();
-
-    const item = document.createElement('div');
-    item.className = 'entry-item';
-    const missing = parseInt(data.missing, 10) || 0;
-    const dotClass = missing > 0 ? 'bad' : 'ok';
-    const arriveLabel = data.arriveMode === 'before_open' ? 'до откр.' : (data.factArrive || '—');
-    item.innerHTML = `
-      <div>
-        <div class="pvz-name">${data.pvz}</div>
-        <div class="entry-time">приёмка ${data.start || '—'}–${data.end || '—'} · приезд: ${arriveLabel} · неприб.: ${missing}</div>
-      </div>
-      <div class="status-dot ${dotClass}"></div>
-    `;
-    list.prepend(item);
-    doneCount++;
-    refreshSummary();
-    
-    // Сохраняем в память браузера
-    addEntryToLocal({
-      pvz: data.pvz,
-      arrive: data.factArrive,
-      start: data.start,
-      end: data.end,
-      missing: data.missing
-    });
+  // Функция для красивого вывода времени из Date или строки
+function formatTime(value) {
+  if (!value) return '';
+  // Если пришёл объект Date (из Google Sheets)
+  if (value instanceof Date) {
+    var h = value.getHours();
+    var m = value.getMinutes();
+    return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
   }
+  // Если строка типа "07:01" — оставляем как есть
+  return value;
+}
+
+function addEntryToList(data) {
+  const list = document.getElementById('entry-list');
+  const empty = list.querySelector('.entry-empty');
+  if (empty) empty.remove();
+
+  const item = document.createElement('div');
+  item.className = 'entry-item';
+  const missing = parseInt(data.missing, 10) || 0;
+  const dotClass = missing > 0 ? 'bad' : 'ok';
+  
+  // Форматируем время
+  const startStr = formatTime(data.start);
+  const endStr = formatTime(data.end);
+  const arriveStr = data.arriveMode === 'before_open' ? 'до откр.' : formatTime(data.factArrive);
+  
+  item.innerHTML = `
+    <div>
+      <div class="pvz-name">${data.pvz}</div>
+      <div class="entry-time">приёмка ${startStr || '—'}–${endStr || '—'} · приезд: ${arriveStr || '—'} · неприб.: ${missing}</div>
+    </div>
+    <div class="status-dot ${dotClass}"></div>
+  `;
+  list.prepend(item);
+  doneCount++;
+  refreshSummary();
+}
 
   // ============ ОТПРАВКА ============
   submitBtn.addEventListener('click', async () => {
