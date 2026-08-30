@@ -1943,7 +1943,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     }).catch(() => {}); // presence не критичен — тихо игнорируем сбой сети
   }
   sendPresencePing();
-  setInterval(sendPresencePing, 27000);
+  setInterval(sendPresencePing, 300000);
 
   // ============ "КТО СЕГОДНЯ ЗАПОЛНИЛ" — карточка-список внизу формы ============
   // Тянет реальные данные из таблицы вместо памяти браузера, чтобы ТУ (территориальный
