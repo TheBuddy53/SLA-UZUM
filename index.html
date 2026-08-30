@@ -161,7 +161,7 @@
 
   button, [type="button"] { background: transparent; border: none; font-family: inherit; color: inherit; cursor: pointer; outline: none; touch-action: manipulation; }
 
-  .wrap { max-width: 480px; margin: 0 auto; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
+  .wrap { max-width: 480px; margin: 0 auto; position: relative; z-index: 61; display: flex; flex-direction: column; gap: 16px; }
   .stagger { opacity: 0; animation: riseIn 0.7s var(--spring) forwards; }
   @keyframes riseIn { 0% { opacity: 0; transform: translateY(24px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
@@ -209,8 +209,9 @@
   @media (prefers-reduced-motion: reduce) { .brand-drip, .brand-drip::before, .brand-drip::after { animation: none; display: none; } }
   @media (max-width: 480px) { .brand-drip.d4, .brand-drip.d5 { display: none; } }
   html.is-android .brand-drip.d4, html.is-android .brand-drip.d5 { display: none; }
-  .brand-name { font-size: 17px; font-weight: 800; }
-  .brand-sub { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .brand-name{position:relative;font-weight:900;font-size:20px;letter-spacing:-0.035em;color:#F3EAFF;text-shadow:0 0 1px rgba(255,255,255,0.4);-webkit-text-stroke:0.5px rgba(200,60,130,0.55);filter:drop-shadow(0.6px 0 0 rgba(157,77,255,0.7)) drop-shadow(-0.6px 0 0 rgba(255,60,60,0.55)) drop-shadow(0 2px 10px rgba(157,77,255,0.4)) drop-shadow(0 0 0px rgba(157,77,255,0));animation:brandNameGlow 3.4s ease-in-out infinite;transition:transform 0.4s var(--ease);white-space:nowrap}
+  @keyframes brandNameGlow{0%,100%{filter:drop-shadow(0.6px 0 0 rgba(157,77,255,0.7)) drop-shadow(-0.6px 0 0 rgba(255,60,60,0.55)) drop-shadow(0 2px 10px rgba(157,77,255,0.4)) drop-shadow(0 0 0px rgba(157,77,255,0))}50%{filter:drop-shadow(0.8px 0 0 rgba(157,77,255,0.85)) drop-shadow(-0.8px 0 0 rgba(255,70,70,0.7)) drop-shadow(0 2px 14px rgba(157,77,255,0.65)) drop-shadow(0 0 16px rgba(200,140,255,0.55))}}
+  .brand-sub{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.17em;font-weight:800;background:linear-gradient(90deg,var(--text-muted),var(--text-main));-webkit-background-clip:text;-webkit-text-fill-color:transparent;transition:color 0.5s var(--ease),transform 0.4s var(--ease);white-space:nowrap}
 
   .date-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(112,0,255,0.18); border: 1px solid rgba(157,77,255,0.35); color: var(--purple-light); font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 999px; }
 
@@ -232,6 +233,7 @@
   .cinematic-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: 1.5px; background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.85) 60%, transparent 80%); background-size: 250% 100%; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: cinematicSweep 8s cubic-bezier(0.3,0,0.7,1) infinite; z-index: 10; opacity: 0.75; }
   @keyframes cinematicSweep { 0% { background-position: 250% 0; } 100% { background-position: -150% 0; } }
   @media (pointer: coarse) { .cinematic-glare { display: none; } }
+  .glass-bubble{position:relative}.glass-bubble::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:5;background:conic-gradient(from 0deg,rgba(255,110,180,0.75),rgba(255,210,120,0.7),rgba(140,255,210,0.7),rgba(120,190,255,0.75),rgba(190,140,255,0.75),rgba(255,110,180,0.75));background-size:220% 220%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0.7;filter:blur(0.3px) saturate(160%) drop-shadow(0.4px 0 0 rgba(255,70,80,0.35)) drop-shadow(-0.4px 0 0 rgba(70,140,255,0.35));animation:bubbleHueBubble 10s linear infinite,bubbleDrift 6.5s ease-in-out infinite;will-change:filter,background-position}.glass-bubble::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:6;background:radial-gradient(120% 90% at 22% 12%,rgba(255,255,255,0.55),transparent 42%),radial-gradient(70% 60% at 85% 88%,rgba(120,60,255,0.25),transparent 60%);mix-blend-mode:screen;opacity:0.85;animation:bubbleBreathe 4.2s ease-in-out infinite;will-change:opacity,transform}@keyframes bubbleHueBubble{0%{filter:blur(0.3px) saturate(160%) hue-rotate(0deg) drop-shadow(0.4px 0 0 rgba(255,70,80,0.35)) drop-shadow(-0.4px 0 0 rgba(70,140,255,0.35))}100%{filter:blur(0.3px) saturate(160%) hue-rotate(360deg) drop-shadow(0.4px 0 0 rgba(255,70,80,0.35)) drop-shadow(-0.4px 0 0 rgba(70,140,255,0.35))}}@keyframes bubbleHueEdge{0%{filter:saturate(160%) hue-rotate(0deg) drop-shadow(0.4px 0 0 rgba(255,70,80,0.3)) drop-shadow(-0.4px 0 0 rgba(70,140,255,0.3))}100%{filter:saturate(160%) hue-rotate(360deg) drop-shadow(0.4px 0 0 rgba(255,70,80,0.3)) drop-shadow(-0.4px 0 0 rgba(70,140,255,0.3))}}@keyframes bubbleDrift{0%{background-position:0% 50%}33%{background-position:70% 30%}66%{background-position:30% 80%}100%{background-position:0% 50%}}@keyframes bubbleBreathe{0%,100%{opacity:0.85;transform:scale(1)}50%{opacity:0.62;transform:scale(1.008)}}@media (prefers-reduced-motion:reduce){.glass-bubble::before,.glass-bubble::after{animation:none}}@media (max-width:480px){.glass-bubble::before{filter:none;opacity:0.48}}@media (pointer:coarse){.glass-bubble::before{display:none}.glass-bubble{box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14)}}.glass-cursor-glow{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:7;opacity:0;transition:opacity 0.35s var(--ease);background:radial-gradient(180px 180px at var(--px,50%) var(--py,50%),rgba(255,255,255,0.5),rgba(200,150,255,0.18) 45%,transparent 72%);mix-blend-mode:screen}.glass-cursor-glow.is-near{opacity:1}@media (max-width:480px),(prefers-reduced-motion:reduce){.glass-cursor-glow{display:none}}.glass-bubble--inset::before{inset:0;padding:2px}.glass-bubble--glow::before{inset:-1.5px;padding:2px;opacity:0.85;filter:blur(0.2px) saturate(190%) brightness(1.15)}.glass-edge{position:relative;box-shadow:0 0 calc(var(--neon-near,0) * 26px) rgba(157,77,255,calc(var(--neon-near,0) * 0.4));transition:box-shadow 0.25s var(--ease)}.glass-edge::before{content:'';position:absolute;inset:-1.5px;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:5;background:conic-gradient(from 0deg,rgba(255,110,180,0.7),rgba(255,210,120,0.65),rgba(140,255,210,0.65),rgba(120,190,255,0.7),rgba(190,140,255,0.7),rgba(255,110,180,0.7));background-size:220% 220%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0.65;filter:saturate(160%) drop-shadow(0.4px 0 0 rgba(255,70,80,0.3)) drop-shadow(-0.4px 0 0 rgba(70,140,255,0.3));animation:bubbleHueEdge 10s linear infinite,bubbleDrift 7.2s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.glass-edge::before{animation:none}}@media (max-width:480px){.glass-edge::before{opacity:0.42}}@media (pointer:coarse){.glass-edge::before{display:none}.glass-edge{box-shadow:0 0 calc(var(--neon-near,0) * 26px) rgba(157,77,255,calc(var(--neon-near,0) * 0.4)),inset 0 0 0 1px rgba(255,255,255,0.1)}}
   .glass-sheen { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1; background: radial-gradient(110% 85% at 18% 8%, rgba(255,255,255,0.10), transparent 40%), radial-gradient(65% 55% at 88% 92%, rgba(120,60,255,0.12), transparent 60%); mix-blend-mode: screen; opacity: 0.9; }
 
   .card-head-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
@@ -248,12 +250,47 @@
   @keyframes letterSettle { 0% { filter: blur(2.2px); } 55% { filter: blur(0.5px); } 100% { filter: blur(0); } }
 
   .mascot-wrap { display: flex; justify-content: center; padding: 6px 0 2px; }
-  .mascot-eyes { display: flex; gap: 18px; }
-  .eye { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #E8DFFF 40%, var(--purple-light) 100%); position: relative; box-shadow: 0 0 14px rgba(157,77,255,0.5), inset 0 -3px 6px rgba(50,0,115,0.3); transition: transform 0.15s var(--ease); }
-  .eye .pupil { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a2b7a, #1a0733 70%); top: 9px; left: 9px; transition: transform 0.12s var(--ease); }
-  .eye .pupil::after { content:''; position:absolute; width:4px; height:4px; border-radius:50%; background:#fff; top:2px; left:2px; opacity:0.9; }
-  .eye.blink { transform: scaleY(0.08); }
   .mascot-status { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-dim); margin-top: 4px; height: 14px; transition: color 0.2s; }
+  /* ===== ГЛАЗА-МАСКОТ: перенесено из Uzum Inventory (bot-eye), масштаб уменьшен под mascot-eyes ===== */
+  .bot-eyes{display:flex;justify-content:center;align-items:center;gap:16px;margin:0;flex:0 0 auto}
+  .bot-eye{position:relative;width:44px;height:44px;padding:0;outline:none;border:none;background:none;cursor:pointer;animation:eyeBreathe 4.4s ease-in-out infinite}
+  .bot-eye:nth-child(2){animation-delay:-1.6s}
+  @keyframes eyeBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+  .bot-eye.eye-click{animation:none}
+  .bot-eye-lid{position:relative;position:absolute;inset:0;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 26%,#FFFFFF 0%,#F3EEFF 55%,#E4D9FF 100%);border:2.5px solid rgba(157,77,255,0.9);box-shadow:0 0 0 1px rgba(255,255,255,0.15),0 8px 18px rgba(0,0,0,0.4),0 0 20px rgba(112,0,255,0.32),inset 0 -5px 8px rgba(112,0,255,0.12);display:flex;align-items:center;justify-content:center;transition:border-color 0.25s var(--ease),box-shadow 0.25s var(--ease),background 0.25s var(--ease)}
+  .bot-eye-lid::after{content:'';position:absolute;inset:22%;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(255,255,255,0.35),transparent 70%);filter:blur(3px);opacity:0.5;animation:eyeBloomSoft 4.4s ease-in-out infinite}
+  .bot-eye:nth-child(2) .bot-eye-lid::after{animation-delay:-2.2s}
+  @keyframes eyeBloomSoft{0%,100%{opacity:0.35;transform:scale(1)}50%{opacity:0.6;transform:scale(1.12)}}
+  .bot-eye-lid.auto-blink-now{animation:eyeBlinkOnce 0.34s cubic-bezier(0.4,0,0.2,1) 1}
+  @keyframes eyeBlinkOnce{0%,100%{transform:scaleY(1)}46%{transform:scaleY(0.08)}100%{transform:scaleY(1)}}
+  .bot-eye.eye-click .bot-eye-lid{animation:none}
+  .bot-eye .bot-pupil{position:relative;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--purple-light) 0%,var(--purple) 45%,#2A0073 100%);box-shadow:0 0 10px rgba(112,0,255,0.55),inset 0 -2px 4px rgba(0,0,0,0.35);transform:translate(0,0);transition:transform 0.12s cubic-bezier(0.34,1.4,0.64,1),width 0.4s var(--spring),height 0.4s var(--spring),background 0.32s var(--ease),box-shadow 0.32s var(--ease);z-index:2}
+  .bot-eye .bot-pupil::after{content:'';position:absolute;top:18%;left:22%;width:30%;height:30%;border-radius:50%;background:rgba(255,255,255,0.9);filter:blur(0.3px)}
+  .bot-eye-depth-ring{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:1;box-shadow:inset 0 5px 10px rgba(80,20,140,0.16),inset 0 -3px 6px rgba(255,255,255,0.5),inset 0 0 0 1px rgba(120,40,200,0.08)}
+  .bot-pupil-glint{position:absolute;top:16%;left:20%;width:26%;height:26%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.95),rgba(255,255,255,0.2) 70%,transparent 100%);filter:blur(0.2px);pointer-events:none;z-index:3;transition:transform 0.16s cubic-bezier(0.34,1.4,0.64,1);will-change:transform,opacity}
+  .bot-eye:not(.eye-click) .bot-pupil-glint{animation:pupilGlintIdle 6.5s ease-in-out infinite}
+  .bot-eye:nth-child(2):not(.eye-click) .bot-pupil-glint{animation-delay:-3.1s}
+  @keyframes pupilGlintIdle{0%,100%{opacity:0.75;transform:scale(1) translate(0,0)}30%{opacity:0.95;transform:scale(1.08) translate(3%,-2%)}55%{opacity:0.65;transform:scale(0.94) translate(-2%,3%)}80%{opacity:0.9;transform:scale(1.04) translate(2%,1%)}}
+  .bot-eye-vein{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23E22F2F' stroke-width='0.7' stroke-linecap='round' opacity='0.75'%3E%3Cpath d='M6 20 Q16 24 22 30'/%3E%3Cpath d='M4 34 Q14 33 20 36'/%3E%3Cpath d='M8 46 Q17 40 23 38'/%3E%3Cpath d='M58 22 Q48 26 42 31'/%3E%3Cpath d='M60 36 Q50 34 44 36'/%3E%3Cpath d='M56 48 Q47 42 41 39'/%3E%3Cpath d='M22 10 Q26 18 28 24'/%3E%3Cpath d='M42 9 Q38 17 36 24'/%3E%3C/g%3E%3C/svg%3E");background-size:100% 100%;opacity:0}
+  .bot-eye-micro{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:3;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23FFD6D6' stroke-width='0.35' stroke-linecap='round' opacity='0.5'%3E%3Cpath d='M20 14 L23 19 L21 24'/%3E%3Cpath d='M44 16 L41 21 L43 25'/%3E%3Cpath d='M14 40 L19 38 L23 42'/%3E%3Cpath d='M48 42 L44 40 L41 44'/%3E%3Cpath d='M30 50 L32 46 L35 49'/%3E%3Cpath d='M12 28 L16 27 L15 31'/%3E%3Cpath d='M50 30 L47 29 L48 33'/%3E%3C/g%3E%3C/svg%3E");background-size:100% 100%;opacity:0}
+  .bot-eye.eye-click{animation:eyeMotionBlurPulse 0.9s ease-in-out 0.15s 1}
+  @keyframes eyeMotionBlurPulse{0%{filter:blur(0px) brightness(1)}40%{filter:blur(2px) brightness(1.18)}62%{filter:blur(3px) brightness(1.3)}100%{filter:blur(0px) brightness(1)}}
+  .bot-eye.eye-click .bot-eye-lid{animation:eyeSmoothBlinkScene 0.9s ease-in-out 0.15s 1;border-color:rgba(226,47,47,0.95);background:radial-gradient(circle at 32% 26%,#FFF5F5 0%,#FFDADA 55%,#FFB8B8 100%);box-shadow:0 0 0 1px rgba(255,255,255,0.15),0 8px 18px rgba(0,0,0,0.4),0 0 28px rgba(226,47,47,0.6),inset 0 -5px 8px rgba(226,47,47,0.22)}
+  @keyframes eyeSmoothBlinkScene{0%,100%{transform:scaleY(1) scaleX(var(--eye-squash,1))}45%{transform:scaleY(0.62) scaleX(var(--eye-squash,1))}62%{transform:scaleY(0.06) scaleX(var(--eye-squash,1))}80%{transform:scaleY(0.5) scaleX(var(--eye-squash,1))}100%{transform:scaleY(1) scaleX(var(--eye-squash,1))}}
+  .bot-eye.eye-click .bot-pupil{background:radial-gradient(circle at 35% 30%,#FF6B6B 0%,#E22F2F 42%,#7A0000 78%,var(--red-alert-dark,#5c0000) 100%);box-shadow:0 0 14px rgba(226,47,47,0.75),inset 0 -2px 4px rgba(0,0,0,0.4);width:11px;height:11px}
+  .bot-eye.eye-click .bot-eye-vein{opacity:1}
+  .bot-eye.eye-click .bot-eye-micro{opacity:0.8}
+  .bot-eye::after{content:'';position:absolute;inset:-5px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,0.9),rgba(255,120,110,0.55) 35%,rgba(226,47,47,0.25) 60%,transparent 78%);opacity:0;transform:scale(0.3);z-index:5;will-change:transform,opacity}
+  .bot-eye.eye-click::after{animation:eyeFlareShockwave 2s cubic-bezier(0.16,0.8,0.3,1) 1}
+  @keyframes eyeFlareShockwave{0%{opacity:0;transform:scale(0.3)}12%{opacity:0.9;transform:scale(0.7)}30%{opacity:0.7;transform:scale(1.4)}100%{opacity:0;transform:scale(2.6)}}
+  .bot-eye::before{content:'';position:absolute;inset:-8px;border-radius:50%;pointer-events:none;border:1.3px solid rgba(157,77,255,0.9);box-shadow:0 0 14px rgba(157,77,255,0.5);opacity:0;transform:scale(0.4);z-index:4;will-change:transform,opacity}
+  .bot-eye.eye-click::before{animation:eyeBrandRing 1.7s cubic-bezier(0.16,0.8,0.3,1) 1;animation-delay:0.25s}
+  @keyframes eyeBrandRing{0%{opacity:0;transform:scale(0.5)}22%{opacity:0.85;transform:scale(1.05)}55%{opacity:0.4;transform:scale(1.8)}100%{opacity:0;transform:scale(2.9)}}
+  .bot-eye.eye-happy .bot-eye-lid{animation:eyeHappySquint 1.1s cubic-bezier(0.34,1.4,0.64,1) 1;border-color:rgba(52,199,123,0.85);box-shadow:0 0 0 1px rgba(255,255,255,0.15),0 8px 18px rgba(0,0,0,0.4),0 0 22px rgba(52,199,123,0.35),inset 0 -5px 8px rgba(52,199,123,0.12)}
+  @keyframes eyeHappySquint{0%,100%{transform:scaleY(1)}30%{transform:scaleY(0.42)}55%{transform:scaleY(0.5)}}
+  .bot-eye.eye-happy .bot-pupil{animation:pupilHappyBounce 1.1s cubic-bezier(0.34,1.4,0.64,1) 1}
+  @keyframes pupilHappyBounce{0%,100%{transform:translateY(0)}35%{transform:translateY(-3px)}}
+  @media (prefers-reduced-motion:reduce){.bot-eye,.bot-eye-lid,.bot-eye .bot-pupil,.bot-pupil-glint,.bot-eye::after,.bot-eye::before{animation:none !important}}
 
   .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   /* Все .field — прямые дети .card и получают одинаковый z-index от правила
@@ -420,6 +457,28 @@
   body.idle-paused .cinematic-glare {
     animation-play-state: paused;
   }
+
+  #sheet-overlay{position:fixed;inset:0;z-index:900;background:rgba(3,0,10,0.6);opacity:0;pointer-events:none;transition:opacity 0.35s var(--ease)}#sheet-overlay.show{opacity:1;pointer-events:auto}#paste-sheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:480px;width:100%;max-height:80vh;z-index:901;display:flex;flex-direction:column;background:var(--glass-bg);background-color:#0b0416;border:1px solid var(--glass-border-dark);border-top:1px solid var(--glass-border-light);border-radius:28px 28px 0 0;box-shadow:0 -20px 60px -10px rgba(0,0,0,0.85),inset 0 1px 1px rgba(255,255,255,0.14);padding:14px 20px calc(18px + env(safe-area-inset-bottom,0px));visibility:hidden;pointer-events:none;transform:translateY(100%);transition:transform 0.42s var(--epic)}#paste-sheet.show{transform:translateY(0)}#paste-sheet.closing{transform:translateY(100%);transition:transform 0.36s var(--epic-out)}.sheet-handle{width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,0.22);margin:0 auto 12px;flex:0 0 auto}.sheet-scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0}.sheet-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.sheet-title{font-weight:900;font-size:16px;color:var(--text-main);letter-spacing:-0.01em}.sheet-close{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.08);color:var(--text-muted);font-size:13px;cursor:pointer;transition:background 0.25s var(--ease),color 0.25s var(--ease)}.sheet-close:hover,.sheet-close:active{background:rgba(255,255,255,0.16);color:var(--text-main)}.sheet-hint{font-size:12px;line-height:1.55;color:var(--text-muted)}.sheet-hint .key,.hint-text .key{color:var(--accent-key);font-weight:800}@media (prefers-reduced-motion:reduce){#paste-sheet,#sheet-overlay{transition:none}}#paste-sheet.sheet-mode-legal #sheet-paste-content,#paste-sheet.sheet-mode-legal #sheet-actions{display:none}#paste-sheet:not(.sheet-mode-legal) .sheet-legal-content{display:none}.sheet-legal-content{font-size:13px;line-height:1.65;color:var(--text-muted);padding-bottom:4px}.sheet-legal-content h3{font-size:13px;font-weight:900;color:var(--text-main);margin:16px 0 6px;letter-spacing:-0.01em}.sheet-legal-content h3:first-child{margin-top:0}.sheet-legal-content p{margin:0 0 10px}.sheet-legal-content ul{margin:0 0 10px;padding-left:18px}.sheet-legal-content li{margin-bottom:4px}.footer-legal{display:flex;align-items:center;justify-content:center;margin-top:8px;padding:0 10px}
+/* [Задача 2] Капсула-меню вместо голых текстовых ссылок — тот же glass-язык, что у
+   .card/.icon-btn (--glass-bg, --glass-border-dark/light, тот же радиус --r-md), но
+   заметно компактнее и тише: одна тонкая общая рамка на обе ссылки, разделитель —
+   CSS-граница между кнопками, а не отдельный текстовый "·". Дыхание тени на всей
+   капсуле — сильно приглушённая версия .lang-switch{animation:langBreathe} (там
+   4.5s/заметная пульсация подсветки, здесь долгий цикл и едва уловимая амплитуда —
+   ближе к состоянию "почти статично, но живое"), а не активный элемент интерфейса. */
+.footer-legal-menu{display:inline-flex;align-items:stretch;background:var(--glass-bg);border:1px solid var(--glass-border-dark);border-top:1px solid var(--glass-border-light);border-radius:var(--r-md);overflow:hidden;position:relative;box-shadow:0 4px 14px rgba(0,0,0,0.28);transition:box-shadow 0.3s var(--ease)}.footer-legal-menu::before{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:0 0 0 1px rgba(157,77,255,0.16),0 0 10px rgba(157,77,255,0.14);opacity:0;animation:footerMenuGlowFade 7s ease-in-out infinite;will-change:opacity}
+@keyframes footerMenuGlowFade{0%,100%{opacity:0}50%{opacity:1}}
+.footer-legal-menu.offscreen-paused,html.is-android body.idle-paused .footer-legal-menu{animation-play-state:paused}
+
+.footer-legal-link{position:relative;background:transparent;border:none;color:var(--text-dim);font-size:10.5px;font-weight:700;letter-spacing:0.01em;padding:9px 14px;cursor:pointer;transition:color 0.35s var(--ease),letter-spacing 0.35s var(--ease),background-color 0.35s var(--ease),font-weight 0.35s var(--ease);overflow:hidden}
+.footer-legal-link + .footer-legal-link{border-left:1px solid var(--glass-border-dark)}
+.footer-legal-link::before{content:'';position:absolute;inset:-4px;border-radius:inherit;background:radial-gradient(circle,rgba(157,77,255,0.4),transparent 70%);filter:blur(6px);opacity:0;transition:opacity 0.35s var(--ease);z-index:-1;pointer-events:none}
+.footer-legal-link:hover,.footer-legal-link:active{color:var(--purple-light);letter-spacing:0.03em;font-weight:800;background-color:rgba(255,255,255,0.04)}
+.footer-legal-link:hover::before,.footer-legal-link:active::before{opacity:0.55}
+.footer-legal-link:focus-visible{color:var(--purple-light);background-color:rgba(255,255,255,0.04);outline:none}
+.footer-legal-link:focus-visible::before{opacity:0.55}
+.footer-legal-link:active{transform:scale(0.97) translateZ(0);transition:transform 0.15s var(--spring),color 0.35s var(--ease),letter-spacing 0.35s var(--ease),background-color 0.35s var(--ease),font-weight 0.35s var(--ease)}
+@media (prefers-reduced-motion:reduce){.footer-legal-menu{animation:none}.footer-legal-link{transition:color 0.2s linear,background-color 0.2s linear}.footer-legal-link:active{transform:none;transition:color 0.2s linear,background-color 0.2s linear}}.footer-copy{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px;padding:0 10px;flex-wrap:wrap;font-family:"Inter","SF Pro Display",-apple-system,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.01em;color:var(--text-dim);opacity:0.75}
 </style>
 </head>
 <body>
@@ -840,7 +899,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
 
   <div class="topbar stagger parallax-el" data-depth="0.04" style="animation-delay:0s">
     <div class="brand">
-      <div class="brand-mark" id="brand-mark"><span class="mark-letter">U</span><span class="mark-sheen" aria-hidden="true"></span></div>
+      <div class="brand-mark glass-bubble glass-bubble--glow" id="brand-mark"><span class="mark-letter">U</span><span class="mark-sheen" aria-hidden="true"></span></div>
       <div>
         <div class="brand-drip-wrap">
           <div class="brand-name">СЛА приёмки</div>
@@ -856,18 +915,32 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     <div class="date-pill" id="today-pill">—</div>
   </div>
 
-  <div class="card stagger parallax-el" data-depth="0.06" style="animation-delay:0.06s">
+  <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.06s">
     <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
     <div class="mascot-wrap">
-      <div class="mascot-eyes" id="mascot-eyes">
-        <div class="eye" id="eye-l"><div class="pupil" id="pupil-l"></div></div>
-        <div class="eye" id="eye-r"><div class="pupil" id="pupil-r"></div></div>
+      <div class="mascot-eyes bot-eyes" id="mascot-eyes">
+        <button class="eye bot-eye" id="eye-l" type="button" aria-label="глаз">
+          <span class="bot-eye-vein"></span>
+          <span class="bot-eye-micro"></span>
+          <span class="bot-eye-depth-ring" aria-hidden="true"></span>
+          <span class="bot-eye-lid">
+            <span class="pupil bot-pupil" id="pupil-l"><span class="bot-pupil-glint"></span></span>
+          </span>
+        </button>
+        <button class="eye bot-eye" id="eye-r" type="button" aria-label="глаз">
+          <span class="bot-eye-vein"></span>
+          <span class="bot-eye-depth-ring" aria-hidden="true"></span>
+          <span class="bot-eye-micro"></span>
+          <span class="bot-eye-lid">
+            <span class="pupil bot-pupil" id="pupil-r"><span class="bot-pupil-glint"></span></span>
+          </span>
+        </button>
       </div>
     </div>
     <div class="mascot-status" id="mascot-status">выбери ПВЗ...</div>
   </div>
 
-  <div class="card stagger parallax-el" data-depth="0.06" style="animation-delay:0.05s" id="auth-box">
+  <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.05s" id="auth-box">
     <div class="grain"></div><div class="glass-sheen"></div>
     <div id="auth-logged-out" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
       <div class="section-label">Войдите через Telegram, чтобы отчёты закрепились за вашим аккаунтом</div>
@@ -883,7 +956,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     </div>
   </div>
 
-  <div class="card stagger parallax-el" data-depth="0.06" style="animation-delay:0.1s">
+  <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.1s">
     <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
     <div class="card-head-row">
       <div class="section-label">Внести данные</div>
@@ -943,7 +1016,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     </div>
 
     <div style="height:16px"></div>
-    <button type="button" class="btn primary" id="btn-submit" disabled>
+    <button type="button" class="btn primary glass-edge" id="btn-submit" disabled>
       <span class="btn-rim" aria-hidden="true"></span>
       <span class="btn-specular" aria-hidden="true"></span>
       <span class="btn-bloom2" aria-hidden="true"></span>
@@ -952,7 +1025,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     </button>
   </div>
 
-  <div class="card stagger parallax-el" data-depth="0.06" style="animation-delay:0.14s">
+  <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.14s">
     <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
     <div class="section-label">Jira · вложения по ПВЗ</div>
     <div class="hint-text" style="margin-bottom:12px">Вставь ссылку на тикет — если по приёмке был скан-конфликт или атипичный возврат</div>
@@ -963,7 +1036,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     <div class="jira-chip-list" id="jira-chip-list"></div>
   </div>
 
-  <div class="card stagger parallax-el" data-depth="0.06" style="animation-delay:0.18s">
+  <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.18s">
     <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
     <div class="section-label">Сегодня уже внесли</div>
     <div class="entry-list" id="entry-list">
@@ -976,9 +1049,35 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
 
   <div class="footer parallax-el" data-depth="0.02">U · СЛА приёмки · синхронизировано с Google Таблицей</div>
 
+  <div class="footer-legal parallax-el" data-depth="0.02">
+    <div class="footer-legal-menu">
+      <button type="button" class="footer-legal-link" id="link-privacy">Политика конфиденциальности</button>
+      <button type="button" class="footer-legal-link" id="link-consent">Согласие на обработку данных</button>
+    </div>
+  </div>
+
+  <div class="footer-copy parallax-el" data-depth="0.02">
+    <span id="footer-copy-text">© Uzum, <span id="footer-year">2026</span></span>
+    <span class="footer-legal-dot" aria-hidden="true">·</span>
+    <span id="footer-version-text">Версия 1 · 30.08.2026</span>
+  </div>
+
+</div>
+
+<div id="sheet-overlay"></div>
+<div id="paste-sheet" class="glass-bubble sheet-mode-legal">
+  <div class="sheet-handle"></div>
+  <div class="sheet-scroll">
+    <div class="sheet-header">
+      <div class="sheet-title" id="sheet-title-text">Документ</div>
+      <div class="sheet-close" id="sheet-close">✕</div>
+    </div>
+    <div class="sheet-legal-content" id="sheet-legal-content"></div>
+  </div>
 </div>
 
 <div id="toast"><span class="toast-icon" id="toast-icon"></span><span class="toast-msg" id="toast-msg"></span></div>
+
 
 <script>
 (function(){
@@ -1178,6 +1277,105 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     warn: () => { tone(330, 0.1, 'square', 0.05); tone(330, 0.1, 'square', 0.05, 0.13); },
     typing: () => tone(1400 + Math.random()*300, 0.015, 'sine', 0.012)
   };
+
+  // ===== ДОПОЛНИТЕЛЬНЫЕ ЗВУКИ, перенесённые из Uzum Inventory =====
+  let noiseBuffer = null;
+  function getNoiseBuffer(ac) {
+    if (noiseBuffer) return noiseBuffer;
+    const len = ac.sampleRate * 0.3;
+    const buf = ac.createBuffer(1, len, ac.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    noiseBuffer = buf;
+    return buf;
+  }
+  // "Стеклянный" тик с шёпотом отфильтрованного шума поверх тона — под акцентные клики.
+  function playGlassTick() {
+    withAudio((ac) => {
+      const now = ac.currentTime;
+      const master = ac.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.16, now + 0.008);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+      master.connect(masterBus);
+      [[1760, 1], [2637, 0.4]].forEach(([freq, vol]) => {
+        const osc = ac.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        const g = ac.createGain(); g.gain.value = vol;
+        osc.connect(g); g.connect(master);
+        osc.start(now); osc.stop(now + 0.17);
+      });
+      const air = ac.createBufferSource();
+      air.buffer = getNoiseBuffer(ac);
+      const airFilt = ac.createBiquadFilter();
+      airFilt.type = 'highpass'; airFilt.frequency.value = 6500;
+      const airGain = ac.createGain();
+      airGain.gain.setValueAtTime(0.0001, now);
+      airGain.gain.exponentialRampToValueAtTime(0.05, now + 0.004);
+      airGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+      air.connect(airFilt); airFilt.connect(airGain); airGain.connect(masterBus);
+      air.start(now); air.stop(now + 0.06);
+    });
+  }
+  // Очень тихий тик на наведение курсора — для акцентных слов/букв лого.
+  function playHoverTick() {
+    withAudio((ac) => {
+      const now = ac.currentTime;
+      const master = ac.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.045, now + 0.006);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
+      master.connect(masterBus);
+      const osc = ac.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(2350 + Math.random() * 300, now);
+      osc.connect(master);
+      osc.start(now); osc.stop(now + 0.08);
+      const air = ac.createOscillator();
+      air.type = 'sine';
+      air.frequency.setValueAtTime(5200 + Math.random() * 500, now);
+      const airGain = ac.createGain();
+      airGain.gain.setValueAtTime(0.0001, now);
+      airGain.gain.exponentialRampToValueAtTime(0.013, now + 0.004);
+      airGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+      air.connect(airGain); airGain.connect(masterBus);
+      air.start(now); air.stop(now + 0.05);
+    });
+  }
+  // Вступительный "звон" при первом жесте пользователя (арпеджио + отблеск стекла).
+  function playBootChime() {
+    withAudio((ac) => {
+      const now = ac.currentTime;
+      const master = ac.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.13, now + 0.05);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
+      master.connect(masterBus);
+      [[880, 0], [1318.5, 0.09], [1760, 0.19]].forEach(([freq, delay]) => {
+        const osc = ac.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + delay);
+        const g = ac.createGain();
+        g.gain.setValueAtTime(0.0001, now + delay);
+        g.gain.exponentialRampToValueAtTime(1, now + delay + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + delay + 0.75);
+        osc.connect(g); g.connect(master);
+        osc.start(now + delay); osc.stop(now + delay + 0.8);
+      });
+      const shimmer = ac.createBufferSource();
+      shimmer.buffer = getNoiseBuffer(ac);
+      const shimmerFilt = ac.createBiquadFilter();
+      shimmerFilt.type = 'highpass'; shimmerFilt.frequency.value = 5500;
+      const shimmerGain = ac.createGain();
+      shimmerGain.gain.setValueAtTime(0.0001, now);
+      shimmerGain.gain.exponentialRampToValueAtTime(0.045, now + 0.08);
+      shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+      shimmer.connect(shimmerFilt); shimmerFilt.connect(shimmerGain); shimmerGain.connect(masterBus);
+      shimmer.start(now); shimmer.stop(now + 0.6);
+    });
+  }
+  document.addEventListener('pointerdown', playBootChime, { once: true, passive: true });
 
   // ============ БУКВЫ, ИГРАЮЩИЕ С КУРСОРОМ ============
   let letterFxState = new Map(); // container -> { letters, rects }
@@ -1482,7 +1680,8 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
   function setMascotMood(text) { mascotStatus.textContent = text; }
 
   function lookAt(clientX, clientY) {
-    [[eyeL, pupilL], [eyeR, pupilR]].forEach(([eye, pupil]) => {
+    [[eyeL, pupilL, 'l'], [eyeR, pupilR, 'r']].forEach(([eye, pupil, key]) => {
+      if (window.__eyeBusy && window.__eyeBusy[key]) return;
       const r = eye.getBoundingClientRect();
       const cx = r.left + r.width/2, cy = r.top + r.height/2;
       const dx = clientX - cx, dy = clientY - cy;
@@ -1494,15 +1693,168 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
   document.addEventListener('mousemove', e => lookAt(e.clientX, e.clientY));
   document.addEventListener('touchmove', e => { if (e.touches[0]) lookAt(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
 
-  function blink() {
-    eyeL.classList.add('blink'); eyeR.classList.add('blink');
-    setTimeout(() => { eyeL.classList.remove('blink'); eyeR.classList.remove('blink'); }, 140);
+  // ===== ГЛАЗА: перенесено из Uzum Inventory (без saga-анимации лого/глаз) =====
+  // haptic() — no-op на обычном сайте (нет Telegram.WebApp), оставлен как безопасная
+  // заглушка, чтобы использовать тот же код сцены клика, что и в инвент-боте.
+  function haptic() {}
+
+  // springImpulse — лёгкая пружинная деформация через CSS custom property, вместо
+  // жёсткого @keyframes — стартует в момент клика и сама естественно оседает.
+  function springImpulse(el, varName, opts = {}) {
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const stiffness = opts.stiffness ?? 520;
+    const damping = opts.damping ?? 16;
+    const from = opts.from ?? 1.16;
+    const to = opts.to ?? 1;
+    let value = from, velocity = 0, lastT = 0;
+    function frame(now) {
+      if (!lastT) lastT = now;
+      let dt = (now - lastT) / 1000;
+      dt = Math.min(dt, 1 / 30);
+      lastT = now;
+      const a = (-stiffness * (value - to) - damping * velocity);
+      velocity += a * dt;
+      value += velocity * dt;
+      if (Math.abs(value - to) > 0.001 || Math.abs(velocity) > 0.02) {
+        el.style.setProperty(varName, value.toFixed(4));
+        requestAnimationFrame(frame);
+      } else {
+        el.style.setProperty(varName, to);
+      }
+    }
+    el.style.setProperty(varName, from);
+    requestAnimationFrame(frame);
   }
-  function scheduleBlink() {
-    const delay = 2200 + Math.random()*3500;
-    setTimeout(() => { blink(); scheduleBlink(); }, delay);
+
+  // Тише версия playEyeBlink — под автоматическое моргание (не клик), мягкий lowpass.
+  function playAutoBlinkTick() {
+    withAudio((ac) => {
+      const now = ac.currentTime;
+      const master = ac.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.05, now + 0.01);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+      master.connect(masterBus);
+      const lowpass = ac.createBiquadFilter();
+      lowpass.type = 'lowpass'; lowpass.frequency.value = 2200; lowpass.Q.value = 0.3;
+      lowpass.connect(master);
+      const osc = ac.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1500, now);
+      osc.frequency.exponentialRampToValueAtTime(1150, now + 0.1);
+      osc.connect(lowpass);
+      osc.start(now); osc.stop(now + 0.12);
+      const sub = ac.createOscillator();
+      sub.type = 'sine'; sub.frequency.setValueAtTime(750, now);
+      const subGain = ac.createGain(); subGain.gain.value = 0.35;
+      sub.connect(subGain); subGain.connect(master);
+      sub.start(now); sub.stop(now + 0.12);
+    });
   }
-  scheduleBlink();
+
+  // Клик по глазу — короткий "органический" щелчок-моргание: две высокие ноты внахлёст.
+  function playEyeBlink() {
+    withAudio((ac) => {
+      const now = ac.currentTime;
+      const master = ac.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.13, now + 0.006);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+      master.connect(masterBus);
+      [[1700, 1], [2550, 0.35]].forEach(([freq, vol], idx) => {
+        const osc = ac.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.01);
+        const g = ac.createGain(); g.gain.value = vol;
+        osc.connect(g); g.connect(master);
+        osc.start(now + idx * 0.01); osc.stop(now + 0.14);
+      });
+      const sub = ac.createOscillator();
+      sub.type = 'sine'; sub.frequency.setValueAtTime(850, now);
+      const subGain = ac.createGain(); subGain.gain.value = 0.18;
+      sub.connect(subGain); subGain.connect(master);
+      sub.start(now); sub.stop(now + 0.14);
+    });
+  }
+
+  (() => {
+    const eyes = [
+      { el: eyeL, pupil: pupilL, key: 'l' },
+      { el: eyeR, pupil: pupilR, key: 'r' },
+    ];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SCENE_MS = 2400;
+    const eyeBusy = { l: false, r: false };
+
+    // Органичное авто-моргание: треугольное распределение (сумма двух uniform-
+    // семплов) вместо плоского Math.random() — концентрация около центра
+    // диапазона (~6s) с редкими крайними значениями, как у настоящего моргания.
+    if (!reduceMotion) {
+      const BLINK_MIN = 3500, BLINK_MAX = 8500;
+      function nextBlinkDelay() {
+        const a = Math.random(), b = Math.random();
+        const t = (a + b) / 2;
+        return BLINK_MIN + t * (BLINK_MAX - BLINK_MIN);
+      }
+      eyes.forEach(({ el }) => {
+        const lid = el.querySelector('.bot-eye-lid');
+        if (!lid) return;
+        function scheduleNext() {
+          setTimeout(function fire() {
+            if (!document.hidden && !el.classList.contains('eye-click')) {
+              lid.classList.remove('auto-blink-now');
+              void lid.offsetWidth;
+              lid.classList.add('auto-blink-now');
+              playAutoBlinkTick();
+            }
+            scheduleNext();
+          }, nextBlinkDelay());
+        }
+        setTimeout(scheduleNext, Math.random() * 400);
+      });
+    }
+
+    // Клик по глазу — короткая сцена: покраснение/моргание/motion-blur/вспышка,
+    // всё через CSS-класс .eye-click (см. @keyframes eyeSmoothBlinkScene и др.).
+    eyes.forEach(({ el, pupil, key }) => {
+      if (!el) return;
+      let playing = false;
+      let timers = [];
+      function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+      function at(fn, ms) { timers.push(setTimeout(fn, ms)); }
+      document.addEventListener('visibilitychange', () => { if (document.hidden) clearTimers(); });
+      window.addEventListener('pagehide', clearTimers);
+
+      function playScene() {
+        if (playing) return;
+        playing = true;
+        eyeBusy[key] = true;
+        haptic();
+        playEyeBlink();
+        pupil.style.transform = 'translate(0, 0)';
+        el.classList.remove('eye-click');
+        void el.offsetWidth;
+        el.classList.add('eye-click');
+        springImpulse(el.querySelector('.bot-eye-lid'), '--eye-squash', { from: 1.14, to: 1, stiffness: 480, damping: 15 });
+        at(() => {
+          el.classList.remove('eye-click');
+          eyeBusy[key] = false;
+          playing = false;
+        }, SCENE_MS);
+      }
+
+      if (reduceMotion) {
+        el.addEventListener('click', () => {
+          el.classList.add('eye-click');
+          setTimeout(() => el.classList.remove('eye-click'), 300);
+        });
+      } else {
+        el.addEventListener('click', playScene);
+      }
+    });
+
+    window.__eyeBusy = eyeBusy;
+  })();
 
   // при фокусе на поле — глазки "смотрят" на него и меняют настроение
   document.querySelectorAll('input, select').forEach(el => {
@@ -1514,7 +1866,168 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     });
   });
 
-  // ============ ЭЛАСТИЧНЫЕ КНОПКИ ============
+  // ============ ПРУЖИННЫЕ КНОПКИ (полная физика, перенесено из Uzum Inventory) ============
+  // Настоящая физика пружины F=-kx-cv вместо CSS-transition — тянется за курсором/
+  // пальцем при драге, отпускание даёт живой перехлёст-отскок. Использована на
+  // главной CTA-кнопке (#btn-submit), остальные мелкие тапы остаются на elasticPress.
+  function makeElasticButton(btn, opts = {}) {
+    if (!btn) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const dataNum = (name, fallback) => {
+      const v = btn.dataset[name];
+      const n = v !== undefined && v !== '' ? parseFloat(v) : NaN;
+      return Number.isFinite(n) ? n : fallback;
+    };
+    const STIFFNESS = dataNum('stiffness', opts.stiffness ?? 320);
+    const DAMPING = dataNum('damping', opts.damping ?? 6);
+    const MASS = 1;
+    const STRETCH = dataNum('stretch', opts.stretch ?? 0.95);
+    const FLICK_BOOST = dataNum('flickBoost', opts.flickBoost ?? 1.35);
+    const maxPullOpt = (btn.dataset.maxPull !== undefined && btn.dataset.maxPull !== '')
+      ? parseFloat(btn.dataset.maxPull)
+      : (opts.maxPull ?? 34);
+
+    let w = 0, h = 0;
+    let ox = 0, oy = 0;
+    let vx = 0, vy = 0;
+    let tox = 0, toy = 0;
+    let dragging = false;
+    let pointerId = null;
+    let raf = null;
+    let lastT = 0;
+    let MAX_PULL = typeof maxPullOpt === 'function' ? 34 : maxPullOpt;
+    let histX = [], histY = [];
+    let lastHistX = null, lastHistY = null;
+
+    function measure() {
+      const r = btn.getBoundingClientRect();
+      w = r.width; h = r.height;
+      if (typeof maxPullOpt === 'function') MAX_PULL = maxPullOpt(w, h);
+    }
+    measure();
+    window.addEventListener('resize', measure);
+
+    function tick(now) {
+      if (!lastT) lastT = now;
+      let dt = (now - lastT) / 1000;
+      dt = Math.min(dt, 1 / 30);
+      lastT = now;
+      btn.classList.add('elastic-live');
+      if (opts.blockedClass && btn.classList.contains(opts.blockedClass)) {
+        ox = 0; oy = 0; vx = 0; vy = 0; tox = 0; toy = 0; dragging = false;
+        btn.style.transform = ''; btn.style.filter = '';
+        btn.classList.remove('elastic-live');
+        raf = null; lastT = 0; return;
+      }
+      const ax = (-STIFFNESS * (ox - tox) - DAMPING * vx) / MASS;
+      const ay = (-STIFFNESS * (oy - toy) - DAMPING * vy) / MASS;
+      vx += ax * dt; vy += ay * dt;
+      ox += vx * dt; oy += vy * dt;
+      const speed = Math.hypot(vx, vy);
+      const pullRatio = Math.min(1, Math.hypot(ox, oy) / MAX_PULL);
+      const stretchX = 1 + Math.min(0.62, (Math.abs(ox) / w + pullRatio * 0.5) * STRETCH + speed / 1700);
+      const stretchY = 1 + Math.min(0.62, (Math.abs(oy) / h + pullRatio * 0.5) * STRETCH + speed / 1700);
+      const squashX = 1 - Math.min(0.38, (Math.abs(oy) / h + pullRatio * 0.35) * STRETCH * 0.45);
+      const squashY = 1 - Math.min(0.38, (Math.abs(ox) / w + pullRatio * 0.35) * STRETCH * 0.45);
+      const rot = Math.max(-9, Math.min(9, ox * 0.22));
+      btn.style.transform =
+        `translate(${ox.toFixed(1)}px, ${oy.toFixed(1)}px) rotate(${rot.toFixed(1)}deg) ` +
+        `scale(${(stretchX * squashX).toFixed(3)}, ${(stretchY * squashY).toFixed(3)})`;
+      const glow = Math.min(0.35, speed / 2600);
+      btn.style.filter = glow > 0.02 ? `brightness(${(1 + glow).toFixed(2)})` : '';
+      const settled = !dragging && speed < 2 && Math.abs(ox - tox) < 0.15 && Math.abs(oy - toy) < 0.15;
+      if (settled) {
+        ox = 0; oy = 0; vx = 0; vy = 0; btn.style.transform = ''; btn.style.filter = '';
+        btn.classList.remove('elastic-live');
+        raf = null; lastT = 0; return;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+
+    function clampPull(dx, dy) {
+      const dist = Math.hypot(dx, dy);
+      if (dist <= MAX_PULL) return { x: dx, y: dy };
+      const k = MAX_PULL / dist;
+      return { x: dx * k, y: dy * k };
+    }
+
+    btn.addEventListener('pointerdown', (e) => {
+      if (opts.blockedClass && btn.classList.contains(opts.blockedClass)) return;
+      dragging = true;
+      pointerId = e.pointerId;
+      histX = []; histY = [];
+      lastHistX = null; lastHistY = null;
+      vx = 0; vy = 0;
+      try { btn.setPointerCapture(pointerId); } catch (err) {}
+      clearTimeout(btn._elasticWatchdog);
+      btn._elasticWatchdog = setTimeout(() => { if (dragging) release({ pointerId }); }, 3000);
+      measure();
+      btn.dataset.startX = e.clientX;
+      btn.dataset.startY = e.clientY;
+      btn.dataset.lastMoveT = performance.now();
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+
+    btn.addEventListener('pointermove', (e) => {
+      if (!dragging || e.pointerId !== pointerId) return;
+      const dx = e.clientX - parseFloat(btn.dataset.startX);
+      const dy = e.clientY - parseFloat(btn.dataset.startY);
+      const p = clampPull(dx, dy);
+      tox = p.x; toy = p.y;
+      const now = performance.now();
+      const dt = now - (parseFloat(btn.dataset.lastMoveT) || now);
+      btn.dataset.lastMoveT = now;
+      if (dt > 0 && dt < 100) {
+        histX.push((p.x - (lastHistX ?? p.x)) / (dt / 1000));
+        histY.push((p.y - (lastHistY ?? p.y)) / (dt / 1000));
+        if (histX.length > 5) histX.shift();
+        if (histY.length > 5) histY.shift();
+      }
+      lastHistX = p.x; lastHistY = p.y;
+    });
+
+    function release(e) {
+      if (pointerId !== null && e && e.pointerId !== pointerId) return;
+      if (!dragging) return;
+      dragging = false;
+      const pid = pointerId;
+      pointerId = null;
+      try { if (pid !== null) btn.releasePointerCapture(pid); } catch (err) {}
+      tox = 0; toy = 0;
+      if (histX.length) {
+        const avgVX = histX.reduce((a, b) => a + b, 0) / histX.length;
+        const avgVY = histY.reduce((a, b) => a + b, 0) / histY.length;
+        vx += avgVX * (FLICK_BOOST - 1);
+        vy += avgVY * (FLICK_BOOST - 1);
+      }
+      histX = []; histY = [];
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+    btn.addEventListener('pointerup', release);
+    btn.addEventListener('pointercancel', release);
+    btn.addEventListener('lostpointercapture', release);
+
+    if (!opts.noHoverPull) {
+      btn.addEventListener('pointerenter', (e) => {
+        if (dragging) return;
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+        const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+        tox = dx * 6; toy = dy * 6;
+        if (!raf) raf = requestAnimationFrame(tick);
+      });
+      btn.addEventListener('pointerleave', () => {
+        if (dragging) return;
+        tox = 0; toy = 0;
+        if (!raf) raf = requestAnimationFrame(tick);
+      });
+    }
+  }
+  // Главная CTA-кнопка формы получает "сочную" пружину (тот же ζ, что у btn-finish
+  // в инвент-боте — один чёткий перехлёст и уверенное гашение).
+  makeElasticButton(document.getElementById('btn-submit'), { stiffness: 320, damping: 15, stretch: 1.2, flickBoost: 1.6, maxPull: (w) => Math.max(30, w * 0.28) });
+
+  // ============ ЭЛАСТИЧНЫЕ КНОПКИ (лёгкий tap-отклик для остальных элементов) ============
   function elasticPress(el) {
     el.style.transition = 'transform 0.08s ease-out';
     el.style.transform = 'scale(0.94)';
@@ -2085,6 +2598,96 @@ function addEntryToList(data) {
   }
   refreshPresenceUI();
   setInterval(refreshPresenceUI, 25000);
+
+  // ===== Легальная шторка (Политика конфиденциальности / Согласие на обработку данных) =====
+  // Упрощённая версия для СЛА: только текст документа + кнопка закрытия, без WMS-вставки.
+  (function () {
+    var sheetOverlay = document.getElementById('sheet-overlay');
+    var sheet = document.getElementById('paste-sheet');
+    var sheetTitleEl = document.getElementById('sheet-title-text');
+    var sheetLegalContent = document.getElementById('sheet-legal-content');
+    var linkPrivacy = document.getElementById('link-privacy');
+    var linkConsent = document.getElementById('link-consent');
+    var sheetClose = document.getElementById('sheet-close');
+    if (!sheetOverlay || !sheet || !linkPrivacy || !linkConsent) return;
+
+    var LEGAL = {
+      privacy: {
+        title: 'Политика конфиденциальности',
+        body:
+          '<h3>1. Какие данные мы собираем</h3>' +
+          '<p>При использовании «СЛА приёмки» мы получаем от Telegram Login Widget базовые данные вашего аккаунта (ID, имя, username), а также данные, которые вы вносите сами: выбранный ПВЗ, время открытия ПВЗ, факты приезда магистрали и уезда, время начала и окончания приёмки, количество неприбывших заказов и ссылки на связанные тикеты Jira.</p>' +
+          '<h3>2. Как мы используем данные</h3>' +
+          '<p>Данные используются исключительно для контроля соблюдения СЛА приёмки на ПВЗ: расчёта сроков, формирования отчётов и статистики по точкам. Все внесённые записи синхронизируются с рабочей Google Таблицей отдела.</p>' +
+          '<h3>3. Хранение и защита</h3>' +
+          '<p>Данные хранятся в Google Таблице и защищены доступом по учётной записи Telegram. Срок хранения ограничен сроком, необходимым для целей учёта СЛА, либо требованиями внутренних регламентов Uzum.</p>' +
+          '<h3>4. Передача третьим лицам</h3>' +
+          '<p>Мы не продаём и не передаём данные третьим лицам, за исключением передачи внутри экосистемы Uzum (ответственным по СЛА и руководителям направления ПВЗ) для контроля рабочих показателей.</p>' +
+          '<h3>5. Ваши права</h3>' +
+          '<p>Вы вправе запросить информацию об обрабатываемых данных, их исправление или удаление, обратившись к вашему администратору Uzum PVZ.</p>'
+      },
+      consent: {
+        title: 'Согласие на обработку данных',
+        body:
+          '<h3>Согласие</h3>' +
+          '<p>Продолжая использовать «СЛА приёмки», вы подтверждаете, что ознакомлены с условиями обработки персональных данных и даёте согласие на обработку следующих данных: идентификатор и имя пользователя Telegram, а также данные, вносимые в процессе учёта приёмки (ПВЗ, время, факты приезда/уезда, кол-во неприбывших заказов, ссылки на тикеты).</p>' +
+          '<h3>Цели обработки</h3>' +
+          '<ul><li>Идентификация пользователя внутри рабочего процесса СЛА приёмки</li><li>Фиксация и хранение записей о приёмке на ПВЗ</li><li>Формирование отчётов и статистики соблюдения СЛА</li></ul>' +
+          '<h3>Срок действия и отзыв согласия</h3>' +
+          '<p>Согласие действует на весь период использования сервиса. Вы можете отозвать согласие в любой момент, обратившись к вашему администратору Uzum PVZ. После отзыва согласия доступ к функциям сервиса может быть ограничен.</p>'
+      }
+    };
+
+    var openType = null;
+
+    function render(type) {
+      var doc = LEGAL[type];
+      if (!doc) return;
+      if (sheetTitleEl) sheetTitleEl.textContent = doc.title;
+      if (sheetLegalContent) { sheetLegalContent.innerHTML = doc.body; sheetLegalContent.scrollTop = 0; }
+    }
+
+    function openSheet() {
+      sheetOverlay.classList.add('show');
+      sheet.style.visibility = 'visible';
+      sheet.style.pointerEvents = 'auto';
+      sheet.classList.remove('closing');
+      sheet.classList.remove('show');
+      void sheet.offsetWidth;
+      sheet.classList.add('show');
+    }
+
+    function closeSheet() {
+      sheetOverlay.classList.remove('show');
+      sheet.classList.remove('show');
+      sheet.classList.add('closing');
+      sheet.style.pointerEvents = 'none';
+      setTimeout(function () {
+        sheet.classList.remove('closing');
+        sheet.style.visibility = 'hidden';
+        openType = null;
+      }, 420);
+    }
+
+    function openLegal(type) {
+      openType = type;
+      render(type);
+      openSheet();
+      if (typeof haptic === 'function') haptic('light');
+      if (typeof playGlassTick === 'function') playGlassTick();
+    }
+
+    linkPrivacy.addEventListener('click', function () { openLegal('privacy'); });
+    linkConsent.addEventListener('click', function () { openLegal('consent'); });
+    if (sheetClose) sheetClose.addEventListener('click', closeSheet);
+    sheetOverlay.addEventListener('click', closeSheet);
+  })();
+
+  // ===== Футер: год + версия =====
+  (function () {
+    var yearEl = document.getElementById('footer-year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  })();
 })();
 </script>
 </body>
