@@ -1809,6 +1809,18 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
 
   const funnyPhrases = ['залетело красиво ✨', 'ещё один в копилку', 'вжух и готово', 'плюс один герой дня', 'записали, красавчик'];
 
+    // Добавляет запись в localStorage, чтобы список не пропадал при обновлении
+  function addEntryToLocal(entry) {
+    try {
+      const key = 'sla_who_filled_today';
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      // убираем дубликаты по ПВЗ
+      const filtered = list.filter(e => e.pvz !== entry.pvz);
+      filtered.push(entry);
+      localStorage.setItem(key, JSON.stringify(filtered));
+    } catch(e) {}
+  }
+
   function addEntryToList(data) {
     const list = document.getElementById('entry-list');
     const empty = list.querySelector('.entry-empty');
@@ -1829,6 +1841,15 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     list.prepend(item);
     doneCount++;
     refreshSummary();
+    
+    // Сохраняем в память браузера
+    addEntryToLocal({
+      pvz: data.pvz,
+      arrive: data.factArrive,
+      start: data.start,
+      end: data.end,
+      missing: data.missing
+    });
   }
 
   // ============ ОТПРАВКА ============
@@ -1948,25 +1969,57 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
   // ============ "КТО СЕГОДНЯ ЗАПОЛНИЛ" — карточка-список внизу формы ============
   // Тянет реальные данные из таблицы вместо памяти браузера, чтобы ТУ (территориальный
   // управляющий) видел статус по всем точкам, а не только то, что заполнено с этого устройства.
-  async function loadWhoFilledToday() {
+    async function loadWhoFilledToday() {
     if (!API_URL || API_URL.indexOf('PASTE_') === 0) return;
+    
+    // 1. Сначала рисуем из памяти браузера, чтобы не было пустоты
     try {
-      const res = await fetch(API_URL + '?action=who_filled_today');
-      const result = await res.json();
-      if (result.ok && Array.isArray(result.entries)) {
+      const cached = JSON.parse(localStorage.getItem('sla_who_filled_today') || '[]');
+      if (Array.isArray(cached) && cached.length > 0) {
         doneCount = 0;
         document.getElementById('entry-list').innerHTML = '';
-        result.entries.forEach(entry => addEntryToList({
+        cached.forEach(entry => addEntryToList({
           pvz: entry.pvz,
-          arriveMode: entry.arrive === 'до открытия' ? 'before_open' : 'time',
+          arriveMode: 'time',
           factArrive: entry.arrive,
           start: entry.start,
           end: entry.end,
           missing: entry.missing
         }));
       }
+    } catch(e) {}
+
+    // 2. Обновляем с сервера
+    try {
+      const res = await fetch(API_URL + '?action=who_filled_today');
+      const result = await res.json();
+      if (result.ok && Array.isArray(result.entries)) {
+        doneCount = 0;
+        document.getElementById('entry-list').innerHTML = '';
+        
+        // Перезаписываем память данными с сервера
+        const serverEntries = [];
+        result.entries.forEach(entry => {
+          serverEntries.push({
+            pvz: entry.pvz,
+            arrive: entry.arrive,
+            start: entry.start,
+            end: entry.end,
+            missing: entry.missing
+          });
+          addEntryToList({
+            pvz: entry.pvz,
+            arriveMode: entry.arrive === 'до открытия' ? 'before_open' : 'time',
+            factArrive: entry.arrive,
+            start: entry.start,
+            end: entry.end,
+            missing: entry.missing
+          });
+        });
+        localStorage.setItem('sla_who_filled_today', JSON.stringify(serverEntries));
+      }
     } catch (e) {
-      // тихий фолбэк — карточка просто останется пустой/демо, не мешаем работе формы
+      // если сеть упала — остаётся то, что сохранено в localStorage
     }
   }
   loadWhoFilledToday();
