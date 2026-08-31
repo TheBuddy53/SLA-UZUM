@@ -2795,28 +2795,18 @@ function addEntryToList(data) {
   // Не поддерживается — тихо прячем кнопку вместо мёртвого контрола.
   (function () {
     var btn = document.getElementById('eq-toggle');
-// ===== Мост системного звука из WPF-хоста (WebView2) =====
-var isWpfHost = !!(window.chrome && window.chrome.webview);
-var hostBins = null;
-if (isWpfHost) {
-  window.chrome.webview.addEventListener('message', function (event) {
-    var payload;
-    try {
-      payload = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-    } catch (e) {
-      return;
-    }
-    if (!payload || !payload.bins) return;
-    if (!hostBins || hostBins.length !== payload.bins.length) {
-      hostBins = new Float32Array(payload.bins.length);
-    }
-    for (var i = 0; i < payload.bins.length; i++) hostBins[i] = payload.bins[i];
-  });
-}
     if (!btn) return;
 
+    // Если приложение запущено в WPF-обёртке (WebView2), звук приходит от
+    // хоста автоматически — кнопка ручного захвата #eq-toggle не нужна.
+    // Определяем это ДО проверки getDisplayMedia ниже, так как WebView2 сам
+    // по себе поддерживает getDisplayMedia (это Chromium), но нам всё равно
+    // нужна отдельная WPF-ветка вместо браузерного захвата экрана.
+    var isWpfHost = !!(window.chrome && window.chrome.webview);
+    if (isWpfHost) btn.style.display = 'none';
+
     var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
-    if (!supported) { btn.style.display = 'none'; return; }
+    if (!supported && !isWpfHost) { btn.style.display = 'none'; return; }
 
     var stream = null;
     var sourceNode = null;
@@ -2851,6 +2841,42 @@ if (isWpfHost) {
     var wavePhase = 0;
     var smoothedBins = null;
 
+    // ==== Мост системного звука из WPF-хоста (WebView2) ====
+    // C#-сторона слушает системный звук через NAudio WasapiLoopbackCapture и
+    // шлёт готовый спектр сюда через PostWebMessageAsString. Работает
+    // НЕЗАВИСИМО от getDisplayMedia ниже: в WPF-хосте эквалайзер слушает звук
+    // всегда, без диалога "Поделиться экраном".
+    var hostBins = null;
+
+    if (isWpfHost) {
+      window.chrome.webview.addEventListener('message', function (event) {
+        // Ожидаемый формат от C#: JSON-строка {"bins":[0..255, 0..255, ...]}
+        var payload;
+        try {
+          payload = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        } catch (e) {
+          return;
+        }
+        if (!payload || !payload.bins) return;
+        if (!hostBins || hostBins.length !== payload.bins.length) {
+          hostBins = new Float32Array(payload.bins.length);
+        }
+        for (var hb = 0; hb < payload.bins.length; hb++) hostBins[hb] = payload.bins[hb];
+
+        // Первый пакет — включаем визуализацию автоматически, без клика по кнопке.
+        if (!document.body.classList.contains('eq-active')) {
+          document.body.classList.add('eq-active');
+          var bassBins0 = Math.max(4, Math.floor(hostBins.length / 8));
+          var sum0 = 0;
+          for (var b0 = 0; b0 < bassBins0; b0++) sum0 += hostBins[b0];
+          document.body.style.setProperty('--eq-bass', (sum0 / bassBins0 / 255).toFixed(3));
+          listening = true;
+          stopIdle();
+          if (!rafId) tick();
+        }
+      });
+    }
+
     function buildWavePath(bins, amp, yBase, phase, pointCount) {
       var w = 44, step = w / (pointCount - 1);
       var pts = [];
@@ -2873,15 +2899,16 @@ if (isWpfHost) {
     }
 
     function tick() {
-  var data;
-  if (isWpfHost && hostBins) {
-    // Данные уже пришли из WPF-хоста — используем их напрямую
-    data = hostBins;
-  } else {
-    if (!analyser) return;
-    data = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteFrequencyData(data);
-  }
+      var data;
+      if (isWpfHost && hostBins) {
+        // Системный звук уже пришёл от C# — используем его напрямую вместо
+        // analyser.getByteFrequencyData(), analyser в этом режиме не создаётся.
+        data = hostBins;
+      } else {
+        if (!analyser) return;
+        data = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(data);
+      }
 
       // Сглаживаем весь спектр по бинам кадр-к-кадру, чтобы волна "текла", а не дёргалась.
       if (!smoothedBins || smoothedBins.length !== data.length) {
@@ -3017,19 +3044,8 @@ if (isWpfHost) {
     });
 
     window.addEventListener('pagehide', cleanup);
- window.addEventListener('pagehide', cleanup);
-
-if (isWpfHost) {
-  // Сразу включаем визуализацию, т.к. звук уже слушается фоном
-  document.body.classList.add('eq-active');
-  btn.classList.add('is-listening');
-  btn.setAttribute('aria-pressed', 'true');
-  listening = true;
-  stopIdle();
-  tick();
-}
-
-})(); // <-- Единственное закрытие основной функции, оно должно быть самым последним
+  })();
+})();
 </script>
 </body>
 </html>
