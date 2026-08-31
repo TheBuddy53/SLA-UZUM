@@ -972,7 +972,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
       </div>
     </div>
     <div class="topbar-right">
-      <button type="button" class="eq-toggle" id="eq-toggle" aria-pressed="false" aria-label="Визуализация под музыку с компьютера" title="Визуализация под музыку">
+      <button type="button" class="eq-toggle" id="eq-toggle" aria-pressed="false" aria-label="Визуализация под музыку — выберите вкладку с музыкой и включите «Поделиться аудио»" title="Визуализация под музыку: выберите вкладку с музыкой (не «весь экран») и включите «Поделиться аудио»">
         <span class="eq-bar" aria-hidden="true"></span>
         <span class="eq-bar" aria-hidden="true"></span>
         <span class="eq-bar" aria-hidden="true"></span>
@@ -2955,6 +2955,15 @@ function addEntryToList(data) {
       }
       var ac = typeof getAC === 'function' ? getAC() : null;
       if (!ac) { cleanup(); return; }
+      // КРИТИЧНО: getAC() только СОЗДАЁТ AudioContext, но не резюмирует его —
+      // браузеры создают его в состоянии "suspended" по умолчанию. Если не
+      // сделать resume() явно, analyser.getByteFrequencyData() будет молча
+      // возвращать одни нули бесконечно — визуально "эквалайзер не слышит
+      // музыку", хотя никаких ошибок при этом не выбрасывается. Клик по кнопке
+      // — это пользовательский жест, поэтому resume() здесь разрешён браузером.
+      if (ac.state !== 'running') {
+        try { await ac.resume(); } catch (err) {}
+      }
       try {
         sourceNode = ac.createMediaStreamSource(stream);
         analyser = ac.createAnalyser();
