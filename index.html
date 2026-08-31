@@ -170,6 +170,16 @@
   .brand-mark { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #A855F7, var(--purple)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; color: #fff; box-shadow: 0 10px 25px var(--purple-glow), inset 0 2px 4px rgba(255,255,255,0.6); flex-shrink: 0; overflow: visible; position: relative; transition: transform 0.3s var(--spring); }
   .brand-mark:active { transform: scale(0.9); }
   .mark-letter { position: relative; z-index: 2; }
+  .mark-wave { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; overflow: visible; pointer-events: none; opacity: 0.4; transition: opacity 0.4s var(--ease); }
+  .mark-wave-path { fill: none; stroke-width: 1.6; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .mark-wave-path--a { stroke: rgba(255,255,255,0.9); opacity: 0.5; }
+  .mark-wave-path--b { stroke: rgba(255,110,180,0.85); opacity: 0; filter: blur(0.2px); }
+  .mark-wave-path--c { stroke: rgba(120,200,255,0.85); opacity: 0; filter: blur(0.2px); }
+  body.eq-active .mark-wave { opacity: 1; filter: drop-shadow(0 0 calc(2px + var(--eq-bass) * 5px) rgba(190,140,255,calc(0.4 + var(--eq-bass) * 0.5))); }
+  body.eq-active .mark-wave-path--a { opacity: 0.95; }
+  body.eq-active .mark-wave-path--b { opacity: 0.75; }
+  body.eq-active .mark-wave-path--c { opacity: 0.65; }
+  @media (prefers-reduced-motion: reduce) { .mark-wave { display: none; } }
 
   /* --- логотип: только фоновый декоративный слой, без "саги" (лицо/руки/эмоции) --- */
   .mark-sheen { position: absolute; inset: 0; z-index: 4; border-radius: inherit; pointer-events: none; overflow: hidden; }
@@ -214,9 +224,36 @@
   .brand-sub{font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.17em;font-weight:800;background:linear-gradient(90deg,var(--text-muted),var(--text-main));-webkit-background-clip:text;-webkit-text-fill-color:transparent;transition:color 0.5s var(--ease),transform 0.4s var(--ease);white-space:nowrap}
 
   .date-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(112,0,255,0.18); border: 1px solid rgba(157,77,255,0.35); color: var(--purple-light); font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 999px; }
+  .topbar-right { display: flex; align-items: center; gap: 8px; }
+  .eq-toggle { position: relative; width: 38px; height: 38px; border-radius: 12px; border: 1px solid rgba(157,77,255,0.35); background: rgba(112,0,255,0.14); display: flex; align-items: center; justify-content: center; gap: 2.5px; cursor: pointer; padding: 0; flex-shrink: 0; transition: transform 0.25s var(--spring), background 0.3s var(--ease), border-color 0.3s var(--ease); -webkit-tap-highlight-color: transparent; }
+  .eq-toggle:active { transform: scale(0.92); }
+  .eq-toggle .eq-bar { width: 3px; border-radius: 2px; background: var(--purple-light); opacity: 0.55; transition: opacity 0.3s var(--ease); }
+  .eq-toggle .eq-bar:nth-child(1) { height: 10px; }
+  .eq-toggle .eq-bar:nth-child(2) { height: 16px; }
+  .eq-toggle .eq-bar:nth-child(3) { height: 7px; }
+  .eq-toggle.is-listening { background: rgba(112,0,255,0.32); border-color: rgba(190,140,255,0.75); box-shadow: 0 0 16px rgba(157,77,255,0.5); }
+  .eq-toggle.is-listening .eq-bar { opacity: 1; animation: eqBarBounce 0.9s ease-in-out infinite; }
+  .eq-toggle.is-listening .eq-bar:nth-child(1) { animation-delay: -0.6s; }
+  .eq-toggle.is-listening .eq-bar:nth-child(2) { animation-delay: -0.3s; }
+  .eq-toggle.is-listening .eq-bar:nth-child(3) { animation-delay: 0s; }
+  .eq-toggle.is-loading .eq-bar { animation: eqBarLoading 0.6s ease-in-out infinite; opacity: 0.85; }
+  @keyframes eqBarBounce { 0%,100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+  @keyframes eqBarLoading { 0%,100% { transform: scaleY(0.3); } 50% { transform: scaleY(1.1); } }
+  @media (prefers-reduced-motion: reduce) { .eq-toggle.is-listening .eq-bar, .eq-toggle.is-loading .eq-bar { animation: none; } }
+  /* Пульс карточек/фона в такт музыке — управляется через --eq-bass (0..1), который
+     JS обновляет из FFT-анализа низких частот. По умолчанию 0, эффекта нет. */
+  body { --eq-bass: 0; }
+  .card, .brand-mark, .date-pill { transition: box-shadow 0.12s linear; }
+  body.eq-active .card { box-shadow: 0 4px 8px -1px rgba(0,0,0,0.6), 0 20px 36px -8px rgba(0,0,0,0.6), 0 0 calc(var(--eq-bass) * 46px) rgba(157,77,255,calc(var(--eq-bass) * 0.55)); }
+  .card-eq-edge { position: absolute; left: 8%; right: 8%; bottom: 0; height: 2px; border-radius: 2px; pointer-events: none; z-index: 2; opacity: 0; background: linear-gradient(90deg, transparent, rgba(190,140,255,0.9), rgba(255,110,180,0.85), rgba(120,200,255,0.9), transparent); background-size: 200% 100%; transition: opacity 0.35s var(--ease); }
+  body.eq-active .card-eq-edge { opacity: calc(0.25 + var(--eq-bass) * 0.75); transform: scaleX(calc(0.7 + var(--eq-bass) * 0.3)); animation: cardEqEdgeDrift 2.6s linear infinite; }
+  @keyframes cardEqEdgeDrift { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+  @media (prefers-reduced-motion: reduce) { .card-eq-edge { display: none; } }
+  body.eq-active .brand-mark { box-shadow: 0 10px 25px var(--purple-glow), inset 0 2px 4px rgba(255,255,255,0.6), 0 0 calc(var(--eq-bass) * 30px) rgba(190,140,255,calc(var(--eq-bass) * 0.8)); transform: scale(calc(1 + var(--eq-bass) * 0.035)); }
+  body.eq-active .date-pill { transform: scale(calc(1 + var(--eq-bass) * 0.05)); }
 
   .card { position: relative; background: var(--glass-bg); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); border: 1px solid var(--glass-border-dark); border-top: 1px solid var(--glass-border-light); border-radius: var(--r-xl); padding: 18px; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.3); overflow: hidden; isolation: isolate; transform: perspective(900px) translate3d(var(--pfx,0px), var(--pfy,0px), 0) rotateX(var(--pty,0deg)) rotateY(var(--ptx,0deg)); will-change: transform; backface-visibility: hidden; transition: box-shadow 0.5s var(--ease), transform 0.55s var(--spring); }
-  @media (hover: hover) and (pointer: fine) { .card { transition: box-shadow 0.45s var(--ease); } .card:hover { box-shadow: 0 30px 54px -10px rgba(0,0,0,0.85), 4px 8px 24px -6px rgba(112,0,255,0.4), inset 0 1px 2px rgba(255,255,255,0.4); } }
+  @media (hover: hover) and (pointer: fine) { .card { transition: box-shadow 0.45s var(--ease), transform 0.35s var(--spring); } .card:hover { transform: perspective(900px) translate3d(var(--pfx,0px), var(--pfy,0px), 0) rotateX(var(--pty,0deg)) rotateY(var(--ptx,0deg)) scale(1.045) !important; border-color: rgba(255,255,255,0.42) !important; box-shadow: 0 4px 8px -1px rgba(0,0,0,0.6), 0 20px 36px -8px rgba(0,0,0,0.6), 0 30px 54px -10px rgba(0,0,0,0.85), 4px 8px 24px -6px rgba(112,0,255,0.4), inset 0 1px 2px rgba(255,255,255,0.4) !important; } }
 
   /* --- курсорная подсветка + карточное стекло/блики --- */
   .card::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(800px circle at var(--mouse-x,50%) var(--mouse-y,-20%), rgba(255,255,255,0.08), transparent 45%); transition: background 0.25s var(--ease); z-index: 1; }
@@ -479,6 +516,21 @@
 .footer-legal-link:focus-visible::before{opacity:0.55}
 .footer-legal-link:active{transform:scale(0.97) translateZ(0);transition:transform 0.15s var(--spring),color 0.35s var(--ease),letter-spacing 0.35s var(--ease),background-color 0.35s var(--ease),font-weight 0.35s var(--ease)}
 @media (prefers-reduced-motion:reduce){.footer-legal-menu{animation:none}.footer-legal-link{transition:color 0.2s linear,background-color 0.2s linear}.footer-legal-link:active{transform:none;transition:color 0.2s linear,background-color 0.2s linear}}.footer-copy{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px;padding:0 10px;flex-wrap:wrap;font-family:"Inter","SF Pro Display",-apple-system,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:0.01em;color:var(--text-dim);opacity:0.75}
+/* Фикс: на части Android WebView / встроенных браузеров (в т.ч. некоторые версии
+   Telegram WebView) свойство mask-composite:exclude поддерживается некорректно —
+   вместо вычитания внутренней области браузер иногда красит весь элемент сплошным
+   чёрным/непрозрачным цветом. Это давало "чёрное лого" и другие чёрные плашки
+   поверх карточек/кнопок на телефоне. Если браузер не поддерживает
+   mask-composite/-webkit-mask-composite как ожидается, отключаем эти декоративные
+   псевдоэлементы полностью — сам элемент (лого, карточка, кнопка) остаётся на
+   своём обычном цветном фоне, просто без анимированной радужной рамки. */
+@supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  .glass-bubble::before,
+  .glass-edge::before,
+  .cinematic-glare {
+    display: none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -899,7 +951,14 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
 
   <div class="topbar stagger parallax-el" data-depth="0.04" style="animation-delay:0s">
     <div class="brand">
-      <div class="brand-mark glass-bubble glass-bubble--glow" id="brand-mark"><span class="mark-letter">U</span><span class="mark-sheen" aria-hidden="true"></span></div>
+      <div class="brand-mark glass-bubble glass-bubble--glow" id="brand-mark">
+        <svg class="mark-wave" id="mark-wave" viewBox="0 0 44 44" aria-hidden="true">
+          <path id="mark-wave-path-1" class="mark-wave-path mark-wave-path--a" d="M0,22 Q11,22 22,22 T44,22" />
+          <path id="mark-wave-path-2" class="mark-wave-path mark-wave-path--b" d="M0,22 Q11,22 22,22 T44,22" />
+          <path id="mark-wave-path-3" class="mark-wave-path mark-wave-path--c" d="M0,22 Q11,22 22,22 T44,22" />
+        </svg>
+        <span class="mark-letter">U</span><span class="mark-sheen" aria-hidden="true"></span>
+      </div>
       <div>
         <div class="brand-drip-wrap">
           <div class="brand-name">СЛА приёмки</div>
@@ -912,7 +971,14 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
         <div class="brand-sub">Экосистема ПВЗ</div>
       </div>
     </div>
-    <div class="date-pill" id="today-pill">—</div>
+    <div class="topbar-right">
+      <button type="button" class="eq-toggle" id="eq-toggle" aria-pressed="false" aria-label="Визуализация под музыку с компьютера" title="Визуализация под музыку">
+        <span class="eq-bar" aria-hidden="true"></span>
+        <span class="eq-bar" aria-hidden="true"></span>
+        <span class="eq-bar" aria-hidden="true"></span>
+      </button>
+      <div class="date-pill" id="today-pill">—</div>
+    </div>
   </div>
 
   <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.06s">
@@ -1046,6 +1112,36 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
       Внесли: <b id="sum-done">0</b> · Осталось: <b id="sum-left">0</b> · Просрочка: <b id="sum-late">0</b>
     </div>
   </div>
+
+  <script>
+  /* Фикс: снимаем класс .stagger сразу как только доиграла анимация появления
+     карточки (riseIn ... forwards). Пока класс висит, forwards-состояние анимации
+     держит transform:translateY(0) scale(1) с приоритетом выше, чем CSS-правило
+     .card{transform:...} и выше даже прямой записи в element.style.transform —
+     из-за этого параллакс/наклон карточек не работал вообще, несмотря на то что
+     JS-контроллер параллакса и CSS-переменные --pfx/--ptx считались правильно.
+     ВАЖНО: одного animationend недостаточно — в этом окружении событие иногда
+     не долетает (getAnimations() показывает playState:"running" бесконечно,
+     хотя currentTime не растёт), поэтому дублируем через setTimeout с запасом
+     по времени (анимация 0.7s + максимальная задержка 0.18s из HTML + запас). */
+  (function () {
+    var staggered = document.querySelectorAll('.stagger');
+    staggered.forEach(function (el) {
+      var done = false;
+      function clear() {
+        if (done) return;
+        done = true;
+        el.classList.remove('stagger');
+      }
+      el.addEventListener('animationend', function onEnd(e) {
+        if (e.target !== el) return;
+        clear();
+        el.removeEventListener('animationend', onEnd);
+      });
+      setTimeout(clear, 1200);
+    });
+  })();
+  </script>
 
   <div class="footer parallax-el" data-depth="0.02">U · СЛА приёмки · синхронизировано с Google Таблицей</div>
 
@@ -2687,6 +2783,207 @@ function addEntryToList(data) {
   (function () {
     var yearEl = document.getElementById('footer-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  })();
+
+  // ===== Эквалайзер: визуализация интерфейса под звук с компьютера =====
+  // Захватывает системный/вкладочный звук через getDisplayMedia({audio:true}) —
+  // это единственный API, которым веб-страница может услышать звук ИЗ ноутбука
+  // (не микрофон), и он всегда требует явного согласия пользователя через
+  // системный диалог "Поделиться экраном/вкладкой" с галочкой "Поделиться аудио".
+  // Видео-дорожка обязательна по спецификации для части браузеров, но сразу
+  // останавливается — картинка с экрана никуда не передаётся и не сохраняется.
+  // Не поддерживается — тихо прячем кнопку вместо мёртвого контрола.
+  (function () {
+    var btn = document.getElementById('eq-toggle');
+    if (!btn) return;
+
+    var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    if (!supported) { btn.style.display = 'none'; return; }
+
+    var stream = null;
+    var sourceNode = null;
+    var analyser = null;
+    var rafId = null;
+    var listening = false;
+
+    function cleanup() {
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      if (sourceNode) { try { sourceNode.disconnect(); } catch (e) {} sourceNode = null; }
+      analyser = null;
+      if (stream) {
+        stream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} });
+        stream = null;
+      }
+      document.body.classList.remove('eq-active');
+      document.body.style.setProperty('--eq-bass', '0');
+      btn.classList.remove('is-listening', 'is-loading');
+      btn.setAttribute('aria-pressed', 'false');
+      listening = false;
+      startIdle();
+    }
+
+    // ==== Волна в лого (SVG-путь позади буквы U) ====
+    // Три слоя волны: каждый берёт свой диапазон частот и рисуется отдельным
+    // <path> через сглаженные квадратичные кривые — так же, как на референсах
+    // Damir'а (шёлковые наложенные линии, не "столбики"), только в масштабе
+    // маленького лого-квадрата 44×44.
+    var wavePath1 = document.getElementById('mark-wave-path-1');
+    var wavePath2 = document.getElementById('mark-wave-path-2');
+    var wavePath3 = document.getElementById('mark-wave-path-3');
+    var wavePhase = 0;
+    var smoothedBins = null;
+
+    function buildWavePath(bins, amp, yBase, phase, pointCount) {
+      var w = 44, step = w / (pointCount - 1);
+      var pts = [];
+      for (var i = 0; i < pointCount; i++) {
+        var bin = bins[Math.floor(i / pointCount * bins.length)] || 0;
+        var wobble = Math.sin(phase + i * 0.9) * 1.5; // мягкое дыхание даже на тихом звуке
+        var y = yBase - (bin / 255) * amp - wobble;
+        pts.push([i * step, y]);
+      }
+      // Гладкая кривая через контрольные точки — квадратичные сегменты
+      // со средними точками (классический приём для "живой" воды/звука).
+      var d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+      for (var j = 0; j < pts.length - 1; j++) {
+        var midX = (pts[j][0] + pts[j + 1][0]) / 2;
+        var midY = (pts[j][1] + pts[j + 1][1]) / 2;
+        d += ' Q' + pts[j][0].toFixed(1) + ',' + pts[j][1].toFixed(1) + ' ' + midX.toFixed(1) + ',' + midY.toFixed(1);
+      }
+      d += ' L' + pts[pts.length - 1][0].toFixed(1) + ',' + pts[pts.length - 1][1].toFixed(1);
+      return d;
+    }
+
+    function tick() {
+      if (!analyser) return;
+      var data = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(data);
+
+      // Сглаживаем весь спектр по бинам кадр-к-кадру, чтобы волна "текла", а не дёргалась.
+      if (!smoothedBins || smoothedBins.length !== data.length) {
+        smoothedBins = new Float32Array(data.length);
+      }
+      for (var i = 0; i < data.length; i++) {
+        smoothedBins[i] += (data[i] - smoothedBins[i]) * 0.35;
+      }
+
+      // Бас (первая восьмая спектра) — по-прежнему двигает общий пульс карточек/лого.
+      var bassBins = Math.max(4, Math.floor(data.length / 8));
+      var sum = 0;
+      for (var b = 0; b < bassBins; b++) sum += smoothedBins[b];
+      var avg = sum / bassBins / 255;
+      var prevBass = parseFloat(document.body.style.getPropertyValue('--eq-bass')) || 0;
+      var smoothedBass = prevBass + (avg - prevBass) * 0.35;
+      document.body.style.setProperty('--eq-bass', smoothedBass.toFixed(3));
+
+      // Три волновых слоя — разная амплитуда/фаза/скорость, чтобы не двигались синхронно.
+      wavePhase += 0.12;
+      if (wavePath1) wavePath1.setAttribute('d', buildWavePath(smoothedBins, 9, 22, wavePhase, 9));
+      if (wavePath2) wavePath2.setAttribute('d', buildWavePath(smoothedBins, 13, 22, wavePhase * 1.4 + 1.7, 8));
+      if (wavePath3) wavePath3.setAttribute('d', buildWavePath(smoothedBins, 6, 22, wavePhase * 0.7 + 3.1, 10));
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    // ==== Idle-волна (без звука) ====
+    // Пока эквалайзер выключен, лого не должно быть мёртвым квадратом — рисуем
+    // ту же тройную волну, но по синтетическим "бинам" (просто затухающая
+    // синусоида вместо реального спектра), с меньшей амплитудой. Останавливается,
+    // как только запускается настоящий tick() под музыку, и возобновляется
+    // после cleanup(), когда музыка выключена.
+    var idleRafId = null;
+    var idlePhase = 0;
+    var fakeBins = new Float32Array(32);
+
+    function idleTick() {
+      idlePhase += 0.045;
+      for (var i = 0; i < fakeBins.length; i++) {
+        fakeBins[i] = 40 + Math.sin(idlePhase + i * 0.5) * 30 + Math.sin(idlePhase * 0.6 + i * 0.2) * 18;
+      }
+      if (wavePath1) wavePath1.setAttribute('d', buildWavePath(fakeBins, 3.5, 22, idlePhase, 9));
+      if (wavePath2) wavePath2.setAttribute('d', buildWavePath(fakeBins, 5, 22, idlePhase * 1.4 + 1.7, 8));
+      if (wavePath3) wavePath3.setAttribute('d', buildWavePath(fakeBins, 2.2, 22, idlePhase * 0.7 + 3.1, 10));
+      idleRafId = requestAnimationFrame(idleTick);
+    }
+
+    function stopIdle() {
+      if (idleRafId) { cancelAnimationFrame(idleRafId); idleRafId = null; }
+    }
+
+    function startIdle() {
+      if (idleRafId || rafId) return; // не запускаем поверх настоящего звука
+      idleTick();
+    }
+
+    if (wavePath1 && wavePath2 && wavePath3) startIdle();
+
+    // Волновой акцент снизу каждой карточки — добавляем один раз программно,
+    // чтобы не редактировать разметку в пяти разных местах вручную.
+    document.querySelectorAll('.card').forEach(function (card) {
+      var edge = document.createElement('span');
+      edge.className = 'card-eq-edge';
+      edge.setAttribute('aria-hidden', 'true');
+      card.appendChild(edge);
+    });
+
+    async function start() {
+      stopIdle();
+      btn.classList.add('is-loading');
+      try {
+        stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+      } catch (err) {
+        // Пользователь отменил системный диалог, или запретил доступ — это ожидаемый
+        // путь, не ошибка. Просто откатываем состояние без назойливых сообщений.
+        btn.classList.remove('is-loading');
+        startIdle();
+        return;
+      }
+      var audioTracks = stream.getAudioTracks();
+      // Видео-дорожка нам не нужна вообще — глушим сразу, чтобы не держать лишний захват.
+      stream.getVideoTracks().forEach(function (t) { try { t.stop(); } catch (e) {} });
+      if (!audioTracks.length) {
+        // Пользователь выбрал источник, но не поставил галочку "Поделиться аудио" —
+        // без звуковой дорожки визуализировать нечего.
+        stream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} });
+        stream = null;
+        btn.classList.remove('is-loading');
+        if (typeof showToast === 'function') {
+          showToast('Отметьте «Поделиться аудио» в диалоге, чтобы включить визуализацию', 'info');
+        }
+        startIdle();
+        return;
+      }
+      var ac = typeof getAC === 'function' ? getAC() : null;
+      if (!ac) { cleanup(); return; }
+      try {
+        sourceNode = ac.createMediaStreamSource(stream);
+        analyser = ac.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.7;
+        sourceNode.connect(analyser);
+        // Намеренно НЕ подключаем analyser к destination — мы только слушаем
+        // спектр для анимации, само аудио никуда не воспроизводится повторно.
+      } catch (err) {
+        cleanup();
+        return;
+      }
+      // Если пользователь останавливает шаринг через системную панель браузера
+      // (а не через нашу кнопку), подчищаем состояние синхронно с этим событием.
+      audioTracks[0].addEventListener('ended', cleanup);
+      btn.classList.remove('is-loading');
+      btn.classList.add('is-listening');
+      btn.setAttribute('aria-pressed', 'true');
+      document.body.classList.add('eq-active');
+      listening = true;
+      tick();
+    }
+
+    btn.addEventListener('click', function () {
+      if (listening) { cleanup(); return; }
+      start();
+    });
+
+    window.addEventListener('pagehide', cleanup);
   })();
 })();
 </script>
