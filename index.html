@@ -2795,6 +2795,24 @@ function addEntryToList(data) {
   // Не поддерживается — тихо прячем кнопку вместо мёртвого контрола.
   (function () {
     var btn = document.getElementById('eq-toggle');
+// ===== Мост системного звука из WPF-хоста (WebView2) =====
+var isWpfHost = !!(window.chrome && window.chrome.webview);
+var hostBins = null;
+if (isWpfHost) {
+  window.chrome.webview.addEventListener('message', function (event) {
+    var payload;
+    try {
+      payload = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+    } catch (e) {
+      return;
+    }
+    if (!payload || !payload.bins) return;
+    if (!hostBins || hostBins.length !== payload.bins.length) {
+      hostBins = new Float32Array(payload.bins.length);
+    }
+    for (var i = 0; i < payload.bins.length; i++) hostBins[i] = payload.bins[i];
+  });
+}
     if (!btn) return;
 
     var supported = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
@@ -2855,9 +2873,15 @@ function addEntryToList(data) {
     }
 
     function tick() {
-      if (!analyser) return;
-      var data = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(data);
+  var data;
+  if (isWpfHost && hostBins) {
+    // Данные уже пришли из WPF-хоста — используем их напрямую
+    data = hostBins;
+  } else {
+    if (!analyser) return;
+    data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data);
+  }
 
       // Сглаживаем весь спектр по бинам кадр-к-кадру, чтобы волна "текла", а не дёргалась.
       if (!smoothedBins || smoothedBins.length !== data.length) {
@@ -2993,8 +3017,19 @@ function addEntryToList(data) {
     });
 
     window.addEventListener('pagehide', cleanup);
-  })();
-})();
+ window.addEventListener('pagehide', cleanup);
+
+if (isWpfHost) {
+  // Сразу включаем визуализацию, т.к. звук уже слушается фоном
+  document.body.classList.add('eq-active');
+  btn.classList.add('is-listening');
+  btn.setAttribute('aria-pressed', 'true');
+  listening = true;
+  stopIdle();
+  tick();
+}
+
+})(); // <-- Единственное закрытие основной функции, оно должно быть самым последним
 </script>
 </body>
 </html>
