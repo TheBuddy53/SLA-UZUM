@@ -448,10 +448,14 @@
   .jira-chip .rm { width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
 
   .entry-list { display: flex; flex-direction: column; gap: 8px; }
-  .entry-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r-md); padding: 12px 14px; opacity: 0; animation: entryPop 0.5s var(--spring) forwards; }
+  .entry-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r-md); padding: 12px 14px; opacity: 0; animation: entryPop 0.5s var(--spring) forwards; cursor: pointer; transition: background 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.25s var(--spring); }
+  .entry-item:hover, .entry-item:focus-visible { background: rgba(255,255,255,0.085); border-color: rgba(157,77,255,0.35); }
+  .entry-item:active { transform: scale(0.985); }
   @keyframes entryPop { 0% { opacity: 0; transform: translateX(-16px) scale(0.9); } 100% { opacity: 1; transform: translateX(0) scale(1); } }
+  .entry-item .entry-main { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+  .entry-item .entry-text { min-width: 0; }
   .entry-item .pvz-name { font-weight: 800; font-size: 14px; }
-  .entry-item .entry-time { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+  .entry-item .entry-time { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .entry-item .status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; position: relative; }
   .status-dot.ok { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
   .status-dot.ok::after { content:''; position:absolute; inset:-4px; border-radius:50%; border: 1.5px solid var(--green); opacity: 0.6; animation: pulseRing 1.6s ease-out infinite; }
@@ -460,9 +464,50 @@
   .presence-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-left: 6px; background: rgba(255,255,255,0.18); display: inline-block; }
   .presence-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green-glow); animation: pulseRing 1.6s ease-out infinite; }
   @keyframes pulseRing { 0% { transform: scale(0.7); opacity: 0.7; } 100% { transform: scale(1.8); opacity: 0; } }
+  .entry-chevron { color: var(--text-dim); font-size: 13px; flex-shrink: 0; margin-left: 8px; transition: transform 0.25s var(--spring), color 0.25s var(--ease); }
+  .entry-item:hover .entry-chevron { color: var(--purple-light); transform: translateX(2px); }
   .entry-empty { text-align: center; padding: 20px 0; color: var(--text-dim); font-size: 13px; font-weight: 600; }
   .entry-summary { display: flex; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: var(--text-dim); font-weight: 700; }
   .entry-summary b { color: var(--text-main); }
+
+  /* ===== Детальный отчёт по ПВЗ (нижний лист, режим sheet-mode-report) ===== */
+  #paste-sheet.sheet-mode-report #sheet-paste-content,
+  #paste-sheet.sheet-mode-report #sheet-actions,
+  #paste-sheet:not(.sheet-mode-report) .sheet-report-content { display: none; }
+  #paste-sheet.sheet-mode-report .sheet-legal-content,
+  #paste-sheet.sheet-mode-report #sheet-legal-content { display: none; }
+  .sheet-report-content { padding-bottom: 4px; }
+  .report-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .report-avatar { width: 42px; height: 42px; border-radius: 14px; flex-shrink: 0; background: linear-gradient(135deg, #A855F7, var(--purple)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: #fff; box-shadow: 0 8px 18px var(--purple-glow), inset 0 2px 4px rgba(255,255,255,0.5); }
+  .report-who { min-width: 0; flex: 1; }
+  .report-name { font-weight: 800; font-size: 14px; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .report-submitted { font-size: 12px; color: var(--text-dim); font-weight: 600; margin-top: 2px; }
+  .report-status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 800; flex-shrink: 0; white-space: nowrap; }
+  .report-status-pill.ok { background: rgba(52,199,123,0.15); border: 1px solid rgba(52,199,123,0.4); color: var(--green); }
+  .report-status-pill.bad { background: rgba(255,92,122,0.15); border: 1px solid rgba(255,92,122,0.4); color: var(--red); }
+  .report-status-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+  .report-status-pill.bad .dot { animation: pulseRing 1.6s ease-out infinite; }
+
+  .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .report-metric { background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r-md); padding: 12px 14px; }
+  .report-metric-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); font-weight: 800; margin-bottom: 5px; }
+  .report-metric-val { font-size: 17px; font-weight: 900; color: var(--text-main); letter-spacing: -0.01em; }
+  .report-metric.accent .report-metric-val { color: var(--purple-light); }
+  .report-metric.warn .report-metric-val { color: var(--red); }
+  .report-metric.good .report-metric-val { color: var(--green); }
+  .report-metric-sub { font-size: 11px; color: var(--text-dim); font-weight: 600; margin-top: 4px; line-height: 1.4; }
+
+  .report-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-dim); font-weight: 800; margin: 16px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .report-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+
+  .report-jira-list { display: flex; flex-direction: column; gap: 8px; }
+  .report-jira-card { display: flex; align-items: center; gap: 10px; background: rgba(112,0,255,0.12); border: 1px solid rgba(157,77,255,0.3); border-radius: var(--r-md); padding: 10px 12px; text-decoration: none; transition: background 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.2s var(--spring); }
+  .report-jira-card:hover { background: rgba(112,0,255,0.2); border-color: rgba(157,77,255,0.5); transform: translateX(2px); }
+  .report-jira-card:active { transform: scale(0.98); }
+  .report-jira-icon { width: 24px; height: 24px; border-radius: 7px; background: linear-gradient(135deg, #0052CC, #2684FF); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; color: #fff; flex-shrink: 0; }
+  .report-jira-key { font-size: 13px; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .report-jira-go { color: var(--purple-light); font-size: 13px; flex-shrink: 0; }
+  .report-jira-empty { font-size: 12.5px; color: var(--text-dim); font-weight: 600; line-height: 1.5; padding: 4px 2px; }
 
   #toast { position: fixed; left: 50%; bottom: calc(30px + env(safe-area-inset-bottom,0px)); transform: translate(-50%,16px) scale(0.92); display: flex; align-items: center; gap: 10px; background: rgba(20,10,35,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; padding: 13px 18px; font-size: 13px; font-weight: 700; color: #fff; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.32s var(--ease), transform 0.32s var(--spring); max-width: min(420px, 90vw); text-align: center; }
   #toast.show { opacity: 1; transform: translate(-50%,0) scale(1); }
@@ -1131,31 +1176,26 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
   </div>
 
   <script>
-  /* Фикс: снимаем класс .stagger сразу как только доиграла анимация появления
-     карточки (riseIn ... forwards). Пока класс висит, forwards-состояние анимации
-     держит transform:translateY(0) scale(1) с приоритетом выше, чем CSS-правило
-     .card{transform:...} и выше даже прямой записи в element.style.transform —
-     из-за этого параллакс/наклон карточек не работал вообще, несмотря на то что
-     JS-контроллер параллакса и CSS-переменные --pfx/--ptx считались правильно.
-     ВАЖНО: одного animationend недостаточно — в этом окружении событие иногда
-     не долетает (getAnimations() показывает playState:"running" бесконечно,
-     хотя currentTime не растёт), поэтому дублируем через setTimeout с запасом
-     по времени (анимация 0.7s + максимальная задержка 0.18s из HTML + запас). */
+  /* ВАЖНО (WebView2-баг): .stagger стартует с opacity:0 и ждёт @keyframes riseIn,
+     чтобы стать видимым. В WebView2 (в отличие от Chrome, где вкладка открыта
+     интерактивно и рендер-пайплайн уже "тёплый") анимация иногда вообще не
+     запускается при программной Navigate() — например, если первый composite-
+     кадр происходит до того, как WebView2-окно получило размер/фокус. Тогда
+     riseIn никогда не проигрывается, opacity остаётся 0 НАВСЕГДА — элемент
+     (в том числе .topbar с лого и эквалайзер-кнопкой) визуально пропадает
+     полностью, хотя DOM на месте. Старый фикс ждал animationend + setTimeout(1200) —
+     недостаточно, потому что если анимация не запустилась вообще, "конец" не
+     наступит никогда, а 1200мс — это ожидание впустую перед тем как SHOW руками.
+     Поэтому: сразу, синхронно, форсируем видимость через inline-style
+     (перебивает форвард-состояние несыгравшей анимации), НЕ дожидаясь событий.
+     .stagger снимается сразу же — сама плавность анимации не критична настолько,
+     насколько критично то, чтобы интерфейс вообще был виден. */
   (function () {
     var staggered = document.querySelectorAll('.stagger');
     staggered.forEach(function (el) {
-      var done = false;
-      function clear() {
-        if (done) return;
-        done = true;
-        el.classList.remove('stagger');
-      }
-      el.addEventListener('animationend', function onEnd(e) {
-        if (e.target !== el) return;
-        clear();
-        el.removeEventListener('animationend', onEnd);
-      });
-      setTimeout(clear, 1200);
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0) scale(1)';
+      el.classList.remove('stagger');
     });
   })();
   </script>
@@ -1186,6 +1226,7 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
       <div class="sheet-close" id="sheet-close">✕</div>
     </div>
     <div class="sheet-legal-content" id="sheet-legal-content"></div>
+    <div class="sheet-report-content" id="sheet-report-content"></div>
   </div>
 </div>
 
@@ -2496,6 +2537,11 @@ function formatTime(value) {
   return value;
 }
 
+// Полные записи "кто сегодня заполнил" по ПВЗ — источник данных для детального
+// отчёта (openPvzReport). Хранится отдельно от урезанной строки в списке, потому
+// что в самой строке показывается не всё (кто заполнил, submittedAt, jira и т.д.)
+window.lastFilledEntries = window.lastFilledEntries || {};
+
 function addEntryToList(data) {
   const list = document.getElementById('entry-list');
   const empty = list.querySelector('.entry-empty');
@@ -2503,6 +2549,8 @@ function addEntryToList(data) {
 
   const item = document.createElement('div');
   item.className = 'entry-item';
+  item.setAttribute('role', 'button');
+  item.setAttribute('tabindex', '0');
   const missing = parseInt(data.missing, 10) || 0;
   const dotClass = missing > 0 ? 'bad' : 'ok';
   
@@ -2512,15 +2560,31 @@ function addEntryToList(data) {
   const arriveStr = data.arriveMode === 'before_open' ? 'до откр.' : formatTime(data.factArrive);
   
   item.innerHTML = `
-    <div>
-      <div class="pvz-name">${data.pvz}</div>
-      <div class="entry-time">приёмка ${startStr || '—'}–${endStr || '—'} · приезд: ${arriveStr || '—'} · неприб.: ${missing}</div>
+    <div class="entry-main">
+      <div class="entry-text">
+        <div class="pvz-name">${data.pvz}</div>
+        <div class="entry-time">приёмка ${startStr || '—'}–${endStr || '—'} · приезд: ${arriveStr || '—'} · неприб.: ${missing}</div>
+      </div>
     </div>
     <div class="status-dot ${dotClass}"></div>
+    <div class="entry-chevron">›</div>
   `;
   list.prepend(item);
   doneCount++;
   refreshSummary();
+
+  // Запоминаем полные данные этой записи по имени ПВЗ — на них опирается детальный отчёт
+  window.lastFilledEntries[data.pvz] = data;
+
+  item.addEventListener('click', () => {
+    if (typeof openPvzReport === 'function') openPvzReport(data.pvz);
+  });
+  item.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (typeof openPvzReport === 'function') openPvzReport(data.pvz);
+    }
+  });
 }
 
   // ============ ОТПРАВКА ============
@@ -2645,17 +2709,28 @@ function addEntryToList(data) {
     
     // 1. Сначала рисуем из памяти браузера, чтобы не было пустоты
     try {
-      const cached = JSON.parse(localStorage.getItem('sla_who_filled_today') || '[]');
+      // Полный кэш (если есть) даёт сразу же кликабельный детальный отчёт,
+      // не дожидаясь ответа сервера — иначе используем урезанный старый формат.
+      const cachedFull = JSON.parse(localStorage.getItem('sla_who_filled_today_full') || '[]');
+      const cached = Array.isArray(cachedFull) && cachedFull.length > 0
+        ? cachedFull
+        : JSON.parse(localStorage.getItem('sla_who_filled_today') || '[]');
       if (Array.isArray(cached) && cached.length > 0) {
         doneCount = 0;
         document.getElementById('entry-list').innerHTML = '';
         cached.forEach(entry => addEntryToList({
           pvz: entry.pvz,
-          arriveMode: 'time',
+          arriveMode: entry.arrive === 'до открытия' ? 'before_open' : 'time',
           factArrive: entry.arrive,
+          leaveMode: entry.leave === 'до открытия' ? 'before_open' : 'time',
+          factLeave: entry.leave,
           start: entry.start,
           end: entry.end,
-          missing: entry.missing
+          duration: entry.duration,
+          missing: entry.missing,
+          jira: entry.jira,
+          telegramUsername: entry.telegramUsername,
+          submittedAt: entry.submittedAt
         }));
       }
     } catch(e) {}
@@ -2682,12 +2757,20 @@ function addEntryToList(data) {
             pvz: entry.pvz,
             arriveMode: entry.arrive === 'до открытия' ? 'before_open' : 'time',
             factArrive: entry.arrive,
+            leaveMode: entry.leave === 'до открытия' ? 'before_open' : 'time',
+            factLeave: entry.leave,
             start: entry.start,
             end: entry.end,
-            missing: entry.missing
+            duration: entry.duration,
+            missing: entry.missing,
+            jira: entry.jira,
+            telegramUsername: entry.telegramUsername,
+            submittedAt: entry.submittedAt
           });
         });
         localStorage.setItem('sla_who_filled_today', JSON.stringify(serverEntries));
+        // Полный набор полей — отдельно, под детальный отчёт (см. openPvzReport)
+        try { localStorage.setItem('sla_who_filled_today_full', JSON.stringify(result.entries)); } catch(e) {}
       }
     } catch (e) {
       // если сеть упала — остаётся то, что сохранено в localStorage
@@ -2727,13 +2810,16 @@ function addEntryToList(data) {
   refreshPresenceUI();
   setInterval(refreshPresenceUI, 25000);
 
-  // ===== Легальная шторка (Политика конфиденциальности / Согласие на обработку данных) =====
-  // Упрощённая версия для СЛА: только текст документа + кнопка закрытия, без WMS-вставки.
+  // ===== Нижний лист: легальные документы + детальный отчёт по ПВЗ =====
+  // Один и тот же #paste-sheet переиспользуется в двух режимах (класс на sheet):
+  // sheet-mode-legal — текст политики/согласия; sheet-mode-report — карточка
+  // "кто/когда/почему" по клику на запись в списке "Сегодня уже внесли".
   (function () {
     var sheetOverlay = document.getElementById('sheet-overlay');
     var sheet = document.getElementById('paste-sheet');
     var sheetTitleEl = document.getElementById('sheet-title-text');
     var sheetLegalContent = document.getElementById('sheet-legal-content');
+    var sheetReportContent = document.getElementById('sheet-report-content');
     var linkPrivacy = document.getElementById('link-privacy');
     var linkConsent = document.getElementById('link-consent');
     var sheetClose = document.getElementById('sheet-close');
@@ -2775,6 +2861,12 @@ function addEntryToList(data) {
       if (sheetLegalContent) { sheetLegalContent.innerHTML = doc.body; sheetLegalContent.scrollTop = 0; }
     }
 
+    function setMode(mode) {
+      // mode: 'legal' | 'report'
+      sheet.classList.toggle('sheet-mode-legal', mode === 'legal');
+      sheet.classList.toggle('sheet-mode-report', mode === 'report');
+    }
+
     function openSheet() {
       sheetOverlay.classList.add('show');
       sheet.style.visibility = 'visible';
@@ -2799,6 +2891,7 @@ function addEntryToList(data) {
 
     function openLegal(type) {
       openType = type;
+      setMode('legal');
       render(type);
       openSheet();
       if (typeof haptic === 'function') haptic('light');
@@ -2809,6 +2902,97 @@ function addEntryToList(data) {
     linkConsent.addEventListener('click', function () { openLegal('consent'); });
     if (sheetClose) sheetClose.addEventListener('click', closeSheet);
     sheetOverlay.addEventListener('click', closeSheet);
+
+    // ===== Детальный отчёт по ПВЗ =====
+    // Инициалы для аватар-бейджа: из username/имени, либо "ПВЗ" как фолбэк.
+    function initialsFor(str) {
+      if (!str) return 'ПВ';
+      var clean = String(str).replace(/^@/, '').trim();
+      var parts = clean.split(/[\s._-]+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return clean.substring(0, 2).toUpperCase();
+    }
+
+    function formatSubmittedAt(value) {
+      if (!value) return '';
+      var d = value instanceof Date ? value : new Date(value);
+      if (isNaN(d.getTime())) return String(value);
+      var dd = ('0' + d.getDate()).slice(-2);
+      var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+      var hh = ('0' + d.getHours()).slice(-2);
+      var mi = ('0' + d.getMinutes()).slice(-2);
+      return dd + '.' + mm + ' в ' + hh + ':' + mi;
+    }
+
+    function escapeHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function renderJiraList(jiraRaw) {
+      var links = String(jiraRaw || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      if (!links.length) {
+        return '<div class="report-jira-empty">Тикетов не прикреплено — конфликтов при приёмке не было</div>';
+      }
+      return '<div class="report-jira-list">' + links.map(function (url) {
+        var short = url;
+        try { short = url.split('/').filter(Boolean).pop() || url; } catch (e) {}
+        return '<a class="report-jira-card" href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' +
+          '<span class="report-jira-icon">J</span>' +
+          '<span class="report-jira-key">' + escapeHtml(short) + '</span>' +
+          '<span class="report-jira-go">↗</span>' +
+          '</a>';
+      }).join('') + '</div>';
+    }
+
+    window.openPvzReport = function (pvzName) {
+      var data = (window.lastFilledEntries || {})[pvzName];
+      if (!data || !sheetReportContent) return;
+
+      var missing = parseInt(data.missing, 10) || 0;
+      var hasIssues = missing > 0;
+
+      var who = data.telegramUsername ? ('@' + String(data.telegramUsername).replace(/^@/, '')) :
+        (data.telegramId ? ('ID ' + data.telegramId) : 'Неизвестный сотрудник');
+      var avatarInitials = initialsFor(data.telegramUsername || data.telegramId || pvzName);
+
+      var arriveStr = data.arriveMode === 'before_open' ? 'до открытия' : (formatTime(data.factArrive) || '—');
+      var leaveStr = data.leaveMode === 'before_open' ? 'до открытия' : (formatTime(data.factLeave) || '—');
+      var startStr = formatTime(data.start) || '—';
+      var endStr = formatTime(data.end) || '—';
+      var durationStr = data.duration || '—';
+
+      sheetTitleEl.textContent = pvzName;
+
+      sheetReportContent.innerHTML =
+        '<div class="report-head">' +
+          '<div class="report-avatar">' + escapeHtml(avatarInitials) + '</div>' +
+          '<div class="report-who">' +
+            '<div class="report-name">' + escapeHtml(who) + '</div>' +
+            '<div class="report-submitted">внесено ' + escapeHtml(formatSubmittedAt(data.submittedAt)) + '</div>' +
+          '</div>' +
+          '<div class="report-status-pill ' + (hasIssues ? 'bad' : 'ok') + '">' +
+            '<span class="dot"></span>' + (hasIssues ? 'есть неприбывшие' : 'без отклонений') +
+          '</div>' +
+        '</div>' +
+        '<div class="report-grid">' +
+          '<div class="report-metric"><div class="report-metric-label">Приезд магистрали</div><div class="report-metric-val">' + escapeHtml(arriveStr) + '</div></div>' +
+          '<div class="report-metric"><div class="report-metric-label">Отъезд магистрали</div><div class="report-metric-val">' + escapeHtml(leaveStr) + '</div></div>' +
+          '<div class="report-metric"><div class="report-metric-label">Начало приёмки</div><div class="report-metric-val">' + escapeHtml(startStr) + '</div></div>' +
+          '<div class="report-metric"><div class="report-metric-label">Окончание приёмки</div><div class="report-metric-val">' + escapeHtml(endStr) + '</div></div>' +
+          '<div class="report-metric accent"><div class="report-metric-label">Заняло по времени</div><div class="report-metric-val">' + escapeHtml(durationStr) + '</div></div>' +
+          '<div class="report-metric ' + (hasIssues ? 'warn' : 'good') + '"><div class="report-metric-label">Неприбывшие заказы</div><div class="report-metric-val">' + missing + '</div>' +
+            '<div class="report-metric-sub">' + (hasIssues ? 'почему: сверьте с тикетами Jira ниже' : 'все заказы прибыли по плану') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="report-section-title">Jira · связанные тикеты</div>' +
+        renderJiraList(data.jira);
+
+      setMode('report');
+      openSheet();
+      if (typeof haptic === 'function') haptic('light');
+      if (typeof playGlassTick === 'function') playGlassTick();
+    };
   })();
 
   // ===== Футер: год + версия =====
