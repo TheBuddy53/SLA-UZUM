@@ -509,6 +509,11 @@
   .report-jira-go { color: var(--purple-light); font-size: 13px; flex-shrink: 0; }
   .report-jira-empty { font-size: 12.5px; color: var(--text-dim); font-weight: 600; line-height: 1.5; padding: 4px 2px; }
 
+  .report-delete-btn { width: 100%; margin-top: 18px; padding: 12px 14px; border-radius: var(--r-md); background: rgba(255,92,122,0.12); border: 1px solid rgba(255,92,122,0.35); color: var(--red); font-size: 13px; font-weight: 800; cursor: pointer; transition: background 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.2s var(--spring); }
+  .report-delete-btn:hover:not(:disabled) { background: rgba(255,92,122,0.2); border-color: rgba(255,92,122,0.55); }
+  .report-delete-btn:active:not(:disabled) { transform: scale(0.98); }
+  .report-delete-btn:disabled { opacity: 0.6; cursor: default; }
+
   #toast { position: fixed; left: 50%; bottom: calc(30px + env(safe-area-inset-bottom,0px)); transform: translate(-50%,16px) scale(0.92); display: flex; align-items: center; gap: 10px; background: rgba(20,10,35,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; padding: 13px 18px; font-size: 13px; font-weight: 700; color: #fff; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.32s var(--ease), transform 0.32s var(--spring); max-width: min(420px, 90vw); text-align: center; }
   #toast.show { opacity: 1; transform: translate(-50%,0) scale(1); }
   #toast .toast-icon { flex: 0 0 auto; width: 20px; height: 20px; display: none; align-items: center; justify-content: center; font-size: 14px; line-height: 1; border-radius: 50%; }
@@ -1248,16 +1253,25 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
   const API_URL = "https://script.google.com/macros/s/AKfycbw_70rF0X3TqKNoi0894rdo2Ze2mR6lDLcWjEeVre23v09ZkL-gJLgk82YPGihFDaGm/exec";
   const AUTH_STORAGE_KEY = 'sla_auth_v1'; // { pvz, telegramId, telegramUsername, telegramFirstName }
 
+  // Только для UX (показать/скрыть кнопку "Удалить" в отчёте по ПВЗ) — реальная
+  // проверка прав всегда происходит на сервере (ADMIN_TELEGRAM_IDS в Apps Script),
+  // так что даже если кто-то подделает этот список в devtools, удалить он не сможет.
+  const ADMIN_TELEGRAM_IDS = ['8396470226']; // @FrTash_297
+  function isAdmin() {
+    var auth = getAuth();
+    return !!(auth && auth.telegramId && ADMIN_TELEGRAM_IDS.indexOf(String(auth.telegramId)) !== -1);
+  }
+
   // Захардкоженный список — резервный вариант, пока лист-справочник "ПВЗ" в таблице
   // не подключен / Apps Script ещё не задеплоен. Как только loadPvzList() успешно
   // получит список с бэкенда, PVZ_LIST перезаписывается им (см. ниже).
   let PVZ_LIST = [
     "ТАШ-25","ТАШ-72","ТАШ-48","ТАШ-23","ТАШ-11","ТАШ-9","FrТАШ-164","ТАШ-154",
     "ККС-1","ТАШ-140","ТАШ-60","ТАШ-81","FrТАШ-169","FrТАШ-173","КЕЛ-1","ТАШ-69",
-    "ТАШ-142","ТАШ-210","ТАШ-191","FrКИР-1","FrТАШ-227","FrКОК-1","FrТАШ-208",
+    "ТАШ-142","FrТАШ-210","FrТАШ-191","FrКИР-1","FrТАШ-227","FrКОК-1","FrТАШ-206",
     "FrТАШ-243","FrТАШ-214","FrТАШ-240","FrТАШ-252","FrТАШ-297","FrХСН-1",
     "FrТАШ-247","FrТАШ-277","FrКЕЛ-2","FrТАШ-219","FrТАШ-269","FrКЕЛ-3",
-    "FrШЕД-1","FrТАШ-395"
+    "FrШБД-1","FrТАШ-395"
   ];
 
   // ============ ПРИВЯЗКА: ПВЗ + Telegram-аккаунт (localStorage на устройстве) ============
@@ -2652,7 +2666,7 @@ function addEntryToList(data) {
 
       sfx.success();
       setMascotMood(funnyPhrases[Math.floor(Math.random()*funnyPhrases.length)]);
-      blink(); setTimeout(blink, 220);
+      sfx.blink(); setTimeout(() => sfx.blink(), 220);
 
       document.getElementById('fact-arrive').value = '';
       document.getElementById('fact-leave').value = '';
@@ -3003,18 +3017,87 @@ function addEntryToList(data) {
           '</div>' +
         '</div>' +
         '<div class="report-section-title">Jira · связанные тикеты</div>' +
-        renderJiraList(data.jira);
+        renderJiraList(data.jira) +
+        (isAdmin() ?
+          '<button type="button" class="report-delete-btn" id="report-delete-btn">Удалить запись</button>'
+          : '');
 
       // Новый динамический текст (report-metric-label, report-section-title и т.д.)
       // ещё не размечен под letter-fx — applyLetterFX сама пропустит уже готовые
       // элементы (data-letter-fx) и обработает только то, что только что отрисовали.
       if (typeof applyLetterFX === 'function') applyLetterFX(sheetReportContent);
 
+      var deleteBtn = document.getElementById('report-delete-btn');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function () {
+          deletePvzEntry_(pvzName, deleteBtn);
+        });
+      }
+
       setMode('report');
       openSheet();
       if (typeof haptic === 'function') haptic('light');
       if (typeof playGlassTick === 'function') playGlassTick();
     };
+
+    // Удаление записи (только для админов, см. ADMIN_TELEGRAM_IDS выше). Требует
+    // подтверждения, шлёт запрос на бэкенд, там сверяется telegramId ещё раз —
+    // и только после успеха убирает карточку из списка "Сегодня уже внесли".
+    function deletePvzEntry_(pvzName, btnEl) {
+      if (!API_URL || API_URL.indexOf('PASTE_') === 0) {
+        showToast('Демо-режим: удаление недоступно', 'info');
+        return;
+      }
+      if (!window.confirm('Удалить запись по ' + pvzName + ' безвозвратно из таблицы?')) return;
+
+      var currentAuth = getAuth() || {};
+      if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Удаляем...'; }
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          type: 'delete',
+          pvz: pvzName,
+          telegramId: currentAuth.telegramId || ''
+        })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+          if (!result.ok) throw new Error(result.error || 'Неизвестная ошибка');
+
+          showToast('Запись удалена', 'success');
+          if (typeof closeSheet === 'function') closeSheet();
+
+          // Убираем карточку из списка на экране и из локального кэша.
+          delete window.lastFilledEntries[pvzName];
+          var list = document.getElementById('entry-list');
+          if (list) {
+            var items = list.querySelectorAll('.entry-item');
+            items.forEach(function (el) {
+              var nameEl = el.querySelector('.pvz-name');
+              if (nameEl && nameEl.textContent === pvzName) {
+                el.remove();
+                doneCount = Math.max(0, doneCount - 1);
+                refreshSummary();
+              }
+            });
+            if (!list.querySelector('.entry-item')) {
+              list.innerHTML = '<div class="entry-empty">Пока пусто — будь первым</div>';
+            }
+          }
+          try {
+            var cached = JSON.parse(localStorage.getItem('sla_who_filled_today') || '[]');
+            localStorage.setItem('sla_who_filled_today', JSON.stringify(cached.filter(function (e) { return e.pvz !== pvzName; })));
+            var cachedFull = JSON.parse(localStorage.getItem('sla_who_filled_today_full') || '[]');
+            localStorage.setItem('sla_who_filled_today_full', JSON.stringify(cachedFull.filter(function (e) { return e.pvz !== pvzName; })));
+          } catch (e) {}
+        })
+        .catch(function (err) {
+          showToast('Ошибка: ' + err.message, 'error');
+          if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Удалить запись'; }
+        });
+    }
   })();
 
   // ===== Футер: год + версия =====
