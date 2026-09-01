@@ -177,8 +177,8 @@
   .mark-wave-path--c { stroke: rgba(120,200,255,0.85); opacity: 0; filter: blur(0.2px); }
   body.eq-active .mark-wave { opacity: 1; filter: drop-shadow(0 0 calc(2px + var(--eq-bass) * 5px) rgba(190,140,255,calc(0.4 + var(--eq-bass) * 0.5))); }
   body.eq-active .mark-wave-path--a { opacity: 0.95; }
-  body.eq-active .mark-wave-path--b { opacity: 0.75; }
-  body.eq-active .mark-wave-path--c { opacity: 0.65; }
+  body.eq-active .mark-wave-path--b { opacity: calc(0.35 + var(--eq-treble) * 0.55); }
+  body.eq-active .mark-wave-path--c { opacity: calc(0.25 + var(--eq-treble) * 0.55); }
   @media (prefers-reduced-motion: reduce) { .mark-wave { display: none; } }
 
   /* --- логотип: только фоновый декоративный слой, без "саги" (лицо/руки/эмоции) --- */
@@ -240,13 +240,17 @@
   @keyframes eqBarBounce { 0%,100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
   @keyframes eqBarLoading { 0%,100% { transform: scaleY(0.3); } 50% { transform: scaleY(1.1); } }
   @media (prefers-reduced-motion: reduce) { .eq-toggle.is-listening .eq-bar, .eq-toggle.is-loading .eq-bar { animation: none; } }
-  /* Пульс карточек/фона в такт музыке — управляется через --eq-bass (0..1), который
-     JS обновляет из FFT-анализа низких частот. По умолчанию 0, эффекта нет. */
-  body { --eq-bass: 0; }
+  /* Пульс карточек/фона в такт музыке — управляется через --eq-bass (0..1, низкие
+     частоты) и --eq-treble (0..1, высокие частоты); JS обновляет оба из FFT-анализа
+     логарифмически разнесённого спектра. По умолчанию 0, эффекта нет. */
+  body { --eq-bass: 0; --eq-treble: 0; }
   .card, .brand-mark, .date-pill { transition: box-shadow 0.12s linear; }
   body.eq-active .card { box-shadow: 0 4px 8px -1px rgba(0,0,0,0.6), 0 20px 36px -8px rgba(0,0,0,0.6), 0 0 calc(var(--eq-bass) * 46px) rgba(157,77,255,calc(var(--eq-bass) * 0.55)); }
   .card-eq-edge { position: absolute; left: 8%; right: 8%; bottom: 0; height: 2px; border-radius: 2px; pointer-events: none; z-index: 2; opacity: 0; background: linear-gradient(90deg, transparent, rgba(190,140,255,0.9), rgba(255,110,180,0.85), rgba(120,200,255,0.9), transparent); background-size: 200% 100%; transition: opacity 0.35s var(--ease); }
-  body.eq-active .card-eq-edge { opacity: calc(0.25 + var(--eq-bass) * 0.75); transform: scaleX(calc(0.7 + var(--eq-bass) * 0.3)); animation: cardEqEdgeDrift 2.6s linear infinite; }
+  /* Линия по краю карточки реагирует на высокие частоты (треб) — резче и быстрее
+     баса, так низ (толчок карточки/лого) и верх (эта искрящаяся полоска) звучат
+     визуально по-разному, а не дублируют один и тот же сигнал. */
+  body.eq-active .card-eq-edge { opacity: calc(0.2 + var(--eq-treble) * 0.8); transform: scaleX(calc(0.7 + var(--eq-treble) * 0.3)); animation: cardEqEdgeDrift calc(2.6s - var(--eq-treble) * 1.4s) linear infinite; }
   @keyframes cardEqEdgeDrift { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
   @media (prefers-reduced-motion: reduce) { .card-eq-edge { display: none; } }
   body.eq-active .brand-mark { box-shadow: 0 10px 25px var(--purple-glow), inset 0 2px 4px rgba(255,255,255,0.6), 0 0 calc(var(--eq-bass) * 30px) rgba(190,140,255,calc(var(--eq-bass) * 0.8)); transform: scale(calc(1 + var(--eq-bass) * 0.035)); }
@@ -1749,6 +1753,13 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
   // получает CSS transform (наклон от курсора) — transform на предке создаёт новый
   // containing block для fixed-потомков, капли рендерились бы не там, где ожидается.
   // Переносим DOM-узлы капель напрямую в body один раз при инициализации.
+  //
+  // ВАЖНО: .topbar НЕ sticky/fixed — это обычный блок, скроллящийся вместе со
+  // страницей. Раньше позиция капель (--drip-start-x/y) считалась один раз при
+  // загрузке и обновлялась только на resize — при скролле лого уезжало из вида,
+  // а капли продолжали падать из старых, уже неактуальных координат ("не
+  // закреплены у своей позиции"). Добавлен пересчёт на scroll, через rAF-throttle,
+  // чтобы не дёргать getBoundingClientRect() на каждое scroll-событие отдельно.
   (() => {
     const wrap = document.querySelector('.brand-drip-wrap');
     if (!wrap) return;
@@ -1757,13 +1768,21 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     const dripEls = Array.from(wrap.querySelectorAll('.brand-drip'));
     dripEls.forEach((el) => document.body.appendChild(el));
     const root = document.documentElement;
+    var measurePending = false;
     function measureDripStart() {
+      measurePending = false;
       const r = wrap.getBoundingClientRect();
       root.style.setProperty('--drip-start-x', (r.left + r.width * 0.5) + 'px');
       root.style.setProperty('--drip-start-y', (r.top + r.height * 0.72) + 'px');
     }
+    function scheduleMeasure() {
+      if (measurePending) return;
+      measurePending = true;
+      requestAnimationFrame(measureDripStart);
+    }
     measureDripStart();
-    window.addEventListener('resize', measureDripStart, { passive: true });
+    window.addEventListener('resize', scheduleMeasure, { passive: true });
+    window.addEventListener('scroll', scheduleMeasure, { passive: true, capture: true });
   })();
 
   // ============ МАСКОТ (глазки) ============
@@ -2824,6 +2843,7 @@ function addEntryToList(data) {
       }
       document.body.classList.remove('eq-active');
       document.body.style.setProperty('--eq-bass', '0');
+      document.body.style.setProperty('--eq-treble', '0');
       btn.classList.remove('is-listening', 'is-loading');
       btn.setAttribute('aria-pressed', 'false');
       listening = false;
@@ -2840,6 +2860,25 @@ function addEntryToList(data) {
     var wavePath3 = document.getElementById('mark-wave-path-3');
     var wavePhase = 0;
     var smoothedBins = null;
+
+    // Бины теперь приходят логарифмически распределёнными по частоте (см. C#
+    // AudioBridge.BuildLogBinEdges): bins[0] ~ 20-25 Гц, растёт по октавам до
+    // ~16 кГц на последнем бине. Поэтому "бас" — это первая восьмая массива
+    // (нижние ~1-1.5 октавы), а "треб" — последняя четверть (верхние 2-3 октавы,
+    // тарелки/хай-хэт/шипящие звуки), а не просто "низкий/высокий индекс" как
+    // было бы при линейной шкале.
+    function computeBassTreble(bins) {
+      var bassBins = Math.max(4, Math.floor(bins.length / 8));
+      var bassSum = 0;
+      for (var b = 0; b < bassBins; b++) bassSum += bins[b];
+      var trebleStart = bins.length - Math.max(4, Math.floor(bins.length / 4));
+      var trebleSum = 0, trebleCount = 0;
+      for (var t = trebleStart; t < bins.length; t++) { trebleSum += bins[t]; trebleCount++; }
+      return {
+        bass: bassSum / bassBins / 255,
+        treble: trebleCount > 0 ? trebleSum / trebleCount / 255 : 0
+      };
+    }
 
     // ==== Мост системного звука из WPF-хоста (WebView2) ====
     // C#-сторона слушает системный звук через NAudio WasapiLoopbackCapture и
@@ -2866,10 +2905,9 @@ function addEntryToList(data) {
         // Первый пакет — включаем визуализацию автоматически, без клика по кнопке.
         if (!document.body.classList.contains('eq-active')) {
           document.body.classList.add('eq-active');
-          var bassBins0 = Math.max(4, Math.floor(hostBins.length / 8));
-          var sum0 = 0;
-          for (var b0 = 0; b0 < bassBins0; b0++) sum0 += hostBins[b0];
-          document.body.style.setProperty('--eq-bass', (sum0 / bassBins0 / 255).toFixed(3));
+          var bt0 = computeBassTreble(hostBins);
+          document.body.style.setProperty('--eq-bass', bt0.bass.toFixed(3));
+          document.body.style.setProperty('--eq-treble', bt0.treble.toFixed(3));
           listening = true;
           stopIdle();
           if (!rafId) tick();
@@ -2918,14 +2956,16 @@ function addEntryToList(data) {
         smoothedBins[i] += (data[i] - smoothedBins[i]) * 0.35;
       }
 
-      // Бас (первая восьмая спектра) — по-прежнему двигает общий пульс карточек/лого.
-      var bassBins = Math.max(4, Math.floor(data.length / 8));
-      var sum = 0;
-      for (var b = 0; b < bassBins; b++) sum += smoothedBins[b];
-      var avg = sum / bassBins / 255;
+      // Бас и треб (первая восьмая / последняя четверть логарифмического спектра)
+      // двигают разные визуальные слои: бас — общий пульс карточек/лого/фона,
+      // треб — искрящуюся линию по краю карточки и блик волны в лого.
+      var bt = computeBassTreble(smoothedBins);
       var prevBass = parseFloat(document.body.style.getPropertyValue('--eq-bass')) || 0;
-      var smoothedBass = prevBass + (avg - prevBass) * 0.35;
+      var smoothedBass = prevBass + (bt.bass - prevBass) * 0.35;
       document.body.style.setProperty('--eq-bass', smoothedBass.toFixed(3));
+      var prevTreble = parseFloat(document.body.style.getPropertyValue('--eq-treble')) || 0;
+      var smoothedTreble = prevTreble + (bt.treble - prevTreble) * 0.45; // чуть быстрее баса — высокие звучат резче
+      document.body.style.setProperty('--eq-treble', smoothedTreble.toFixed(3));
 
       // Три волновых слоя — разная амплитуда/фаза/скорость, чтобы не двигались синхронно.
       wavePhase += 0.12;
