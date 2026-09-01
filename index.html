@@ -354,6 +354,14 @@
 
   /* ==== Кастомный дропдаун (вместо системного select) ==== */
   .dd { position: relative; }
+  /* Telegram Login Widget рендерится как чужой iframe — сам его CSS менять
+     нельзя (кросс-домен), поэтому оборачиваем в свою "премиальную" рамку:
+     glass-подложка + purple-glow, чтобы iframe выглядел вставленным в дизайн,
+     а не приклеенным поверх тёмного фона. */
+  .tg-widget-frame { position: relative; display: inline-flex; padding: 3px; border-radius: 14px; background: linear-gradient(135deg, rgba(168,85,247,0.35), rgba(112,0,255,0.15)); box-shadow: 0 8px 20px -6px var(--purple-glow), inset 0 1px 1px rgba(255,255,255,0.25); transition: box-shadow 0.3s var(--ease), transform 0.3s var(--spring); }
+  .tg-widget-frame::before { content: ''; position: absolute; inset: -8px; border-radius: 18px; z-index: -1; pointer-events: none; background: radial-gradient(60% 60% at 50% 50%, var(--purple-glow), transparent 72%); opacity: 0.28; filter: blur(12px); }
+  .tg-widget-frame:hover { transform: scale(1.03); box-shadow: 0 12px 28px -6px var(--purple-glow), inset 0 1px 1px rgba(255,255,255,0.35); }
+  .tg-widget-frame iframe { border-radius: 11px !important; display: block; }
   .dd-trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--r-md); padding: 13px 14px; font-size: 15px; font-weight: 700; color: var(--text-main); transition: border-color 0.2s, box-shadow 0.2s; }
   .dd-trigger.placeholder { color: var(--text-dim); font-weight: 600; }
   .dd-trigger .dd-arrow { color: var(--text-muted); font-size: 12px; transition: transform 0.25s var(--spring); flex-shrink: 0; margin-left: 8px; }
@@ -1014,11 +1022,16 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     <div class="grain"></div><div class="glass-sheen"></div>
     <div id="auth-logged-out" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
       <div class="section-label">Войдите через Telegram, чтобы отчёты закрепились за вашим аккаунтом</div>
-      <script async src="https://telegram.org/js/telegram-widget.js?22"
-        data-telegram-login="UZUM_SLA_BOT"
-        data-size="medium"
-        data-onauth="onTelegramAuth(user)"
-        data-request-access="write"></script>
+      <div class="tg-widget-frame">
+        <script async src="https://telegram.org/js/telegram-widget.js?22"
+          data-telegram-login="UZUM_SLA_BOT"
+          data-size="medium"
+          data-radius="12"
+          data-userpic="false"
+          data-lang="ru"
+          data-onauth="onTelegramAuth(user)"
+          data-request-access="write"></script>
+      </div>
     </div>
     <div id="auth-logged-in" style="display:none; align-items:center; justify-content:space-between; gap:12px;">
       <div class="section-label" id="auth-user-label"></div>
