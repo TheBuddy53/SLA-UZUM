@@ -1191,10 +1191,14 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
      .stagger снимается сразу же — сама плавность анимации не критична настолько,
      насколько критично то, чтобы интерфейс вообще был виден. */
   (function () {
+    // ВАЖНО: не ставим el.style.transform здесь. Инлайн-transform перебивает
+    // НАВСЕГДА CSS-правило .card{transform:...}, которое дальше по странице
+    // читает --pfx/--pfy/--ptx/--pty (3D-параллакс карточек от курсора/гироскопа) —
+    // из-за этого параллакс визуально не работал на всех .card, а работал только
+    // на .topbar/лого (там JS каждый кадр сам перезаписывает style.transform).
     var staggered = document.querySelectorAll('.stagger');
     staggered.forEach(function (el) {
       el.style.opacity = '1';
-      el.style.transform = 'translateY(0) scale(1)';
       el.classList.remove('stagger');
     });
   })();
@@ -1629,7 +1633,25 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
     letterFxState.forEach(state => { state.rects = null; });
   }, { passive: true });
 
-  document.querySelectorAll('.hint-text').forEach(el => { splitLetters(el); initLetterFX(el); });
+  // Селектор всех текстовых подписей на странице, которым нужен эффект
+  // "буквы играют с курсором" (свечение + нота при наведении).
+  const LETTER_FX_SELECTOR = '.hint-text, .sheet-hint, .section-label, .entry-empty, ' +
+    '.mascot-status, .norm-tag, .lbl, .report-jira-empty, .report-metric-label, ' +
+    '.report-section-title, .report-submitted, .sheet-title, .report-name, .entry-time';
+
+  // Применяет эффект ко всем ещё не обработанным текстам внутри root (по умолчанию
+  // всему документу). Безопасно вызывать повторно — уже обработанные элементы
+  // помечаются data-letter-fx и пропускаются, так что можно дёргать эту функцию
+  // после любого динамического рендера (детальный отчёт по ПВЗ, легальная шторка и т.д.)
+  function applyLetterFX(root) {
+    (root || document).querySelectorAll(LETTER_FX_SELECTOR).forEach(el => {
+      if (el.dataset.letterFx) return;
+      el.dataset.letterFx = '1';
+      splitLetters(el);
+      initLetterFX(el);
+    });
+  }
+  applyLetterFX();
 
   // ============ КНОПКИ — СИСТЕМА ЭФФЕКТОВ ============
   function spawnRipple(e) {
@@ -1746,13 +1768,8 @@ function ua(){let t=null,e=!1,n=null,i=null;function r(e,a){n(e,a),i=t.requestAn
       const tiltDepth = Math.sqrt(depth / 0.22);
       el.style.setProperty('--pfx', (mx * depth).toFixed(2) + 'px');
       el.style.setProperty('--pfy', (my * depth).toFixed(2) + 'px');
-      if (isMobileGyroUI) {
-        el.style.setProperty('--ptx', '0deg');
-        el.style.setProperty('--pty', '0deg');
-      } else {
-        el.style.setProperty('--ptx', (tiltFactorX * MAX_TILT_DEG * tiltDepth).toFixed(2) + 'deg');
-        el.style.setProperty('--pty', (-tiltFactorY * MAX_TILT_DEG * tiltDepth).toFixed(2) + 'deg');
-      }
+      el.style.setProperty('--ptx', (tiltFactorX * MAX_TILT_DEG * tiltDepth).toFixed(2) + 'deg');
+      el.style.setProperty('--pty', (-tiltFactorY * MAX_TILT_DEG * tiltDepth).toFixed(2) + 'deg');
     });
     if (Math.abs(ptx - mx) > 0.05 || Math.abs(pty - my) > 0.05) {
       meshRaf = requestAnimationFrame(tickMesh);
@@ -2987,6 +3004,11 @@ function addEntryToList(data) {
         '</div>' +
         '<div class="report-section-title">Jira · связанные тикеты</div>' +
         renderJiraList(data.jira);
+
+      // Новый динамический текст (report-metric-label, report-section-title и т.д.)
+      // ещё не размечен под letter-fx — applyLetterFX сама пропустит уже готовые
+      // элементы (data-letter-fx) и обработает только то, что только что отрисовали.
+      if (typeof applyLetterFX === 'function') applyLetterFX(sheetReportContent);
 
       setMode('report');
       openSheet();
