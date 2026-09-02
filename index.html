@@ -1146,52 +1146,127 @@ x()}}()}();</script>
   }
 
   // ---------- ГИМН УЗБЕКИСТАНА ПО КЛИКУ НА ГЕРБ ----------
+  // Раньше тут был голый <iframe src="...autoplay=1"> — ненадёжно: браузеры
+  // часто блокируют автоплей со звуком даже внутри жеста пользователя, если
+  // видео просто подставлено через URL, а не запущено через настоящий API.
+  // Теперь используем официальный YouTube IFrame Player API (window.YT) —
+  // он даёт реальный вызов player.playVideo()/unMute() внутри клика, что
+  // браузеры считают полноценным жестом и не блокируют.
   var anthemBtn = document.getElementById('anthem-badge');
-  var anthemAudio = null;
   var ANTHEM_YT_ID = 'yeorbHLQYH4';
+  var anthemPlayer = null;       // YT.Player экземпляр
+  var anthemPlayerReady = false; // API скрипт + player.onReady отработали
+  var anthemWantPlay = false;    // пользователь нажал ДО того как плеер готов
+  var anthemApiLoading = false;
 
-  function getAnthemAudio(){
-    if (anthemAudio) return anthemAudio;
-    // YouTube не отдаёт прямой аудио-поток без бэкенда, поэтому встраиваем
-    // скрытый YouTube-плеер (iframe) — тот же ролик, что дал пользователь.
-    // autoplay=1 сработает надёжно, т.к. iframe создаётся синхронно внутри
-    // обработчика клика (жест пользователя) — это условие, которое требуют
-    // политики автовоспроизведения в Chrome/Safari/Firefox.
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'position:fixed;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:-9999px';
-    var iframe = document.createElement('iframe');
-    iframe.width = '1'; iframe.height = '1';
-    iframe.src = 'https://www.youtube.com/embed/' + ANTHEM_YT_ID + '?autoplay=1&mute=0&playsinline=1&enablejsapi=1&origin=' + encodeURIComponent(window.location.origin);
-    iframe.allow = 'autoplay; encrypted-media';
-    iframe.frameBorder = '0';
-    wrap.appendChild(iframe);
-    document.body.appendChild(wrap);
-    anthemAudio = { wrap: wrap, iframe: iframe };
-    // Если через 2.5с звук так и не пошёл (например, встраивание ролика
-    // запрещено правообладателем или браузер всё же заблокировал автоплей),
-    // подскажем пользователю через существующий #toast, а не молчим.
+  function anthemShowToast(text){
+    try {
+      var toastEl = document.getElementById('toast');
+      var toastMsg = document.getElementById('toast-msg');
+      if (!toastEl) return;
+      (toastMsg || toastEl).textContent = text;
+      toastEl.classList.remove('toast-success', 'toast-error', 'toast-loading');
+      toastEl.classList.add('toast-info', 'show');
+      clearTimeout(toastEl._hideTimer);
+      toastEl._hideTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 3600);
+    } catch(e){}
+  }
+
+  function anthemCreatePlayer(){
+    var mount = document.createElement('div');
+    mount.id = 'uz-anthem-yt-mount';
+    mount.style.cssText = 'position:fixed;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:-9999px';
+    document.body.appendChild(mount);
+    var target = document.createElement('div');
+    target.id = 'uz-anthem-yt-target';
+    mount.appendChild(target);
+
+    anthemPlayer = new YT.Player('uz-anthem-yt-target', {
+      videoId: ANTHEM_YT_ID,
+      width: '1',
+      height: '1',
+      playerVars: {
+        autoplay: 0,          // запускаем сами через playVideo() внутри клика
+        playsinline: 1,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        origin: window.location.origin
+      },
+      events: {
+        onReady: function(){
+          anthemPlayerReady = true;
+          if (anthemWantPlay) {
+            anthemWantPlay = false;
+            anthemActuallyPlay();
+          }
+        },
+        onError: function(){
+          // Видео не встраивается (запрет владельца) либо другая ошибка API.
+          anthemShowToast('Гимн не удалось встроить здесь — открой видео на YouTube напрямую');
+          stopAnthem();
+        }
+      }
+    });
+  }
+
+  function anthemLoadApiAndCreate(){
+    if (anthemApiLoading) return;
+    if (window.YT && window.YT.Player) {
+      anthemCreatePlayer();
+      return;
+    }
+    anthemApiLoading = true;
+    var prevReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function(){
+      if (typeof prevReady === 'function') { try { prevReady(); } catch(e){} }
+      anthemCreatePlayer();
+    };
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  }
+
+  function anthemActuallyPlay(){
+    if (!anthemPlayer || typeof anthemPlayer.playVideo !== 'function') return;
+    try {
+      anthemPlayer.unMute();
+      anthemPlayer.setVolume(100);
+      anthemPlayer.playVideo();
+    } catch(e){}
+    // Подстраховка: если через 2с состояние всё ещё не PLAYING (1), браузер
+    // молча заблокировал звук — подсказываем явно вместо тишины.
     setTimeout(function(){
-      if (!anthemAudio) return;
       try {
-        var toastEl = document.getElementById('toast');
-        var toastMsg = document.getElementById('toast-msg');
-        if (toastEl) {
-          (toastMsg || toastEl).textContent = 'Если гимн не звучит — коснитесь экрана ещё раз или проверьте звук в браузере';
-          toastEl.classList.remove('toast-success', 'toast-error', 'toast-loading');
-          toastEl.classList.add('toast-info', 'show');
-          clearTimeout(toastEl._hideTimer);
-          toastEl._hideTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 3200);
+        if (anthemPlayer && anthemPlayer.getPlayerState && anthemPlayer.getPlayerState() !== 1) {
+          anthemShowToast('Если гимн не звучит — нажми на герб ещё раз или проверь звук в браузере/вкладке');
         }
       } catch(e){}
-    }, 2500);
-    return anthemAudio;
+    }, 2000);
+  }
+
+  function startAnthem(){
+    if (!window.YT || !window.YT.Player) {
+      anthemWantPlay = true;
+      anthemLoadApiAndCreate();
+      return;
+    }
+    if (!anthemPlayer) {
+      anthemWantPlay = true;
+      anthemCreatePlayer();
+      return;
+    }
+    if (!anthemPlayerReady) {
+      anthemWantPlay = true;
+      return;
+    }
+    anthemActuallyPlay();
   }
 
   function stopAnthem(){
-    if (anthemAudio && anthemAudio.wrap && anthemAudio.wrap.parentNode) {
-      anthemAudio.wrap.parentNode.removeChild(anthemAudio.wrap);
+    if (anthemPlayer && typeof anthemPlayer.stopVideo === 'function') {
+      try { anthemPlayer.stopVideo(); } catch(e){}
     }
-    anthemAudio = null;
     if (anthemBtn) anthemBtn.classList.remove('is-playing');
   }
 
@@ -1201,8 +1276,8 @@ x()}}()}();</script>
       if (playing) {
         stopAnthem();
       } else {
-        getAnthemAudio();
         anthemBtn.classList.add('is-playing');
+        startAnthem();
       }
     });
   }
