@@ -3208,30 +3208,38 @@ html.force-lite .who-filled-btn::before{display:none}
 <!-- ============ 🐱 секретка ============ -->
 <style>
 #zar-cat{position:fixed;left:14px;bottom:calc(58px + env(safe-area-inset-bottom,0));z-index:840;display:flex;align-items:center;gap:0;-webkit-tap-highlight-color:transparent}
-#zar-cat-btn{position:relative;width:26px;height:26px;border:none;border-radius:50%;cursor:pointer;padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;background:rgba(20,10,35,.35);border:1px solid rgba(157,77,255,.16);opacity:.4;filter:saturate(.7);box-shadow:0 0 0 rgba(157,77,255,0);transition:opacity .4s var(--ease,ease),filter .4s var(--ease,ease),transform .35s var(--spring,ease),box-shadow .4s var(--ease,ease),background .3s var(--ease,ease),border-color .3s var(--ease,ease)}
-#zar-cat-btn span{display:inline-block;animation:zarIdleSway 5.5s ease-in-out infinite;will-change:transform}
-@keyframes zarIdleSway{0%,100%{transform:rotate(0deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-1px)}}
-#zar-cat:hover #zar-cat-btn,#zar-cat-btn:focus-visible{opacity:1;filter:saturate(1);background:rgba(112,0,255,.22);border-color:rgba(157,77,255,.55);box-shadow:0 0 14px rgba(157,77,255,.4);transform:scale(1.12)}
-#zar-cat-btn:active{transform:scale(.9)}
-#zar-cat-label{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;margin-left:0;font-size:10.5px;font-weight:800;letter-spacing:.02em;background:rgba(20,10,35,.72);backdrop-filter:blur(10px);border:1px solid rgba(157,77,255,.3);color:var(--purple-light,#9D4DFF);padding:0 0;border-radius:999px;transition:max-width .38s var(--ease,ease),opacity .3s var(--ease,ease),padding .38s var(--ease,ease),margin-left .38s var(--ease,ease)}
-#zar-cat:hover #zar-cat-label,#zar-cat.zar-poked #zar-cat-label{max-width:140px;opacity:1;margin-left:7px;padding:5px 11px}
-#zar-cat.zar-poked #zar-cat-btn{animation:zarPokeJump .6s var(--spring,cubic-bezier(.34,1.56,.64,1))1;opacity:1;filter:saturate(1);background:rgba(112,0,255,.28);border-color:rgba(190,140,255,.7);box-shadow:0 0 20px rgba(157,77,255,.55)}
-@keyframes zarPokeJump{0%{transform:scale(1) rotate(0)}25%{transform:scale(1.25,.8) rotate(-8deg)}45%{transform:scale(.85,1.2) translateY(-9px) rotate(8deg)}65%{transform:scale(1.1,.92) translateY(0) rotate(-4deg)}85%{transform:scale(.96,1.04) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
-.zar-heart{position:absolute;left:50%;top:0;font-size:11px;pointer-events:none;opacity:0;transform:translate(-50%,0) scale(.6);z-index:5}
-#zar-cat.zar-poked .zar-heart{animation:zarHeartFloat 1.1s ease-out forwards}
-#zar-cat.zar-poked .zar-heart:nth-child(2){animation-delay:.08s;left:38%}
-#zar-cat.zar-poked .zar-heart:nth-child(3){animation-delay:.16s;left:64%}
-@keyframes zarHeartFloat{0%{opacity:0;transform:translate(-50%,4px) scale(.5) rotate(0deg)}15%{opacity:1;transform:translate(-50%,-6px) scale(1) rotate(-8deg)}100%{opacity:0;transform:translate(-50%,-38px) scale(.7) rotate(10deg)}}
-@media (prefers-reduced-motion:reduce){#zar-cat-btn span{animation:none}#zar-cat.zar-poked #zar-cat-btn{animation:none}.zar-heart{display:none}}
+#zar-cat-btn{position:relative;width:27px;height:27px;border:none;border-radius:50%;cursor:pointer;padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;background:rgba(20,10,35,.4);border:1px solid rgba(157,77,255,.2);opacity:.42;filter:saturate(.75);transition:opacity .4s var(--ease,ease),filter .4s var(--ease,ease),background .3s var(--ease,ease),border-color .3s var(--ease,ease)}
+#zar-cat-btn::before{content:"";position:absolute;inset:-5px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(157,77,255,.55),transparent 70%);opacity:.5;animation:zarAuraPulse 2.6s ease-in-out infinite}
+#zar-cat-btn::after{content:"";position:absolute;inset:-3px;border-radius:50%;pointer-events:none;border:1px solid rgba(157,77,255,.4);opacity:.6;animation:zarRingPulse 2.6s ease-in-out infinite}
+@keyframes zarAuraPulse{0%,100%{opacity:.28;transform:scale(.85)}50%{opacity:.65;transform:scale(1.18)}}
+@keyframes zarRingPulse{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.55;transform:scale(1.3)}}
+#zar-cat-btn span#zar-cat-face{display:inline-block;animation:zarIdleSway 2.8s ease-in-out infinite;will-change:transform}
+@keyframes zarIdleSway{0%,100%{transform:rotate(0deg) translateY(0) scale(1)}25%{transform:rotate(-9deg) translateY(-1.5px) scale(1.05)}50%{transform:rotate(0deg) translateY(0) scale(1)}75%{transform:rotate(9deg) translateY(-1.5px) scale(1.05)}}
+#zar-cat:hover #zar-cat-btn,#zar-cat-btn:focus-visible{opacity:1;filter:saturate(1);background:rgba(112,0,255,.24);border-color:rgba(157,77,255,.6);transform:scale(1.14)}
+#zar-cat-btn:active{transform:scale(.88)}
+#zar-cat-label{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;margin-left:0;font-size:10.5px;font-weight:800;letter-spacing:.01em;background:rgba(20,10,35,.74);backdrop-filter:blur(10px);border:1px solid rgba(157,77,255,.3);color:var(--purple-light,#9D4DFF);padding:0 0;border-radius:999px;transition:max-width .38s var(--ease,ease),opacity .3s var(--ease,ease),padding .38s var(--ease,ease),margin-left .38s var(--ease,ease)}
+#zar-cat-label b{color:#fff;font-weight:900}
+#zar-cat-label i{opacity:.65;font-style:normal;font-weight:700}
+#zar-cat:hover #zar-cat-label,#zar-cat.zar-poked #zar-cat-label{max-width:210px;opacity:1;margin-left:7px;padding:5px 11px}
+#zar-cat.zar-poked #zar-cat-btn{animation:zarPokeJump .65s var(--spring,cubic-bezier(.34,1.56,.64,1))1;opacity:1;filter:saturate(1);background:rgba(112,0,255,.3);border-color:rgba(190,140,255,.75)}
+@keyframes zarPokeJump{0%{transform:scale(1) rotate(0)}22%{transform:scale(1.3,.75) rotate(-10deg)}42%{transform:scale(.8,1.25) translateY(-11px) rotate(9deg)}62%{transform:scale(1.12,.9) translateY(0) rotate(-5deg)}82%{transform:scale(.95,1.05) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.zar-fx{position:absolute;left:50%;top:0;font-size:11px;pointer-events:none;opacity:0;transform:translate(-50%,0) scale(.6);z-index:5}
+#zar-cat.zar-poked .zar-fx{animation:zarFxFloat 1.15s ease-out forwards}
+#zar-cat.zar-poked .zar-fx:nth-child(2){animation-delay:.07s;left:34%}
+#zar-cat.zar-poked .zar-fx:nth-child(3){animation-delay:.14s;left:66%}
+#zar-cat.zar-poked .zar-fx:nth-child(4){animation-delay:.21s;left:50%;font-size:13px}
+@keyframes zarFxFloat{0%{opacity:0;transform:translate(-50%,4px) scale(.4) rotate(0deg)}15%{opacity:1;transform:translate(-50%,-6px) scale(1.1) rotate(-10deg)}100%{opacity:0;transform:translate(-50%,-40px) scale(.7) rotate(14deg)}}
+@media (prefers-reduced-motion:reduce){#zar-cat-btn span#zar-cat-face,#zar-cat-btn::before,#zar-cat-btn::after{animation:none}#zar-cat.zar-poked #zar-cat-btn{animation:none}.zar-fx{display:none}}
 </style>
 <div id="zar-cat" aria-hidden="false">
-<button id="zar-cat-btn" type="button" aria-label="Зарина" title="">
+<button id="zar-cat-btn" type="button" aria-label="Зарина, ФрТАШ-227" title="">
 <span id="zar-cat-face">🐱</span>
-<span class="zar-heart">💜</span>
-<span class="zar-heart">✨</span>
-<span class="zar-heart">🩷</span>
+<span class="zar-fx">✨</span>
+<span class="zar-fx">⭐</span>
+<span class="zar-fx">💫</span>
+<span class="zar-fx">🔥</span>
 </button>
-<span id="zar-cat-label">Зарина</span>
+<span id="zar-cat-label"><b>Зарина</b> <i>(ФрТАШ-227)</i></span>
 </div>
 <script>
 (function(){
@@ -3239,8 +3247,55 @@ html.force-lite .who-filled-btn::before{display:none}
       wrap = document.getElementById('zar-cat'),
       face = document.getElementById('zar-cat-face');
   if(!btn||!wrap||!face) return;
-  var faces = ['🐱','😻','🥰','😽','🐾'];
+  var faces = ['🐱','😸','😹','😼','🙀','😺','🐾','😾'];
   var idx = 0, resetTimer = null;
+
+  // ---- милый звук по клику (Web Audio, без файлов) ----
+  var AC = window.AudioContext || window.webkitAudioContext;
+  var actx = null;
+  function ctx(){
+    if(!AC) return null;
+    if(!actx) actx = new AC();
+    if(actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  function playMeow(){
+    var c = ctx();
+    if(!c) return;
+    var t = c.currentTime;
+    var master = c.createGain();
+    master.gain.setValueAtTime(0.0001, t);
+    master.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
+    master.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+    master.connect(c.destination);
+    // короткое "мяу"-скольжение тона вверх-вниз
+    var osc = c.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(520, t);
+    osc.frequency.exponentialRampToValueAtTime(920, t + 0.09);
+    osc.frequency.exponentialRampToValueAtTime(430, t + 0.32);
+    var filt = c.createBiquadFilter();
+    filt.type = 'lowpass';
+    filt.frequency.value = 2600;
+    osc.connect(filt);
+    filt.connect(master);
+    osc.start(t);
+    osc.stop(t + 0.42);
+    // лёгкая искристая нотка сверху
+    var bell = c.createOscillator();
+    bell.type = 'triangle';
+    bell.frequency.setValueAtTime(1400, t + 0.03);
+    bell.frequency.exponentialRampToValueAtTime(2100, t + 0.16);
+    var bellGain = c.createGain();
+    bellGain.gain.setValueAtTime(0.0001, t + 0.03);
+    bellGain.gain.exponentialRampToValueAtTime(0.06, t + 0.05);
+    bellGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    bell.connect(bellGain);
+    bellGain.connect(c.destination);
+    bell.start(t + 0.03);
+    bell.stop(t + 0.22);
+  }
+
   btn.addEventListener('click', function(){
     clearTimeout(resetTimer);
     wrap.classList.remove('zar-poked');
@@ -3248,6 +3303,7 @@ html.force-lite .who-filled-btn::before{display:none}
     wrap.classList.add('zar-poked');
     idx = (idx + 1) % faces.length;
     face.textContent = faces[idx];
+    playMeow();
     resetTimer = setTimeout(function(){
       wrap.classList.remove('zar-poked');
       face.textContent = '🐱';
