@@ -3205,5 +3205,57 @@ html.force-lite .who-filled-btn::before{display:none}
 })();
 </script>
 
+<!-- ============ 🐱 секретка ============ -->
+<style>
+#zar-cat{position:fixed;left:14px;bottom:calc(58px + env(safe-area-inset-bottom,0));z-index:840;display:flex;align-items:center;gap:0;-webkit-tap-highlight-color:transparent}
+#zar-cat-btn{position:relative;width:26px;height:26px;border:none;border-radius:50%;cursor:pointer;padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;background:rgba(20,10,35,.35);border:1px solid rgba(157,77,255,.16);opacity:.4;filter:saturate(.7);box-shadow:0 0 0 rgba(157,77,255,0);transition:opacity .4s var(--ease,ease),filter .4s var(--ease,ease),transform .35s var(--spring,ease),box-shadow .4s var(--ease,ease),background .3s var(--ease,ease),border-color .3s var(--ease,ease)}
+#zar-cat-btn span{display:inline-block;animation:zarIdleSway 5.5s ease-in-out infinite;will-change:transform}
+@keyframes zarIdleSway{0%,100%{transform:rotate(0deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-1px)}}
+#zar-cat:hover #zar-cat-btn,#zar-cat-btn:focus-visible{opacity:1;filter:saturate(1);background:rgba(112,0,255,.22);border-color:rgba(157,77,255,.55);box-shadow:0 0 14px rgba(157,77,255,.4);transform:scale(1.12)}
+#zar-cat-btn:active{transform:scale(.9)}
+#zar-cat-label{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;margin-left:0;font-size:10.5px;font-weight:800;letter-spacing:.02em;background:rgba(20,10,35,.72);backdrop-filter:blur(10px);border:1px solid rgba(157,77,255,.3);color:var(--purple-light,#9D4DFF);padding:0 0;border-radius:999px;transition:max-width .38s var(--ease,ease),opacity .3s var(--ease,ease),padding .38s var(--ease,ease),margin-left .38s var(--ease,ease)}
+#zar-cat:hover #zar-cat-label,#zar-cat.zar-poked #zar-cat-label{max-width:140px;opacity:1;margin-left:7px;padding:5px 11px}
+#zar-cat.zar-poked #zar-cat-btn{animation:zarPokeJump .6s var(--spring,cubic-bezier(.34,1.56,.64,1))1;opacity:1;filter:saturate(1);background:rgba(112,0,255,.28);border-color:rgba(190,140,255,.7);box-shadow:0 0 20px rgba(157,77,255,.55)}
+@keyframes zarPokeJump{0%{transform:scale(1) rotate(0)}25%{transform:scale(1.25,.8) rotate(-8deg)}45%{transform:scale(.85,1.2) translateY(-9px) rotate(8deg)}65%{transform:scale(1.1,.92) translateY(0) rotate(-4deg)}85%{transform:scale(.96,1.04) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+.zar-heart{position:absolute;left:50%;top:0;font-size:11px;pointer-events:none;opacity:0;transform:translate(-50%,0) scale(.6);z-index:5}
+#zar-cat.zar-poked .zar-heart{animation:zarHeartFloat 1.1s ease-out forwards}
+#zar-cat.zar-poked .zar-heart:nth-child(2){animation-delay:.08s;left:38%}
+#zar-cat.zar-poked .zar-heart:nth-child(3){animation-delay:.16s;left:64%}
+@keyframes zarHeartFloat{0%{opacity:0;transform:translate(-50%,4px) scale(.5) rotate(0deg)}15%{opacity:1;transform:translate(-50%,-6px) scale(1) rotate(-8deg)}100%{opacity:0;transform:translate(-50%,-38px) scale(.7) rotate(10deg)}}
+@media (prefers-reduced-motion:reduce){#zar-cat-btn span{animation:none}#zar-cat.zar-poked #zar-cat-btn{animation:none}.zar-heart{display:none}}
+</style>
+<div id="zar-cat" aria-hidden="false">
+<button id="zar-cat-btn" type="button" aria-label="Зарина" title="">
+<span id="zar-cat-face">🐱</span>
+<span class="zar-heart">💜</span>
+<span class="zar-heart">✨</span>
+<span class="zar-heart">🩷</span>
+</button>
+<span id="zar-cat-label">Зарина</span>
+</div>
+<script>
+(function(){
+  var btn = document.getElementById('zar-cat-btn'),
+      wrap = document.getElementById('zar-cat'),
+      face = document.getElementById('zar-cat-face');
+  if(!btn||!wrap||!face) return;
+  var faces = ['🐱','😻','🥰','😽','🐾'];
+  var idx = 0, resetTimer = null;
+  btn.addEventListener('click', function(){
+    clearTimeout(resetTimer);
+    wrap.classList.remove('zar-poked');
+    void wrap.offsetWidth; // рестарт анимации
+    wrap.classList.add('zar-poked');
+    idx = (idx + 1) % faces.length;
+    face.textContent = faces[idx];
+    resetTimer = setTimeout(function(){
+      wrap.classList.remove('zar-poked');
+      face.textContent = '🐱';
+      idx = 0;
+    }, 1700);
+  });
+})();
+</script>
+
 </body>
 </html>
