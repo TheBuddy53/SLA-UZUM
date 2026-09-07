@@ -1503,7 +1503,8 @@ const ddGroups=[{key:"classic",label:"Классика",match:e=>!/^Fr/i.test(e)
 // Территория конкретного ПВЗ (для классики — anya/zarina, для франшизы — null,
 // т.к. там пока нет разделения по ТУ). Используем тот же справочник TERRITORIES,
 // что и модалка "кто сдал/кто нет" ниже по файлу, чтобы список не разъезжался.
-function ddTerritoryOf(pvzName){const list=window.TERRITORIES||[];const found=list.filter(t=>t.pvz.indexOf(pvzName)!==-1)[0];return found?found.id:null}
+function ddNormPvz(v){return String(v==null?"":v).trim().toUpperCase().replace(/\s+/g," ")}
+function ddTerritoryOf(pvzName){const list=window.TERRITORIES||[];const norm=ddNormPvz(pvzName);const found=list.filter(t=>t.pvz.some(p=>ddNormPvz(p)===norm))[0];return found?found.id:null}
 // ---- Двухшаговый выбор: сначала категория (классика/франшиза), потом сам ПВЗ ----
 const ddCategoryStep=document.getElementById("pvz-dd-category-step"),ddTerrStep=document.getElementById("pvz-dd-terr-step"),ddTerrBackBtn=document.getElementById("pvz-dd-terr-back"),ddListStep=document.getElementById("pvz-dd-list-step"),ddBackBtn=document.getElementById("pvz-dd-back"),ddBackLabel=document.getElementById("pvz-dd-back-label");
 let ddActiveCategory=null,ddActiveTerritory=null;
@@ -1532,7 +1533,7 @@ const n=a()||{};n.pvz=e,r(n),s()}),t}
 function Ee(){ge.querySelectorAll(".dd-item").forEach(e=>e.remove()),ddGroups.forEach(g=>{i.filter(g.match).forEach(e=>ge.appendChild(ddMakeItem(e,g.key)))})}
 // Поиск внутри уже выбранной категории — скрывает/показывает .dd-item по подстроке
 // (не только "начинается с") и показывает "не найден", если совпадений нет.
-function ddApplySearch(q){const query=String(q||"").trim().toLowerCase();let any=!1;ge.querySelectorAll(".dd-item").forEach(el=>{if(el.dataset.category!==ddActiveCategory)return void el.classList.add("hidden");const match=!query||el.textContent.trim().toLowerCase().indexOf(query)!==-1;el.classList.toggle("hidden",!match),match&&(any=!0)}),ge.querySelectorAll(".dd-empty").forEach(e=>e.remove());if(query&&!any){const e=document.createElement("div");e.className="dd-empty",e.textContent=window.t("toast.pvzNotFound"),ge.appendChild(e)}}
+function ddApplySearch(q){const query=String(q||"").trim().toLowerCase();let any=!1;ge.querySelectorAll(".dd-item").forEach(el=>{if(el.dataset.category!==ddActiveCategory||(ddActiveTerritory&&el.dataset.territory!==ddActiveTerritory))return void el.classList.add("hidden");const match=!query||el.textContent.trim().toLowerCase().indexOf(query)!==-1;el.classList.toggle("hidden",!match),match&&(any=!0)}),ge.querySelectorAll(".dd-empty").forEach(e=>e.remove());if(query&&!any){const e=document.createElement("div");e.className="dd-empty",e.textContent=window.t("toast.pvzNotFound"),ge.appendChild(e)}}
 ye.addEventListener("input",()=>{ddApplySearch(ye.value)});
 // Колесо мыши / тачпад над списком ПВЗ должно скроллить список, а не страницу.
 // ВАЖНО: раньше preventDefault() вызывался только если список ещё не докручен
