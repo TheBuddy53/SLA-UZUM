@@ -75,44 +75,11 @@ body.eq-active .mascot-status{text-shadow:0 0 calc(var(--eq-mid,0)*14px) rgba(15
 .report-name-link{color:var(--purple-light);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color .15s var(--ease)}
 .report-name-link:hover{color:#fff;text-decoration:underline}
 .report-name-link::after{content:"↗";font-size:11px;opacity:.7}.report-submitted{font-size:12px;color:var(--text-dim);font-weight:600;margin-top:2px}.report-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:800;flex-shrink:0;white-space:nowrap}.report-status-pill.ok{background:rgba(52,199,123,.15);border:1px solid rgba(52,199,123,.4);color:var(--green)}.report-status-pill.bad{background:rgba(255,92,122,.15);border:1px solid rgba(255,92,122,.4);color:var(--red)}.report-status-pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor}.report-status-pill.bad .dot{animation:pulseRing 1.6s ease-out infinite}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.report-metric{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-md);padding:12px 14px}.report-metric-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);font-weight:800;margin-bottom:5px}.report-metric-val{font-size:17px;font-weight:900;color:var(--text-main);letter-spacing:-.01em}.report-metric.accent .report-metric-val{color:var(--purple-light)}.report-metric.warn .report-metric-val{color:var(--red)}.report-metric.good .report-metric-val{color:var(--green)}body.eq-active .report-metric-val{filter:drop-shadow(0 0 calc(var(--eq-mid)*5px) currentColor)}.report-metric-sub{font-size:11px;color:var(--text-dim);font-weight:600;margin-top:4px;line-height:1.4}.report-section-title{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--text-dim);font-weight:800;margin:16px 0 10px;display:flex;align-items:center;gap:8px}.report-section-title::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}.report-jira-list{display:flex;flex-direction:column;gap:8px}.report-jira-card{display:flex;align-items:center;gap:10px;background:rgba(112,0,255,.12);border:1px solid rgba(157,77,255,.3);border-radius:var(--r-md);padding:10px 12px;text-decoration:none;transition:background .25s var(--ease),border-color .25s var(--ease),transform .2s var(--spring)}.report-jira-card:hover{background:rgba(112,0,255,.2);border-color:rgba(157,77,255,.5);transform:translateX(2px)}.report-jira-card:active{transform:scale(.98)}.report-jira-icon{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#0052cc,#2684ff);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#fff;flex-shrink:0}.report-jira-key{font-size:13px;font-weight:800;color:var(--text-main);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.report-jira-go{color:var(--purple-light);font-size:13px;flex-shrink:0}.report-jira-empty{font-size:12.5px;color:var(--text-dim);font-weight:600;line-height:1.5;padding:4px 2px}.report-delete-btn{width:100%;margin-top:18px;padding:12px 14px;border-radius:var(--r-md);background:rgba(255,92,122,.12);border:1px solid rgba(255,92,122,.35);color:var(--red);font-size:13px;font-weight:800;cursor:pointer;transition:background .25s var(--ease),border-color .25s var(--ease),transform .2s var(--spring)}.report-delete-btn:hover:not(:disabled){background:rgba(255,92,122,.2);border-color:rgba(255,92,122,.55)}.report-delete-btn:active:not(:disabled){transform:scale(.98)}.report-delete-btn:disabled{opacity:.6;cursor:default}#toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0));transform:translate(-50%,16px) scale(.92);display:flex;align-items:center;gap:10px;background:rgba(20,10,35,.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:13px 18px;font-size:13px;font-weight:700;color:#fff;z-index:999;opacity:0;pointer-events:none;transition:opacity .32s var(--ease),transform .32s var(--spring);max-width:min(420px,90vw);text-align:center}#toast.show{opacity:1;transform:translate(-50%,0) scale(1)}#toast .toast-icon{flex:0 0 auto;width:20px;height:20px;display:none;align-items:center;justify-content:center;font-size:14px;line-height:1;border-radius:50%}#toast .toast-icon:not(:empty){display:flex}#toast.toast-success{border-color:rgba(52,199,123,.4);box-shadow:0 0 22px rgba(52,199,123,.25)}#toast.toast-success .toast-icon{background:rgba(52,199,123,.2);color:var(--green, #34C77B)}#toast.error,#toast.toast-error{border-color:rgba(255,92,122,.4);box-shadow:0 0 22px rgba(255,59,48,.22)}#toast.toast-error .toast-icon{background:rgba(255,59,48,.2);color:#ff6b6b}#toast.toast-loading .toast-icon{background:rgba(157,77,255,.22);color:var(--purple-light);animation:toastSpin .85s linear infinite}@media (prefers-reduced-motion:reduce){#toast{transition:opacity .2s linear}#toast.toast-loading .toast-icon{animation:none}}.confetti-piece{position:fixed;width:7px;height:7px;border-radius:2px;z-index:700;pointer-events:none;left:0;top:0;transform:translate(-50%,-50%);animation:confettiFly .85s cubic-bezier(.2,.8,.3,1) forwards;box-shadow:0 0 6px rgba(255,255,255,.5)}.footer{text-align:center;padding:8px 0 0;font-size:11px;color:var(--text-dim);font-weight:600}body.idle-paused #brand-glow-ring .glow-core,body.idle-paused #brand-glow-ring .glow-ray,body.idle-paused #depth-haze .h1,body.idle-paused #depth-haze .h2,body.idle-paused #depth-haze .h3,body.idle-paused #mesh .b1,body.idle-paused #mesh .b2,body.idle-paused #mesh .b3,body.idle-paused #u-focus-dim,body.idle-paused #u-mist,body.idle-paused .brand-drip,body.idle-paused .brand-drip::after,body.idle-paused .brand-drip::before,body.idle-paused .brand-mark:not(.mark-pulse) .mark-sheen::after,body.idle-paused .brand-mark:not(.mark-pulse) .mark-sheen::before,body.idle-paused .card::after,body.idle-paused .cinematic-glare{animation-play-state:paused}#paste-sheet,#sheet-overlay{position:fixed;pointer-events:none}#sheet-overlay{inset:0;z-index:930;background:rgba(3,0,10,.6);opacity:0;transition:opacity .35s var(--ease)}#sheet-overlay.show{opacity:1;pointer-events:auto}#paste-sheet{left:50%;top:50%;bottom:auto;right:auto;margin:0;max-width:480px;width:min(480px,92vw);max-height:min(720px,86vh);z-index:931;display:flex;flex-direction:column;background:var(--glass-bg);background-color:#0b0416;border:1px solid var(--glass-border-dark);border-top:1px solid var(--glass-border-light);border-radius:24px;box-shadow:0 30px 80px -12px rgba(0,0,0,.85),inset 0 1px 1px rgba(255,255,255,.14);padding:14px 20px calc(18px + env(safe-area-inset-bottom,0));visibility:hidden;transform:translate(-50%,-50%) scale(.92);opacity:0;transition:transform .35s var(--epic,cubic-bezier(.16,1,.3,1)),opacity .28s var(--ease)}#paste-sheet.show{transform:translate(-50%,-50%) scale(1);opacity:1}#paste-sheet.closing{transform:translate(-50%,-50%) scale(.92);opacity:0;transition:transform .3s var(--epic-out,cubic-bezier(.16,1,.3,1)),opacity .25s var(--ease)}.sheet-handle{display:none;width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.22);margin:0 auto 12px;flex:0 0 auto}.sheet-scroll{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0}.sheet-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.sheet-title{font-weight:900;font-size:16px;color:var(--text-main);letter-spacing:-.01em}.sheet-close{width:30px;height:30px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);color:var(--text-muted);font-size:13px;cursor:pointer;transition:background .25s var(--ease),color .25s var(--ease)}.sheet-close:active,.sheet-close:hover{background:rgba(255,255,255,.16);color:var(--text-main)}.sheet-hint{font-size:12px;line-height:1.55;color:var(--text-muted)}.hint-text .key,.sheet-hint .key{color:var(--accent-key,#FFD3E8);font-weight:800}@media (prefers-reduced-motion:reduce){#paste-sheet,#sheet-overlay{transition:none}}#paste-sheet:not(.sheet-mode-legal) .sheet-legal-content{display:none}.sheet-legal-content{font-size:13px;line-height:1.65;color:var(--text-muted);padding-bottom:4px}.sheet-legal-content h3{font-size:13px;font-weight:900;color:var(--text-main);margin:16px 0 6px;letter-spacing:-.01em}.sheet-legal-content h3:first-child{margin-top:0}.sheet-legal-content p{margin:0 0 10px}.sheet-legal-content ul{margin:0 0 10px;padding-left:18px}.sheet-legal-content li{margin-bottom:4px}.footer-legal{display:flex;align-items:center;justify-content:center;margin-top:8px;padding:0 10px}.footer-legal-menu{display:inline-flex;align-items:stretch;background:var(--glass-bg);border:1px solid var(--glass-border-dark);border-top:1px solid var(--glass-border-light);border-radius:var(--r-md);overflow:hidden;position:relative;box-shadow:0 4px 14px rgba(0,0,0,.28);transition:box-shadow .3s var(--ease)}.footer-legal-link::before,.footer-legal-menu::before{content:"";position:absolute;opacity:0;pointer-events:none}.footer-legal-menu::before{inset:0;box-shadow:0 0 0 1px rgba(157,77,255,.16),0 0 10px rgba(157,77,255,.14);animation:footerMenuGlowFade 7s ease-in-out infinite;will-change:opacity}.footer-legal-menu.offscreen-paused,html.is-android body.idle-paused .footer-legal-menu{animation-play-state:paused}.footer-legal-link{position:relative;background:0 0;border:0;color:var(--text-dim);font-size:10.5px;font-weight:700;letter-spacing:.01em;padding:9px 14px;cursor:pointer;transition:color .35s var(--ease),letter-spacing .35s var(--ease),background-color .35s var(--ease),font-weight .35s var(--ease);overflow:hidden}.footer-legal-link+.footer-legal-link{border-left:1px solid var(--glass-border-dark)}.footer-legal-link::before{inset:-4px;border-radius:inherit;background:radial-gradient(circle,rgba(157,77,255,.4),transparent 70%);filter:blur(6px);transition:opacity .35s var(--ease);z-index:-1}.footer-legal-link:active,.footer-legal-link:hover{color:var(--purple-light);letter-spacing:.03em;font-weight:800;background-color:rgba(255,255,255,.04)}.footer-legal-link:active::before,.footer-legal-link:hover::before{opacity:.55}.footer-legal-link:focus-visible{color:var(--purple-light);background-color:rgba(255,255,255,.04);outline:0}.footer-legal-link:focus-visible::before{opacity:.55}.footer-legal-link:active{transform:scale(.97) translateZ(0);transition:transform .15s var(--spring),color .35s var(--ease),letter-spacing .35s var(--ease),background-color .35s var(--ease),font-weight .35s var(--ease)}@media (prefers-reduced-motion:reduce){.footer-legal-menu{animation:none}.footer-legal-link,.footer-legal-link:active{transition:color .2s linear,background-color .2s linear}.footer-legal-link:active{transform:none}}.footer-copy{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px;padding:0 10px;flex-wrap:wrap;font-family:"Inter","SF Pro Display",-apple-system,sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.01em;color:var(--text-dim);opacity:.75}@supports not ((mask-composite:exclude) or (-webkit-mask-composite:xor)){.cinematic-glare,.glass-bubble::before,.glass-edge::before{display:none!important}}@keyframes sideRise{0%{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes tierGlow1{0%,to{opacity:.5}50%{opacity:.85}}@keyframes tierGlow2{0%,to{opacity:.55}50%{opacity:.9}}@keyframes tierGlow3{0%,to{opacity:.6}50%{opacity:1}}@keyframes tierIconFloat{0%,to{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-4deg)}}@keyframes tierChipShift{0%{background-position:0 0}to{background-position:200% 0}}@keyframes anyaCardBreathe{0%,to{box-shadow:0 24px 48px -12px rgba(0,0,0,.8),inset 0 1px 2px rgba(255,255,255,.3),0 0 0 rgba(255,143,196,0)}50%{box-shadow:0 24px 48px -12px rgba(0,0,0,.8),inset 0 1px 2px rgba(255,255,255,.3),0 0 26px rgba(255,143,196,.18)}}@keyframes anyaRingSpin{0%{transform:rotate(0deg)}to{transform:rotate(360deg)}}@keyframes anyaConfettiFall{0%{transform:translateY(-10%) rotate(0deg);opacity:0}10%{opacity:1}to{transform:translateY(340%) rotate(360deg);opacity:0}}@keyframes anyaSparkle{0%,to{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}@keyframes anyaBadgePop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}to{transform:scale(1);opacity:1}}@keyframes anyaCountPulse{0%,to{transform:scale(1)}50%{transform:scale(1.05)}}@keyframes anyaHeadBob{0%,to{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-2px) rotate(1.2deg)}}.page-shell{max-width:1040px;margin:0 auto;position:relative;z-index:61;display:grid;grid-template-columns:minmax(0,480px) minmax(0,340px);gap:18px;align-items:start;justify-content:center}.page-shell>.wrap{max-width:480px;margin:0}.side-col{display:flex;flex-direction:column;gap:16px;position:sticky;top:12px}.bday-row{display:flex;gap:16px;align-items:stretch}.bday-row>.card{flex:1;min-width:0}.side-col .card{padding:18px}.sla-tiers{display:flex;flex-direction:column;gap:10px;margin-top:2px}.sla-tier{position:relative;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-md);background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);overflow:hidden;isolation:isolate;opacity:0;animation:sideRise .6s var(--spring) forwards;transition:border-color .18s linear,box-shadow .18s linear}body.eq-active .sla-tier{border-color:rgba(157,77,255,calc(.25 + var(--eq-bass)*.55));box-shadow:0 0 calc(6px + var(--eq-bass)*22px) rgba(52,199,123,calc(var(--eq-treble)*.35)),0 0 calc(4px + var(--eq-bass)*18px) rgba(157,77,255,calc(var(--eq-bass)*.4)) inset}.sla-tier:nth-child(1){animation-delay:.05s}.sla-tier:nth-child(2){animation-delay:.14s}.sla-tier:nth-child(3){animation-delay:.23s}.sla-tier::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);background-size:220% 100%;animation:tierChipShift 6s linear infinite}.sla-tier .tier-icon{flex-shrink:0;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;animation:tierIconFloat 4.5s ease-in-out infinite}.sla-tier:nth-child(2) .tier-icon{animation-delay:-1.5s}.sla-tier:nth-child(3) .tier-icon{animation-delay:-3s}.sla-tier.t1 .tier-icon{background:rgba(52,199,123,.16);box-shadow:0 0 16px rgba(52,199,123,.25)}.sla-tier.t2 .tier-icon{background:rgba(255,194,75,.16);box-shadow:0 0 16px rgba(255,194,75,.25)}.sla-tier.t3 .tier-icon{background:rgba(255,92,122,.16);box-shadow:0 0 16px rgba(255,92,122,.25)}.sla-tier .tier-body{min-width:0;flex:1}.sla-tier .tier-range{font-size:12.5px;font-weight:800;color:var(--text-main)}.sla-tier .tier-time{font-size:11.5px;font-weight:700;margin-top:2px}.sla-tier.t1 .tier-time{color:var(--green)}.sla-tier.t2 .tier-time{color:var(--yellow)}.sla-tier.t3 .tier-time{color:var(--red)}.sla-tier .tier-glow{position:absolute;inset:0;z-index:-1;opacity:.5;pointer-events:none}.sla-tier.t1 .tier-glow{background:radial-gradient(120px 60px at 0% 50%,rgba(52,199,123,.14),transparent 70%);animation:tierGlow1 3.2s ease-in-out infinite}.sla-tier.t2 .tier-glow{background:radial-gradient(120px 60px at 0% 50%,rgba(255,194,75,.14),transparent 70%);animation:tierGlow2 3.6s ease-in-out infinite}.sla-tier.t3 .tier-glow{background:radial-gradient(120px 60px at 0% 50%,rgba(255,92,122,.16),transparent 70%);animation:tierGlow3 4s ease-in-out infinite}.sla-note{margin-top:12px;font-size:11.5px;color:var(--text-dim);font-weight:600;line-height:1.5;display:flex;align-items:flex-start;gap:6px}.anya-card{position:relative}.anya-card.bday-mode{animation:anyaCardBreathe 3.4s ease-in-out infinite}.anya-head{display:flex;align-items:center;gap:12px;margin-bottom:2px}.anya-portrait-wrap{position:relative;flex-shrink:0;width:64px;height:64px}.anya-ring{position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,143,196,.9),rgba(157,77,255,.85),rgba(120,200,255,.85),rgba(255,143,196,.9));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:2.5px;opacity:.9;animation:anyaRingSpin 7s linear infinite}.anya-card:not(.bday-mode) .anya-ring{opacity:.55;animation-duration:14s}.anya-portrait{position:absolute;inset:3px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 26%,#3a1f5c,#1c0e33 65%,#0c0420);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 6px 16px rgba(0,0,0,.45)}.anya-portrait .anya-emoji-face{font-size:26px;line-height:1;animation:anyaHeadBob 4.6s ease-in-out infinite;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}.anya-tg-badge{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#229ED9;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2.5px #0b0416,0 2px 6px rgba(0,0,0,.5);animation:anyaBadgePop .6s var(--spring) .3s backwards}.anya-tg-badge svg{width:13px;height:13px}.anya-who{min-width:0;flex:1}.anya-name{font-weight:900;font-size:14.5px;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.anya-role{font-size:11px;font-weight:700;color:var(--text-muted);margin-top:2px}.anya-sparkles{position:absolute;top:6px;right:8px;display:flex;gap:4px;pointer-events:none}.anya-sparkles span{font-size:11px;animation:anyaSparkle 2.4s ease-in-out infinite}.anya-sparkles span:nth-child(2){animation-delay:-.8s}.anya-sparkles span:nth-child(3){animation-delay:-1.6s}.anya-bday-strip{margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:linear-gradient(135deg,rgba(255,143,196,.14),rgba(157,77,255,.12));border:1px solid rgba(255,143,196,.28);display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}.anya-bday-strip .confetti-bit{position:absolute;top:-10%;font-size:11px;opacity:0;animation:anyaConfettiFall 3.4s linear infinite}.anya-bday-emoji{font-size:22px;flex-shrink:0;animation:anyaHeadBob 3.2s ease-in-out infinite}.anya-bday-text{min-width:0;flex:1}.anya-bday-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--text-dim)}.anya-bday-count{font-size:15px;font-weight:900;color:#ffb3d9;margin-top:2px;animation:anyaCountPulse 2.6s ease-in-out infinite}.anya-bday-count b{font-size:19px;color:#fff}.zar2-card{position:relative}.zar2-card.bday-mode{animation:anyaCardBreathe 3.4s ease-in-out infinite}.zar2-head{display:flex;align-items:center;gap:12px;margin-bottom:2px}.zar2-portrait-wrap{position:relative;flex-shrink:0;width:64px;height:64px}.zar2-ring{position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 0deg,rgba(120,200,255,.9),rgba(157,77,255,.85),rgba(255,143,196,.85),rgba(120,200,255,.9));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:2.5px;opacity:.9;animation:anyaRingSpin 7s linear infinite}.zar2-card:not(.bday-mode) .zar2-ring{opacity:.55;animation-duration:14s}.zar2-portrait{position:absolute;inset:3px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 26%,#1f3a5c,#0e1c33 65%,#04120c);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 6px 16px rgba(0,0,0,.45)}.zar2-portrait .zar2-emoji-face{font-size:26px;line-height:1;animation:anyaHeadBob 4.6s ease-in-out infinite;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}.zar2-tg-badge{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#229ED9;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2.5px #0b0416,0 2px 6px rgba(0,0,0,.5);animation:anyaBadgePop .6s var(--spring) .3s backwards}.zar2-tg-badge svg{width:13px;height:13px}.zar2-who{min-width:0;flex:1}.zar2-name{font-weight:900;font-size:14.5px;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zar2-role{font-size:11px;font-weight:700;color:var(--text-muted);margin-top:2px}.zar2-sparkles{position:absolute;top:6px;right:8px;display:flex;gap:4px;pointer-events:none}.zar2-sparkles span{font-size:11px;animation:anyaSparkle 2.4s ease-in-out infinite}.zar2-sparkles span:nth-child(2){animation-delay:-.8s}.zar2-sparkles span:nth-child(3){animation-delay:-1.6s}.zar2-bday-strip{margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:linear-gradient(135deg,rgba(120,200,255,.14),rgba(157,77,255,.12));border:1px solid rgba(120,200,255,.28);display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}.zar2-bday-strip .confetti-bit{position:absolute;top:-10%;font-size:11px;opacity:0;animation:anyaConfettiFall 3.4s linear infinite}.zar2-bday-emoji{font-size:22px;flex-shrink:0;animation:anyaHeadBob 3.2s ease-in-out infinite}.zar2-bday-text{min-width:0;flex:1}.zar2-bday-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--text-dim)}.zar2-bday-count{font-size:15px;font-weight:900;color:#8fd3ff;margin-top:2px;animation:anyaCountPulse 2.6s ease-in-out infinite}.zar2-bday-count b{font-size:19px;color:#fff}.zar2-bday-live{display:flex;gap:6px;margin-top:2px}.zar2-bday-unit{flex:1;min-width:0;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:6px 2px 5px}.zar2-bday-unit .u-val{font-size:17px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;line-height:1.1;animation:bdayUnitPulse 1s ease-in-out infinite;display:inline-block}.zar2-bday-unit .u-val.odometer-roll{animation:bdayUnitPulse 1s ease-in-out infinite,odometerRoll .32s cubic-bezier(.2,.8,.3,1)}body.eq-active .zar2-bday-unit{transform:scale(calc(1 + var(--eq-beat,0)*.05));box-shadow:0 0 calc(var(--eq-beat,0)*20px) rgba(120,200,255,calc(var(--eq-beat,0)*.5))}body.eq-active .zar2-bday-unit .u-val{text-shadow:0 0 calc(var(--eq-treble,0)*10px) rgba(143,211,255,.8)}@media (prefers-reduced-motion:reduce){.zar2-bday-unit .u-val.odometer-roll{animation:none}body.eq-active .zar2-bday-unit{transform:none;box-shadow:none}}html.force-lite .zar2-bday-unit .u-val.odometer-roll{animation:none}.zar2-bday-unit.ms .u-val{color:#8fd3ff;font-size:14px}.zar2-bday-unit .u-lbl{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-top:1px}.zar2-bday-progress-wrap{margin-top:10px}.zar2-bday-progress-track{position:relative;height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.06)}.zar2-bday-progress-fill{position:relative;height:100%;border-radius:999px;background:linear-gradient(90deg,#9d4dff,#78c8ff);transition:width .6s var(--ease);overflow:hidden}.zar2-bday-progress-fill::after{content:\"\";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 48%,transparent 66%);background-size:250% 100%;animation:bdayBarShine 2.6s linear infinite}.zar2-bday-progress-pct{margin-top:5px;font-size:10.5px;font-weight:800;color:var(--text-dim);text-align:right}.zar2-bday-progress-pct b{color:#8fd3ff}@media (prefers-reduced-motion:reduce){.zar2-bday-unit .u-val{animation:none}.zar2-bday-progress-fill::after{animation:none}}@media (max-width:900px){.page-shell{grid-template-columns:1fr;max-width:480px}.side-col{position:static}}@media (max-width:560px){.bday-row{flex-direction:column}}
-/* ===== День Независимости Узбекистана — праздничная тема ===== */
-@keyframes uzFlagWave{0%,to{transform:rotate(0deg) scaleY(1)}25%{transform:rotate(1.2deg) scaleY(.985)}50%{transform:rotate(0deg) scaleY(1.015)}75%{transform:rotate(-1.2deg) scaleY(.99)}}
+/* ===== День Независимости Узбекистана — праздничная тема (самолёты) ===== */
 @keyframes uzPlanesFly{0%{transform:translateX(-18vw) translateY(0);opacity:0}6%{opacity:1}50%{transform:translateX(50vw) translateY(-6px)}94%{opacity:1}100%{transform:translateX(118vw) translateY(0);opacity:0}}
 @keyframes uzPlaneBob{0%,to{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-2deg)}}
 @keyframes uzBadgePulse{0%,to{box-shadow:0 0 0 0 rgba(30,181,58,.45),0 0 0 0 rgba(0,153,181,.3)}50%{box-shadow:0 0 0 5px rgba(30,181,58,0),0 0 0 9px rgba(0,153,181,0)}}
-.uz-flag-wave{flex-shrink:0;filter:drop-shadow(0 3px 8px rgba(0,0,0,.35));transform-origin:0% 50%;animation:uzFlagWave 3.4s ease-in-out infinite}
-#uz-flag-topbar{width:30px;height:18px;margin-left:2px}
-.uz-flag-wave--footer{width:22px;height:13px}
-@media (prefers-reduced-motion:reduce){.uz-flag-wave{animation:none}}
-html.force-lite .uz-flag-wave{animation:none}
-.footer-holiday{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;padding:6px 12px;border-radius:999px;background:linear-gradient(90deg,rgba(30,181,58,.14),rgba(0,153,181,.14),rgba(206,17,38,.14));border:1px solid rgba(255,255,255,.1)}
-#footer-holiday-text{font-size:10.5px;font-weight:800;letter-spacing:.02em;color:var(--text-hint)}
-
-/* ===== Праздничный масштаб: звёзды-фон, hero-баннер, canvas-салют ===== */
-#uz-stars-layer{position:fixed;inset:0;z-index:-5;pointer-events:none;overflow:hidden}
-#uz-stars-layer .uz-star{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 4px 1px rgba(255,255,255,.55);animation:uzStarTwinkle 3.6s ease-in-out infinite}
-@keyframes uzStarTwinkle{0%,to{opacity:.15;transform:scale(.85)}50%{opacity:.85;transform:scale(1.15)}}
-html.force-lite #uz-stars-layer{display:none}
-@media (prefers-reduced-motion:reduce){#uz-stars-layer{display:none}}
-
-#uz-hero-banner{position:relative;display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--r-xl);background:linear-gradient(115deg,rgba(0,153,181,.22),rgba(255,255,255,.08) 45%,rgba(30,181,58,.22));border:1px solid rgba(255,255,255,.16);box-shadow:0 16px 34px -10px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.25);overflow:hidden;isolation:isolate}
-#uz-hero-banner::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);background-size:200% 100%;animation:uzHeroSheen 5s linear infinite}
-@keyframes uzHeroSheen{0%{background-position:200% 0}to{background-position:-200% 0}}
-#uz-hero-banner .uz-hero-emblem{flex-shrink:0;width:46px;height:46px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
-#uz-hero-banner .uz-hero-emblem svg{width:100%;height:100%;animation:uzHeroEmblemFloat 4.5s ease-in-out infinite}
-@keyframes uzHeroEmblemFloat{0%,to{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-3deg)}}
-#uz-hero-banner .uz-hero-text{min-width:0;flex:1}
-#uz-hero-banner .uz-hero-title{font-weight:900;font-size:15px;letter-spacing:-.01em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4)}
-#uz-hero-banner .uz-hero-sub{font-size:11px;font-weight:700;color:var(--text-hint);margin-top:2px}
-#uz-hero-banner .uz-hero-num{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 12px;border-radius:12px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.18)}
-#uz-hero-banner .uz-hero-num b{font-size:20px;font-weight:900;color:#ffd166;line-height:1;text-shadow:0 0 10px rgba(255,209,102,.5)}
-#uz-hero-banner .uz-hero-num span{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-top:2px}
-@media (max-width:380px){#uz-hero-banner .uz-hero-sub{display:none}}
-html.force-lite #uz-hero-banner::before{animation:none}
-
-#uz-salute-canvas{position:fixed;inset:0;z-index:59;pointer-events:none;width:100%;height:100%}
-html.force-lite #uz-salute-canvas{display:none}
-@media (prefers-reduced-motion:reduce){#uz-salute-canvas{display:none}}
+/* ===== Праздничная тема: самолёты с флагом (см. #uz-planes-layer в разметке) ===== */
 #uz-planes-layer{position:fixed;left:0;top:14%;width:100%;height:0;z-index:58;pointer-events:none;overflow:visible}
 .uz-planes-fleet{position:absolute;top:0;left:0;display:flex;align-items:center;gap:22px;animation:uzPlanesFly 11s linear;will-change:transform,opacity}
 .uz-plane-icon{animation:uzPlaneBob 1.6s ease-in-out infinite}
@@ -152,6 +119,7 @@ html.force-lite .perf-toggle{animation:none}
 .anthem-badge .anthem-bar:nth-child(2){animation-delay:-.55s;height:10px}
 .anthem-badge .anthem-bar:nth-child(3){animation-delay:-.25s;height:5px}
 @media (prefers-reduced-motion:reduce){.anthem-badge{animation:none}}
+.anthem-badge--hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;animation:none!important;box-shadow:none!important}
 /* ===== Живой таймер до ДР Ани ===== */
 @keyframes bdayUnitPulse{0%,to{transform:scale(1)}50%{transform:scale(1.06)}}
 @keyframes bdayBarShine{0%{background-position:-120% 0}to{background-position:220% 0}}
@@ -250,10 +218,8 @@ html.force-lite #eq-bg-tint{display:none}
    соседний .lang-toggle (у него своего inline-transform нет). */
 body.eq-active .lang-toggle{transform:scale(calc(1 + var(--eq-beat,0)*.05))}
 body.eq-active .lang-toggle{border-color:rgba(157,77,255,calc(.35 + var(--eq-mid,0)*.4));box-shadow:0 0 calc(var(--eq-mid,0)*16px) rgba(157,77,255,calc(var(--eq-mid,0)*.4))}
-body.eq-active .uz-flag-wave{filter:saturate(calc(100% + var(--eq-treble,0)*60%)) brightness(calc(1 + var(--eq-treble,0)*.15))}
 
 /* Hero-баннер (флаг/праздник) — большой блок наверху, должен жить вместе с музыкой */
-body.eq-active #uz-hero-banner{box-shadow:0 16px 34px -10px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.25),0 0 calc(var(--eq-bass,0)*40px) rgba(0,153,181,calc(var(--eq-bass,0)*.35))}
 body.eq-active .uz-hero-emblem{transform:scale(calc(1 + var(--eq-beat,0)*.08)) rotate(calc(var(--eq-mid,0)*2deg))}
 
 /* Поля формы — лёгкое дыхание рамки в такт мид-частотам, не мешает читаемости */
@@ -274,7 +240,6 @@ body.eq-active .jira-chip{transform:scale(calc(1 + var(--eq-mid,0)*.04))}
 
 /* Футер — самый нижний элемент, часто вообще не попадает в поле "эффектов" */
 body.eq-active .footer-copy{opacity:calc(.7 + var(--eq-energy,0)*.3)}
-body.eq-active .footer-holiday{text-shadow:0 0 calc(var(--eq-treble,0)*10px) rgba(255,179,217,.7)}
 
 /* Хаб-шиммер бренда пульсирует чуть сильнее при биte, поверх обычного hover-эффекта */
 /* Хаб-шиммер бренда пульсирует чуть сильнее при биte — вынесено в отдельный
@@ -292,7 +257,7 @@ html.force-lite .brand-name::before{display:none}
    transform не задевала layout соседних узлов. Не вешаем will-change on
    body.eq-active (слишком широкий охват съел бы больше памяти, чем сэкономил
    бы по времени) — только на сами анимируемые элементы. */
-body.eq-active #uz-hero-banner,body.eq-active .who-filled-btn,body.eq-active .lang-toggle,body.eq-active #mega-sheet,body.eq-active .brand-name::before{will-change:box-shadow,opacity}
+body.eq-active .who-filled-btn,body.eq-active .lang-toggle,body.eq-active #mega-sheet,body.eq-active .brand-name::before{will-change:box-shadow,opacity}
 body.eq-active .uz-hero-emblem,body.eq-active .entries-mini-stat,body.eq-active .jira-chip{will-change:transform}
 @media (prefers-reduced-motion:reduce){
   body.eq-active .topbar,body.eq-active .uz-hero-emblem,body.eq-active .entries-mini-stat,body.eq-active .jira-chip{transform:none}
@@ -300,7 +265,7 @@ body.eq-active .uz-hero-emblem,body.eq-active .entries-mini-stat,body.eq-active 
 }
 html.force-lite body.eq-active .topbar,html.force-lite body.eq-active .uz-hero-emblem,html.force-lite body.eq-active .entries-mini-stat,html.force-lite body.eq-active .jira-chip{transform:none}
 html.force-lite body.eq-active{background-color:var(--bg-base)}
-html.force-lite body.eq-active .who-filled-btn,html.force-lite body.eq-active #mega-sheet,html.force-lite body.eq-active #uz-hero-banner{box-shadow:none}
+html.force-lite body.eq-active .who-filled-btn,html.force-lite body.eq-active #mega-sheet{box-shadow:none}
 
 /* ---- Аварийный тир на устойчивой просадке FPS (см. perfNotePerf в JS) ----
    Срабатывает ТОЛЬКО когда браузер объективно не успевает несколько секунд
@@ -309,7 +274,6 @@ html.force-lite body.eq-active .who-filled-btn,html.force-lite body.eq-active #m
    по площади repaint блюры (крупный радиус на big-элементах), а не все эффекты
    подряд — большинство мелких точечных box-shadow (fokус поля, статус-точки)
    остаются как есть, они дешёвые и не были причиной просадки. */
-body.eq-tier-2.eq-active #uz-hero-banner{box-shadow:0 16px 34px -10px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.25)}
 body.eq-tier-2.eq-active .who-filled-btn{box-shadow:0 4px 18px -4px rgba(157,77,255,.35),inset 0 1px 1px rgba(255,255,255,.12)}
 body.eq-tier-2.eq-active #mega-sheet{box-shadow:0 30px 80px -12px rgba(0,0,0,.85),inset 0 1px 1px rgba(255,255,255,.14)}
 body.eq-tier-2.eq-active #eq-bg-tint{opacity:calc(var(--eq-energy,0)*.3)}
@@ -465,31 +429,8 @@ window.addEventListener('uzum:liteToggled', function(e){
 });
 "complete"===document.readyState?scheduleLiquidInit():window.addEventListener("load",scheduleLiquidInit,{once:!0});</script>
 <div id="uz-planes-layer" aria-hidden="true"></div>
-<div id="uz-stars-layer" aria-hidden="true"></div>
-<canvas id="uz-salute-canvas" aria-hidden="true"></canvas>
 <div class="page-shell">
 <div class="wrap">
-<div id="uz-hero-banner" class="stagger parallax-el" data-depth="0.03" style="animation-delay:0s" aria-hidden="true">
-<div class="uz-hero-emblem">
-<svg viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<defs><clipPath id="uzHeroFlagClip"><circle cx="24" cy="24" r="22"></circle></clipPath></defs>
-<g clip-path="url(#uzHeroFlagClip)">
-<rect fill="#0099B5" height="14.6" width="44" x="2" y="2"></rect>
-<rect fill="#CE1126" height="1.5" width="44" x="2" y="16.6"></rect>
-<rect fill="#fff" height="11.8" width="44" x="2" y="18.1"></rect>
-<rect fill="#CE1126" height="1.5" width="44" x="2" y="29.9"></rect>
-<rect fill="#1EB53A" height="14.6" width="44" x="2" y="31.4"></rect>
-<circle cx="13" cy="10" fill="#fff" r="3.6"></circle>
-<circle cx="14.6" cy="10" fill="#0099B5" r="3"></circle>
-</g>
-</svg>
-</div>
-<div class="uz-hero-text">
-<div class="uz-hero-title" data-i18n="hero.title">С Днём Независимости!</div>
-<div class="uz-hero-sub" data-i18n="hero.sub">Республика Узбекистан</div>
-</div>
-<div class="uz-hero-num"><b>35</b><span data-i18n="hero.years">лет</span></div>
-</div>
 <div id="cinematic-eq" class="stagger" aria-hidden="true">
 <svg id="cinematic-eq-svg" viewbox="0 0 400 64" preserveaspectratio="none">
 <defs>
@@ -531,37 +472,9 @@ window.addEventListener('uzum:liteToggled', function(e){
 </div>
 <div class="brand-sub" data-i18n="brand.sub">Экосистема ПВЗ</div>
 </div>
-<svg aria-hidden="true" class="uz-flag-wave" id="uz-flag-topbar" viewbox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<clipPath id="uzFlagClipTop"><path d="M0,4 C10,0 20,8 30,4 C40,0 50,8 60,4 L60,32 C50,36 40,28 30,32 C20,36 10,28 0,32 Z"/></clipPath>
-</defs>
-<g clip-path="url(#uzFlagClipTop)">
-<rect fill="#0099B5" height="12" width="60" y="0"></rect>
-<rect fill="#CE1126" height="1.2" width="60" y="12"></rect>
-<rect fill="#fff" height="9.6" width="60" y="13.2"></rect>
-<rect fill="#CE1126" height="1.2" width="60" y="22.8"></rect>
-<rect fill="#1EB53A" height="12" width="60" y="24"></rect>
-<circle cx="9" cy="6" fill="#fff" r="3.1"></circle>
-<circle cx="10.4" cy="6" fill="#0099B5" r="2.6"></circle>
-<g fill="#fff">
-<circle cx="17" cy="3.4" r="0.55"></circle>
-<circle cx="19.4" cy="3.4" r="0.55"></circle>
-<circle cx="21.8" cy="3.4" r="0.55"></circle>
-<circle cx="15.8" cy="5.4" r="0.55"></circle>
-<circle cx="18.2" cy="5.4" r="0.55"></circle>
-<circle cx="20.6" cy="5.4" r="0.55"></circle>
-<circle cx="23" cy="5.4" r="0.55"></circle>
-<circle cx="17" cy="7.4" r="0.55"></circle>
-<circle cx="19.4" cy="7.4" r="0.55"></circle>
-<circle cx="21.8" cy="7.4" r="0.55"></circle>
-<circle cx="18.2" cy="9.4" r="0.55"></circle>
-<circle cx="20.6" cy="9.4" r="0.55"></circle>
-</g>
-</g>
-</svg>
 </div>
 <div class="topbar-right">
-<button aria-label="Гимн Республики Узбекистан" class="anthem-badge" data-i18n-attr="aria-label:anthem.badge|title:anthem.badge" id="anthem-badge" title="Гимн Республики Узбекистан" type="button">
+<button aria-hidden="true" class="anthem-badge anthem-badge--hidden" id="anthem-badge" tabindex="-1" type="button">
 <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
 <defs><clipPath id="anthemFlagClip"><circle cx="24" cy="24" r="22"></circle></clipPath></defs>
 <g clip-path="url(#anthemFlagClip)">
@@ -761,37 +674,6 @@ window.addEventListener('uzum:liteToggled', function(e){
      насколько критично то, чтобы интерфейс вообще был виден. */
 document.querySelectorAll(".stagger").forEach(function(e){e.style.opacity="1",e.classList.remove("stagger")});</script>
 <div class="footer parallax-el" data-depth="0.02" data-i18n="footer.tagline">U · СЛА приёмки · синхронизировано с Google Таблицей</div>
-<div class="footer-holiday parallax-el" data-depth="0.02" id="footer-holiday">
-<svg aria-hidden="true" class="uz-flag-wave uz-flag-wave--footer" id="uz-flag-footer" viewbox="0 0 60 36" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<clipPath id="uzFlagClipFooter"><path d="M0,4 C10,0 20,8 30,4 C40,0 50,8 60,4 L60,32 C50,36 40,28 30,32 C20,36 10,28 0,32 Z"/></clipPath>
-</defs>
-<g clip-path="url(#uzFlagClipFooter)">
-<rect fill="#0099B5" height="12" width="60" y="0"></rect>
-<rect fill="#CE1126" height="1.2" width="60" y="12"></rect>
-<rect fill="#fff" height="9.6" width="60" y="13.2"></rect>
-<rect fill="#CE1126" height="1.2" width="60" y="22.8"></rect>
-<rect fill="#1EB53A" height="12" width="60" y="24"></rect>
-<circle cx="9" cy="6" fill="#fff" r="3.1"></circle>
-<circle cx="10.4" cy="6" fill="#0099B5" r="2.6"></circle>
-<g fill="#fff">
-<circle cx="17" cy="3.4" r="0.55"></circle>
-<circle cx="19.4" cy="3.4" r="0.55"></circle>
-<circle cx="21.8" cy="3.4" r="0.55"></circle>
-<circle cx="15.8" cy="5.4" r="0.55"></circle>
-<circle cx="18.2" cy="5.4" r="0.55"></circle>
-<circle cx="20.6" cy="5.4" r="0.55"></circle>
-<circle cx="23" cy="5.4" r="0.55"></circle>
-<circle cx="17" cy="7.4" r="0.55"></circle>
-<circle cx="19.4" cy="7.4" r="0.55"></circle>
-<circle cx="21.8" cy="7.4" r="0.55"></circle>
-<circle cx="18.2" cy="9.4" r="0.55"></circle>
-<circle cx="20.6" cy="9.4" r="0.55"></circle>
-</g>
-</g>
-</svg>
-<span data-i18n="footer.holiday" id="footer-holiday-text">35 лет Независимости Узбекистана 🇺🇿</span>
-</div>
 <div class="footer-legal parallax-el" data-depth="0.02">
 <div class="footer-legal-menu">
 <button class="footer-legal-link" data-i18n="footer.privacy" id="link-privacy" type="button">Политика конфиденциальности</button>
@@ -954,9 +836,6 @@ document.querySelectorAll(".stagger").forEach(function(e){e.style.opacity="1",e.
 <script>
 window.UZ_I18N_DICT = {
   ru: {
-    "hero.title": "С Днём Независимости!",
-    "hero.sub": "Республика Узбекистан",
-    "hero.years": "лет",
     "brand.openHub": "Открыть UZUM HUB",
     "brand.name": "СЛА приёмки",
     "brand.sub": "Экосистема ПВЗ",
@@ -992,7 +871,6 @@ window.UZ_I18N_DICT = {
     "entries.late": "Просрочка:",
     "mascot.choosePvz": "выбери ПВЗ...",
     "footer.tagline": "U · СЛА приёмки · синхронизировано с Google Таблицей",
-    "footer.holiday": "35 лет Независимости Узбекистана 🇺🇿",
     "footer.privacy": "Политика конфиденциальности",
     "footer.consent": "Согласие на обработку данных",
     "footer.copy": "© Uzum,",
@@ -1089,9 +967,6 @@ window.UZ_I18N_DICT = {
     "legal.consentTitle": "Согласие на обработку данных"
   },
   uz: {
-    "hero.title": "Mustaqillik bayrami muborak!",
-    "hero.sub": "O‘zbekiston Respublikasi",
-    "hero.years": "yil",
     "brand.openHub": "UZUM HUB’ni ochish",
     "brand.name": "Qabul SLA",
     "brand.sub": "PVZ ekotizimi",
@@ -1127,7 +1002,6 @@ window.UZ_I18N_DICT = {
     "entries.late": "Kechikish:",
     "mascot.choosePvz": "PVZ tanlang...",
     "footer.tagline": "U · Qabul SLA · Google Jadvali bilan sinxronlashtirilgan",
-    "footer.holiday": "O‘zbekiston Mustaqilligiga 35 yil 🇺🇿",
     "footer.privacy": "Maxfiylik siyosati",
     "footer.consent": "Ma'lumotlarni qayta ishlashga rozilik",
     "footer.copy": "© Uzum,",
@@ -2795,133 +2669,51 @@ if(wavePathA&&wavePathB&&wavePathC)startIdle()
     if (anthemBtn) anthemBtn.classList.remove('is-playing');
   }
 
-  if (anthemBtn) {
-    anthemBtn.addEventListener('click', function(){
-      var playing = anthemBtn.classList.contains('is-playing');
-      if (playing) {
-        stopAnthem();
-      } else {
-        anthemBtn.classList.add('is-playing');
-        startAnthem();
-      }
-    });
-  }
-
-  // ---------- ЗВЁЗДЫ В ФОНЕ ----------
-  // Статичный слой мерцающих точек-звёзд поверх фона, перекликается со
-  // звёздами на флаге Узбекистана. Генерируется один раз при загрузке —
-  // фиксированные позиции, только анимация мерцания через CSS.
-  var starsLayer = document.getElementById('uz-stars-layer');
-  function buildStars(){
-    if (!starsLayer || reduceMotion || document.documentElement.classList.contains('force-lite')) return;
-    if (starsLayer.childElementCount) return; // уже построено
-    var frag = document.createDocumentFragment();
-    var count = window.innerWidth < 480 ? 34 : 54;
-    for (var i = 0; i < count; i++) {
-      var s = document.createElement('span');
-      s.className = 'uz-star';
-      var size = 1 + Math.random() * 2.1;
-      s.style.width = size + 'px';
-      s.style.height = size + 'px';
-      s.style.left = (Math.random() * 100) + '%';
-      s.style.top = (Math.random() * 100) + '%';
-      s.style.animationDelay = (Math.random() * 3.6).toFixed(2) + 's';
-      s.style.animationDuration = (2.6 + Math.random() * 2.4).toFixed(2) + 's';
-      frag.appendChild(s);
-    }
-    starsLayer.appendChild(frag);
-  }
-  buildStars();
-
-  // ---------- САЛЮТ (CANVAS-ФЕЙЕРВЕРК) ----------
-  // Периодические залпы фейерверка частицами в цветах флага Узбекистана
-  // (голубой/белый/зелёный) плюс золотой акцент. Полноценная физика частиц
-  // на canvas, а не CSS-анимация — так залпы выглядят по-настоящему объёмно.
-  var saluteCanvas = document.getElementById('uz-salute-canvas');
-  var saluteCtx = saluteCanvas ? saluteCanvas.getContext('2d') : null;
-  var saluteParticles = [];
-  var saluteRunning = false;
-  var saluteDPR = Math.min(window.devicePixelRatio || 1, 2);
-  var SALUTE_COLORS = ['#0099B5', '#ffffff', '#1EB53A', '#FFD166', '#CE1126'];
-
-  function saluteResize(){
-    if (!saluteCanvas) return;
-    saluteCanvas.width = Math.round(window.innerWidth * saluteDPR);
-    saluteCanvas.height = Math.round(window.innerHeight * saluteDPR);
-  }
-
-  function spawnSaluteBurst(){
-    if (!saluteCtx) return;
-    var cx = (0.18 + Math.random() * 0.64) * window.innerWidth;
-    var cy = (0.12 + Math.random() * 0.32) * window.innerHeight;
-    var color = SALUTE_COLORS[Math.floor(Math.random() * SALUTE_COLORS.length)];
-    var count = 34 + Math.floor(Math.random() * 18);
-    for (var i = 0; i < count; i++) {
-      var angle = (Math.PI * 2 * i) / count + Math.random() * 0.25;
-      var speed = 1.6 + Math.random() * 2.6;
-      saluteParticles.push({
-        x: cx, y: cy,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: 1,
-        decay: 0.012 + Math.random() * 0.012,
-        color: color,
-        size: 1.6 + Math.random() * 1.8
-      });
-    }
-  }
-
-  function saluteTick(){
-    if (!saluteCtx) return;
-    saluteCtx.setTransform(saluteDPR, 0, 0, saluteDPR, 0, 0);
-    saluteCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    for (var i = saluteParticles.length - 1; i >= 0; i--) {
-      var p = saluteParticles[i];
-      p.vy += 0.028; // гравитация
-      p.vx *= 0.985;
-      p.vy *= 0.985;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= p.decay;
-      if (p.life <= 0) { saluteParticles.splice(i, 1); continue; }
-      saluteCtx.globalAlpha = Math.max(0, p.life);
-      saluteCtx.fillStyle = p.color;
-      saluteCtx.beginPath();
-      saluteCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      saluteCtx.fill();
-    }
-    saluteCtx.globalAlpha = 1;
-    if (saluteParticles.length > 0) {
-      requestAnimationFrame(saluteTick);
+  function toggleAnthem(){
+    if (!anthemBtn) return;
+    var playing = anthemBtn.classList.contains('is-playing');
+    if (playing) {
+      stopAnthem();
     } else {
-      saluteRunning = false;
+      anthemBtn.classList.add('is-playing');
+      startAnthem();
     }
   }
 
-  function runSaluteVolley(){
-    if (!saluteCanvas || !saluteCtx || reduceMotion || document.documentElement.classList.contains('force-lite')) return;
-    if (document.hidden) return;
-    saluteResize();
-    var shots = 2 + Math.floor(Math.random() * 2);
-    for (var i = 0; i < shots; i++) {
-      setTimeout(spawnSaluteBurst, i * 260);
+  // ---------- ПАСХАЛКА: гимн запускается долгим нажатием на логотип "U" ----------
+  // Кнопка-герб убрана из видимого интерфейса, но сама логика гимна (YouTube
+  // Player API) осталась рабочей — переключаем её через long-press (~1.2с)
+  // на брендовом значке, чтобы это была скрытая пасхалка, а не заметная кнопка.
+  var logoMark = document.getElementById('brand-mark');
+  if (logoMark && anthemBtn) {
+    var ANTHEM_HOLD_MS = 1200;
+    var holdTimer = null;
+    var holdTriggered = false;
+
+    function holdStart(e){
+      holdTriggered = false;
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(function(){
+        holdTriggered = true;
+        toggleAnthem();
+      }, ANTHEM_HOLD_MS);
     }
-    if (!saluteRunning) {
-      saluteRunning = true;
-      requestAnimationFrame(saluteTick);
+    function holdCancel(){
+      clearTimeout(holdTimer);
     }
+    function suppressIfHeld(e){
+      // Если пасхалка уже сработала по долгому нажатию — не даём сработать
+      // обычному клику (переходу по ссылке на UZUM HUB).
+      if (holdTriggered) { e.preventDefault(); e.stopPropagation(); holdTriggered = false; }
+    }
+
+    logoMark.addEventListener('pointerdown', holdStart, { passive: true });
+    logoMark.addEventListener('pointerup', holdCancel, { passive: true });
+    logoMark.addEventListener('pointerleave', holdCancel, { passive: true });
+    logoMark.addEventListener('pointercancel', holdCancel, { passive: true });
+    logoMark.addEventListener('click', suppressIfHeld);
   }
 
-  function scheduleNextSalute(){
-    var delay = 20000 + Math.random() * 14000; // раз в ~20-34 сек
-    setTimeout(function(){ runSaluteVolley(); scheduleNextSalute(); }, delay);
-  }
-
-  window.addEventListener('resize', saluteResize, { passive: true });
-  saluteResize();
-  // Первый залп — вскоре после загрузки, чтобы праздник сразу было видно.
-  setTimeout(runSaluteVolley, 1600);
-  scheduleNextSalute();
 })();
 </script>
 <style>
@@ -2994,7 +2786,6 @@ html.force-lite .who-filled-btn::before{display:none}
   body{padding-left:24px;padding-right:24px}
   .wrap{max-width:1180px}
   .wrap.desktop-layout{display:grid;grid-template-columns:280px minmax(0,480px) 320px;align-items:start;gap:20px}
-  .wrap.desktop-layout>#uz-hero-banner{grid-column:1 / -1}
   .layout-col{display:flex;flex-direction:column;gap:16px;min-width:0}
   .layout-col--left{grid-column:1}
   .layout-col--center{grid-column:2}
