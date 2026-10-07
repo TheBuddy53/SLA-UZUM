@@ -612,6 +612,10 @@ window.addEventListener('uzum:liteToggled', function(e){
 <span class="lbl" data-i18n="form.durationLabel">Заняло по времени</span>
 <span class="val" id="duration-val">—</span>
 </div>
+<div class="rp-extra"><label class="rp-lbl" for="formed-count">Сформировано заказов <small>(для расчёта СЛА, необязательно)</small></label><input class="rp-in" id="formed-count" type="number" inputmode="numeric" min="0" placeholder="напр. 27"></div>
+<div class="late-box" id="late-box"><div class="late-inner"><div class="late-head">⏰ Приёмка завершена после 15:00 — укажи причину</div>
+<select class="rp-in" id="late-select"><option value="">Выбери причину…</option><option>Поздняя доставка на ПВЗ</option><option>Большой объём заказов</option><option>Не хватало сотрудников</option><option>Проблемы с системой / интернетом</option><option>Недовоз / пересорт</option><option>Другое</option></select>
+<input class="rp-in" id="late-other" maxlength="200" placeholder="Опиши причину" style="display:none"></div></div>
 <div style="height:16px"></div>
 <button class="btn primary glass-edge" disabled="" id="btn-submit" type="button">
 <span aria-hidden="true" class="btn-rim"></span>
@@ -620,6 +624,7 @@ window.addEventListener('uzum:liteToggled', function(e){
 <span class="btn-click-shine" id="submit-shine"></span>
 <span data-i18n="form.submitLabel" id="submit-label">Сохранить в таблицу</span>
 </button>
+<button class="btn glass-edge btn-report" id="btn-report" type="button"><span aria-hidden="true" class="btn-rim"></span><span aria-hidden="true" class="btn-specular"></span><span aria-hidden="true" class="btn-bloom2"></span><span class="rep-ico">📊</span><span>Взять отчёт СЛА</span></button>
 </div>
 <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.14s">
 <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
@@ -1441,7 +1446,7 @@ function Re(e){const t=document.getElementById("entry-list"),n=t.querySelector("
 // Запоминаем полные данные этой записи по имени ПВЗ — на них опирается детальный отчёт
 window.lastFilledEntries[e.pvz]=e,i.addEventListener("click",()=>{"function"==typeof openPvzReport&&openPvzReport(e.pvz)}),i.addEventListener("keydown",t=>{"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),"function"==typeof openPvzReport&&openPvzReport(e.pvz))})}
 // ============ ОТПРАВКА ============
-window.lastFilledEntries=window.lastFilledEntries||{},ue.addEventListener("click",async()=>{const t=a()||{},n={date:todayStr(),pvz:me,arriveMode:Le.arrive,factArrive:"time"===Le.arrive?document.getElementById("fact-arrive").value:"",leaveMode:Le.leave,factLeave:"time"===Le.leave?document.getElementById("fact-leave").value:"",start:oe.value,end:le.value,missing:document.getElementById("missing-count").value,jira:_e.join(", "),telegramId:t.telegramId||"",telegramUsername:t.telegramUsername||""};var i;ne(ue),(i=ue)&&(i.classList.remove("shine-hit"),i.offsetWidth,i.classList.add("shine-hit"),clearTimeout(i._shineTimer),i._shineTimer=setTimeout(()=>i.classList.remove("shine-hit"),320)),ue.disabled=!0,document.getElementById("submit-label").textContent=window.t("toast.saving");try{if(0===e.indexOf("PASTE_"))await new Promise(e=>setTimeout(e,450)),Re(n),Ie(window.t("toast.saveDemo"),"info");else{const i2=await fetch(e,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(n)}),i=await i2.json();if(!i.ok)throw new Error(i.error||window.t("toast.errorGeneric"));{Re(n),Ie(window.t("toast.saved"),"success");const e=ue.getBoundingClientRect();!function(e,t){if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;const n=["#9D4DFF","#7000FF","#34C77B","#FFD166","#FF6B6B","#FFFFFF"];for(let i=0;i<18;i++){const a=document.createElement("span");a.className="confetti-piece";const r=Math.random()*Math.PI*2,s=40+90*Math.random();a.style.setProperty("--dx",(Math.cos(r)*s).toFixed(1)+"px"),a.style.setProperty("--dy",(Math.sin(r)*s-30).toFixed(1)+"px"),a.style.left=e+"px",a.style.top=t+"px",a.style.background=n[i%n.length],a.style.animationDelay=.08*Math.random()+"s",document.body.appendChild(a),setTimeout(()=>a.remove(),1e3)}}(e.left+e.width/2,e.top+e.height/2)}}E(),ee(function(){const _v=Ve();return _v[Math.floor(Math.random()*_v.length)]}()),x(),setTimeout(()=>x(),220),document.getElementById("fact-arrive").value="",document.getElementById("fact-leave").value="",oe.value="",le.value="",document.getElementById("missing-count").value="0",ce.style.display="none"}catch(e){w(),Ie(window.t("toast.errorPrefix")+e.message,"error"),ee(window.t("toast.somethingWrong"))}finally{document.getElementById("submit-label").textContent=window.t("form.submitLabel"),Ae()}}),
+window.lastFilledEntries=window.lastFilledEntries||{},ue.addEventListener("click",async()=>{const t=a()||{},n={date:todayStr(),pvz:me,arriveMode:Le.arrive,factArrive:"time"===Le.arrive?document.getElementById("fact-arrive").value:"",leaveMode:Le.leave,factLeave:"time"===Le.leave?document.getElementById("fact-leave").value:"",start:oe.value,end:le.value,missing:document.getElementById("missing-count").value,jira:_e.join(", "),telegramId:t.telegramId||"",telegramUsername:t.telegramUsername||"",lateReason:window.__slaLate?window.__slaLate():"",formed:(document.getElementById("formed-count")||{}).value||""};var i;ne(ue),(i=ue)&&(i.classList.remove("shine-hit"),i.offsetWidth,i.classList.add("shine-hit"),clearTimeout(i._shineTimer),i._shineTimer=setTimeout(()=>i.classList.remove("shine-hit"),320)),ue.disabled=!0,document.getElementById("submit-label").textContent=window.t("toast.saving");try{if(0===e.indexOf("PASTE_"))await new Promise(e=>setTimeout(e,450)),Re(n),Ie(window.t("toast.saveDemo"),"info");else{const i2=await fetch(e,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(n)}),i=await i2.json();if(!i.ok)throw new Error(i.error||window.t("toast.errorGeneric"));{Re(n),Ie(window.t("toast.saved"),"success");const e=ue.getBoundingClientRect();!function(e,t){if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;const n=["#9D4DFF","#7000FF","#34C77B","#FFD166","#FF6B6B","#FFFFFF"];for(let i=0;i<18;i++){const a=document.createElement("span");a.className="confetti-piece";const r=Math.random()*Math.PI*2,s=40+90*Math.random();a.style.setProperty("--dx",(Math.cos(r)*s).toFixed(1)+"px"),a.style.setProperty("--dy",(Math.sin(r)*s-30).toFixed(1)+"px"),a.style.left=e+"px",a.style.top=t+"px",a.style.background=n[i%n.length],a.style.animationDelay=.08*Math.random()+"s",document.body.appendChild(a),setTimeout(()=>a.remove(),1e3)}}(e.left+e.width/2,e.top+e.height/2)}}E(),ee(function(){const _v=Ve();return _v[Math.floor(Math.random()*_v.length)]}()),x(),setTimeout(()=>x(),220),document.getElementById("fact-arrive").value="",document.getElementById("fact-leave").value="",oe.value="",le.value="",document.getElementById("missing-count").value="0",ce.style.display="none"}catch(e){w(),Ie(window.t("toast.errorPrefix")+e.message,"error"),ee(window.t("toast.somethingWrong"))}finally{document.getElementById("submit-label").textContent=window.t("form.submitLabel"),Ae()}}),
 // разблокировка AudioContext по первому тапу (политика браузеров)
 document.body.addEventListener("touchstart",c,{once:!0}),document.body.addEventListener("click",c,{once:!0});let Oe=null;function $e(){clearTimeout(Oe),Oe=setTimeout(()=>document.body.classList.add("idle-paused"),25e3)}function De(){document.body.classList.remove("idle-paused"),$e()}
 // ===== Футер: год + версия =====
@@ -3054,5 +3059,79 @@ html.force-lite .who-filled-btn::before{display:none}
 })();
 </script>
 
+
+<style>
+.btn-report{position:relative;overflow:hidden;width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;color:#fff;border:1px solid rgba(255,255,255,.28);background:linear-gradient(120deg,#17b26a,#34C77B 35%,#7000FF 100%);background-size:200% 100%;box-shadow:0 8px 30px rgba(52,199,123,.35),0 0 0 1px rgba(52,199,123,.25) inset;animation:repGrad 6s ease-in-out infinite;transition:transform .35s var(--spring),box-shadow .3s}
+.btn-report:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 12px 38px rgba(52,199,123,.5)}
+.btn-report:active{transform:scale(.97)}
+.btn-report:after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:repShine 3.6s ease-in-out infinite}
+.rep-ico{display:inline-block;animation:repBob 2.4s ease-in-out infinite}
+@keyframes repGrad{0%,100%{background-position:0 0}50%{background-position:100% 0}}
+@keyframes repShine{0%,55%{left:-60%}100%{left:130%}}
+@keyframes repBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.rp-extra{margin-top:14px}.rp-lbl{display:block;font-size:12px;color:var(--text-muted);margin:0 0 6px 4px}.rp-lbl small{color:var(--text-dim)}
+.rp-in{width:100%;box-sizing:border-box;padding:12px 14px;border-radius:var(--r-md);border:1px solid var(--glass-border-dark);background:rgba(20,6,45,.55);color:#fff;font:600 15px Inter,sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+.rp-in:focus{border-color:var(--purple-light);box-shadow:0 0 0 3px rgba(157,77,255,.25)}.rp-in option{background:#1a0838}
+.late-box{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s var(--ease),opacity .35s,margin .35s;margin-top:0}
+.late-box.show{grid-template-rows:1fr;opacity:1;margin-top:14px}.late-inner{overflow:hidden;min-height:0}
+.late-box.show .late-inner{padding:14px;border-radius:var(--r-md);background:rgba(255,194,75,.08);border:1px solid rgba(255,194,75,.5);box-shadow:0 0 22px var(--yellow-glow)}
+.late-head{font-weight:700;color:var(--yellow);margin-bottom:10px;font-size:13px}.late-inner .rp-in+.rp-in{margin-top:8px}
+.late-box.shake .late-inner{animation:repShake .45s}@keyframes repShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.rep-ov{position:fixed;inset:0;z-index:9500;display:flex;align-items:flex-end;justify-content:center;background:rgba(3,0,8,.65);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .3s}
+.rep-ov.show{opacity:1;pointer-events:auto}
+.rep-modal{width:min(560px,100%);max-height:88vh;overflow:auto;box-sizing:border-box;padding:20px 18px 24px;border-radius:var(--r-xl) var(--r-xl) 0 0;background:linear-gradient(160deg,rgba(50,20,90,.92),rgba(10,2,25,.96));border:1px solid var(--glass-border-dark);transform:translateY(40px) scale(.98);transition:transform .45s var(--spring)}
+.rep-ov.show .rep-modal{transform:none}
+@media(min-width:640px){.rep-ov{align-items:center}.rep-modal{border-radius:var(--r-xl)}}
+.rep-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.rep-title{font-size:20px;font-weight:800}
+.rep-x{background:none;border:0;color:var(--text-muted);font-size:20px;cursor:pointer}
+.rep-ctl{display:grid;gap:10px;margin-bottom:14px}.rep-go,.rep-copy{padding:13px;border:0;border-radius:var(--r-md);font:800 15px Inter,sans-serif;color:#fff;cursor:pointer;background:linear-gradient(120deg,#34C77B,#7000FF);transition:transform .25s var(--spring)}
+.rep-go:active,.rep-copy:active{transform:scale(.96)}.rep-copy{display:none;width:100%;margin-top:12px;background:linear-gradient(120deg,#7000FF,#9D4DFF)}
+.rep-sum{margin:6px 2px 10px;color:var(--text-muted);font-size:14px}.rep-sum b{color:#fff}.rep-sum .r{color:var(--red)}.rep-load{color:var(--text-muted);padding:16px 4px}
+.rep-card{margin-bottom:10px;padding:12px 14px;border-radius:var(--r-md);background:rgba(255,255,255,.05);border-left:4px solid var(--green);animation:riseIn .4s both}
+.rep-card.warn{border-left-color:var(--yellow)}.rep-card.bad{border-left-color:var(--red)}
+.rep-card pre{margin:0;white-space:pre-wrap;word-break:break-word;font:500 14px/1.6 Inter,sans-serif;color:var(--text-hint)}
+</style>
+<div class="rep-ov" id="rep-ov"><div class="rep-modal"><div class="rep-top"><div class="rep-title">📊 Отчёт СЛА</div><button class="rep-x" id="rep-x" type="button" aria-label="Закрыть">✕</button></div>
+<div class="rep-ctl"><div><label class="rp-lbl" for="rep-date">С какого числа взять отчёт</label><input class="rp-in" id="rep-date" type="date"></div>
+<div><label class="rp-lbl" for="rep-terr">Территория</label><select class="rp-in" id="rep-terr"></select></div>
+<button class="rep-go" id="rep-go" type="button">Сформировать отчёт</button></div>
+<div id="rep-out"></div><button class="rep-copy" id="rep-copy" type="button">Скопировать всё для Telegram</button></div></div>
+<script>
+(function(){
+var API="https://script.google.com/macros/s/AKfycbw_70rF0X3TqKNoi0894rdo2Ze2mR6lDLcWjEeVre23v09ZkL-gJLgk82YPGihFDaGm/exec";
+var $=function(i){return document.getElementById(i)},LATE=900,SLA16=960;
+var mins=function(v){var m=/^(\d{1,2}):(\d{2})/.exec(v||"");return m?+m[1]*60+ +m[2]:null};
+var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+/* ---- причина задержки: плашка сама появляется, если конец приёмки позже 15:00 ---- */
+var end=$("end-time"),st=$("start-time"),box=$("late-box"),sel=$("late-select"),oth=$("late-other"),fc=$("formed-count");
+function late(){var m=mins(end&&end.value);return m!==null&&m>LATE}
+function sync(){var l=late();box.classList.toggle("show",l);if(!l){sel.value="";oth.value=""}oth.style.display=sel.value==="Другое"?"block":"none";if(end.value===""&&st&&st.value==="")fc.value=""}
+if(end&&box){["input","change"].forEach(function(e){end.addEventListener(e,sync)});sel.addEventListener("change",sync);setInterval(sync,700)}
+window.__slaLate=function(){if(!late())return"";if(sel.value==="Другое")return oth.value.trim()?"Другое: "+oth.value.trim():"";return sel.value};
+var sb=$("btn-submit");sb&&sb.addEventListener("click",function(e){if(late()&&!window.__slaLate()){e.stopImmediatePropagation();e.preventDefault();box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");sel.focus()}},true);
+/* ---- отчёт ---- */
+var ov=$("rep-ov"),dt=$("rep-date"),tr=$("rep-terr"),out=$("rep-out"),cp=$("rep-copy"),texts=[];
+function today(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function openRep(){if(!tr.options.length){(window.TERRITORIES||[]).forEach(function(t){tr.add(new Option(t.label,t.id))});tr.add(new Option("Все территории","all"))}if(!dt.value)dt.value=today();ov.classList.add("show")}
+function closeRep(){ov.classList.remove("show")}
+function card(p,d,dd){var M=parseInt(d.missing,10)||0,F=parseInt(d.formed,10)||0,A=F?F-M:null,pct=F?(A/F*100).toFixed(1)+"%":"—",em=mins(d.end),L=em!==null&&em>LATE,
+s16=!F?"—":em===null?"—":em<=SLA16?pct:"н/д (приёмка завершена в "+d.end+")";
+var l=["📍 "+p,"📅 Дата: "+dd,"📉 SLA ≤ 16:00: "+s16,"📊 SLA до конца дня: "+pct,"📦 Сформировано: "+(F||"—")+" | 📥 Принято: "+(A===null?"—":A)+" (Недовоз: "+M+")","🚚 Приезд доставки: "+(d.arrive||"—"),"🚚 Уезд доставки: "+(d.leave||"—"),"🏢 Первый пик на ПВЗ: "+(d.start||"—"),"🏢 Последний пик на ПВЗ: "+(d.end||"—")];
+if(L)l.push("⏰ Причина задержки (после 15:00): "+(d.lateReason||"не указана"));
+return{t:l.join("\n"),k:L?"bad":M>0?"warn":"ok"}}
+function go(){var p=dt.value.split("-");if(p.length<3)return;var dd=p[2]+"."+p[1]+"."+p[0];out.innerHTML='<div class="rep-load">Загружаю данные из таблицы…</div>';cp.style.display="none";
+fetch(API+"?action=sla_report&date="+encodeURIComponent(dd)).then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.error||"пустой ответ");
+var list=[];(window.TERRITORIES||[]).forEach(function(t){if(tr.value==="all"||t.id===tr.value)(t.pvz||[]).forEach(function(x){if(list.indexOf(x)<0)list.push(x)})});
+var by={};(j.entries||[]).forEach(function(e){by[e.pvz]=e});var html="",miss=[];texts=[];
+list.forEach(function(x){var d=by[x];if(!d){miss.push(x);return}var c=card(x,d,dd);texts.push(c.t);html+='<div class="rep-card '+c.k+'"><pre>'+esc(c.t)+'</pre></div>'});
+var sum='<div class="rep-sum"><b>'+texts.length+'</b> из '+list.length+' ПВЗ внесли данные'+(miss.length?' · <span class="r">без данных: '+miss.length+'</span>':'')+'</div>';
+if(miss.length){var m="❌ Не внесли данные ("+miss.length+"): "+miss.join(", ");html+='<div class="rep-card bad"><pre>'+esc(m)+'</pre></div>';texts.push(m)}
+out.innerHTML=sum+html;if(texts.length)cp.style.display="block"}).catch(function(e){out.innerHTML='<div class="rep-card bad"><pre>'+esc("Не удалось получить отчёт: "+e.message+"\nПроверь, что в Apps Script добавлен action=sla_report и сделан новый деплой.")+'</pre></div>'})}
+$("btn-report").addEventListener("click",openRep);$("rep-x").addEventListener("click",closeRep);$("rep-go").addEventListener("click",go);
+ov.addEventListener("click",function(e){if(e.target===ov)closeRep()});document.addEventListener("keydown",function(e){if(e.key==="Escape")closeRep()});
+cp.addEventListener("click",function(){var t=texts.join("\n\n"),done=function(){cp.textContent="Скопировано ✓";setTimeout(function(){cp.textContent="Скопировать всё для Telegram"},1800)};
+if(navigator.clipboard)navigator.clipboard.writeText(t).then(done);else{var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}});
+})();
+</script>
 </body>
 </html>
