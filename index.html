@@ -585,7 +585,7 @@ window.addEventListener('uzum:liteToggled', function(e){
 <div class="field">
 <label data-i18n="form.endLabel">Окончание приёмки</label>
 <input id="end-time" type="time"/>
-<div class="late-hint" id="late-hint">Закончили позже 15:00 — ниже появится выбор «Причина задержки»</div>
+<div class="late-hint" id="late-hint">Причина задержки появится, если приёмка дольше 1ч, закончилась после 15:00 или данные вносят после 15:00</div>
 </div>
 <div class="field">
 <label data-i18n="form.missingLabel">Неприбывшие заказы (кол-во)</label>
@@ -600,7 +600,7 @@ window.addEventListener('uzum:liteToggled', function(e){
 <span class="val" id="duration-val">—</span>
 </div>
 <div class="field rp-formed" style="margin-top:14px"><label for="formed-count">Сформировано заказов <span class="rp-tag">нужно для СЛА</span></label><input class="rp-in" id="formed-count" type="number" inputmode="numeric" min="0" placeholder="напр. 27"></div>
-<div class="late-box" id="late-box"><div class="late-inner"><div class="late-head">⏰ Приёмка завершена после 15:00 — укажи причину</div>
+<div class="late-box" id="late-box"><div class="late-inner"><div class="late-head" id="late-head">⏰ Укажи причину задержки</div>
 <select class="rp-in" id="late-select"><option value="">Выбери причину…</option><option>Поздняя доставка на ПВЗ</option><option>Большой объём заказов</option><option>Не хватало сотрудников</option><option>Проблемы с системой / интернетом</option><option>Недовоз / пересорт</option><option>Другое</option></select>
 <input class="rp-in" id="late-other" maxlength="200" placeholder="Опиши причину" style="display:none"></div></div>
 <div style="height:16px"></div>
@@ -3088,9 +3088,13 @@ var mins=function(v){var m=/^(\d{1,2}):(\d{2})/.exec(v||"");return m?+m[1]*60+ +
 var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
 /* ---- причина задержки: плашка сама появляется, если конец приёмки позже 15:00 ---- */
 var end=$("end-time"),st=$("start-time"),box=$("late-box"),sel=$("late-select"),oth=$("late-other"),fc=$("formed-count");
-function late(){var m=mins(end&&end.value);return m!==null&&m>LATE}
-function sync(){var l=late();box.classList.toggle("show",l);var hh=document.getElementById("late-hint");if(hh)hh.style.display=l?"none":"block";if(!l){sel.value="";oth.value=""}oth.style.display=sel.value==="Другое"?"block":"none";if(end.value===""&&st&&st.value==="")fc.value=""}
-if(end&&box){["input","change"].forEach(function(e){end.addEventListener(e,sync)});sel.addEventListener("change",sync);setInterval(sync,700)}
+function late15(){var m=mins(end&&end.value);return m!==null&&m>LATE}
+function over(){var a=mins(st&&st.value),b=mins(end&&end.value);if(a===null||b===null||a===b)return false;var n=b-a;if(n<0)n+=1440;return n>60}
+function nowLate(){var d=new Date();return d.getHours()*60+d.getMinutes()>LATE}
+function late(){return late15()||over()||nowLate()}
+function lateWhy(){return late15()?"Приёмка завершена после 15:00 — укажи причину":over()?"Приёмка заняла больше 1ч — укажи причину":"Данные вносятся после 15:00 — укажи причину"}
+function sync(){var l=late();var lh=document.getElementById("late-head");if(l&&lh)lh.textContent="⏰ "+lateWhy();box.classList.toggle("show",l);var hh=document.getElementById("late-hint");if(hh)hh.style.display=l?"none":"block";if(!l){sel.value="";oth.value=""}oth.style.display=sel.value==="Другое"?"block":"none";if(end.value===""&&st&&st.value==="")fc.value=""}
+if(end&&box){["input","change"].forEach(function(e){end.addEventListener(e,sync);st&&st.addEventListener(e,sync)});sel.addEventListener("change",sync);setInterval(sync,700)}
 window.__slaLate=function(){if(!late())return"";if(sel.value==="Другое")return oth.value.trim()?"Другое: "+oth.value.trim():"";return sel.value};
 var sb=$("btn-submit");sb&&sb.addEventListener("click",function(e){if(late()&&!window.__slaLate()){e.stopImmediatePropagation();e.preventDefault();box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");sel.focus()}},true);
 /* ---- отчёт ---- */
@@ -3152,13 +3156,13 @@ function pl(n){var a=n%10,b=n%100;return b>10&&b<20?"тикетов":a===1?"ти
 function card(p,d,dd){var M=parseInt(d.missing,10)||0,F=parseInt(d.formed,10)||0,A=F?F-M:null,pct=F?(A/F*100).toFixed(1)+"%":"—",em=mins(d.end),L=em!==null&&em>LATE,
 s16=!F?"—":em===null?"—":em<=SLA16?pct:"н/д (приёмка завершена в "+d.end+")";
 var l=["📍 "+p,"📅 Дата: "+dd,"📉 SLA ≤ 16:00: "+s16,"📊 SLA до конца дня: "+pct,"📦 Сформировано: "+(F||"—")+" | 📥 Принято: "+(A===null?"—":A)+" (Недовоз: "+M+")","🚚 Приезд доставки: "+(d.arrive||"—"),"🚚 Уезд доставки: "+(d.leave||"—"),"🏢 Первый пик на ПВЗ: "+(d.start||"—"),"🏢 Последний пик на ПВЗ: "+(d.end||"—")];
-if(L)l.push("⏰ Причина задержки (после 15:00): "+(d.lateReason||"не указана"));
+if(L||d.lateReason)l.push("⏰ Причина задержки"+(L?" (после 15:00)":"")+": "+(d.lateReason||"не указана"));
 return{p:p,d:d,t:l.join("\n"),k:L?"bad":M>0?"warn":"ok",M:M,F:F,A:A,pct:pct,L:L,s16:(!F||em===null)?"—":em<=SLA16?pct:"н/д",links:parseLinks(d.jira)}}
 /* ---- разметка ---- */
 function cell(l,v,cls,note){return'<div class="rp-cell'+(cls?" "+cls:"")+'"><span>'+l+"</span><b>"+esc(v)+"</b>"+(note?"<em>"+esc(note)+"</em>":"")+"</div>"}
 function stop(v,l){var ok=v&&v!=="—";return'<div class="tl-s'+(ok?"":" nil")+'"><i></i><b>'+esc(ok?v:"—")+"</b><small>"+l+"</small></div>"}
-function rowHtml(c,i){var d=c.d,m=[];if(c.F)m.push(c.A+" из "+c.F+" принято");else m.push("СЛА не посчитан");if(c.M)m.push('<span class="m-y">недовоз '+c.M+"</span>");if(c.L)m.push('<span class="m-r">после 15:00</span>');
-var late=c.L?'<div class="rp-late">'+I.clock+"<div><b>Приёмка после 15:00.</b> Причина: "+esc(d.lateReason||"не указана")+"</div></div>":"";
+function rowHtml(c,i){var d=c.d,m=[];if(c.F)m.push(c.A+" из "+c.F+" принято");else m.push("СЛА не посчитан");if(c.M)m.push('<span class="m-y">недовоз '+c.M+"</span>");if(c.L)m.push('<span class="m-r">после 15:00</span>');else if(d.lateReason)m.push('<span class="m-y">задержка</span>');
+var late=(c.L||d.lateReason)?'<div class="rp-late">'+I.clock+"<div><b>"+(c.L?"Приёмка после 15:00.":"Задержка.")+"</b> Причина: "+esc(d.lateReason||"не указана")+"</div></div>":"";
 return'<article class="rp-item '+c.k+'" data-i="'+i+'" data-n="'+esc(c.p.toLowerCase())+'" data-s="'+(c.M>0?1:0)+'" data-l="'+(c.L?1:0)+'">'
 +'<button type="button" class="rp-row" aria-expanded="false"><span class="rp-dot"></span><span class="rp-main"><b class="rp-name">'+esc(c.p)+'</b><span class="rp-meta">'+(m.join(" · ")||"Заказы не указаны")+"</span></span>"
 +'<span class="rp-pill'+(c.F?(c.M>0?" y":""):" nil")+'">'+esc(c.F?c.pct:"—")+'</span><span class="rp-chev" aria-hidden="true">'+I.chev+"</span></button>"
