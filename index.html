@@ -3274,12 +3274,42 @@ html.force-lite .rep-tools{-webkit-backdrop-filter:none;backdrop-filter:none;bac
 .rep-skel i:first-child{height:70px}
 @keyframes repSk{to{background-position:-200% 0}}
 
+
+/* --- вкладки СЛА / Jira --- */
+.rep-tabs-w{flex:none;padding:0 16px 10px}
+.rep-tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:3px;border-radius:13px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07)}
+.rep-tabs:before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:10px;background:linear-gradient(180deg,rgba(168,102,255,.62),rgba(112,0,255,.5));box-shadow:0 4px 14px -4px rgba(112,0,255,.9),inset 0 1px 0 rgba(255,255,255,.28);transition:transform .45s var(--spring)}
+.rep-tabs[data-tab=jira]:before{transform:translateX(100%)}
+.rep-tabs button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:8px 10px;border:0;background:none;color:var(--text-muted);font:700 13px Inter,sans-serif;cursor:pointer;transition:color .25s}
+.rep-tabs button:hover,.rep-tabs button[aria-selected=true]{color:#fff}
+.rep-tabs button i{font-style:normal;min-width:16px;text-align:center;font-size:11px;padding:1px 6px;border-radius:99px;background:rgba(255,255,255,.16);color:#fff;font-variant-numeric:tabular-nums}
+.rep-tabs button i:empty{display:none}
+/* --- пояснения (как считается СЛА) --- */
+.k-n{font-size:10.5px;line-height:1.25;color:var(--text-dim);font-weight:600}
+.rep-note,.rp-hint{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:rgba(157,77,255,.1);border:1px solid rgba(157,77,255,.28);color:#d9ccf3;font-size:12px;line-height:1.4;font-weight:600}
+.rep-note{margin:6px 0 2px;animation:repIn .4s var(--ease)}
+.rep-note svg,.rp-hint svg{flex:none;width:15px;height:15px;margin-top:1px;color:#b98bff}
+.rep-note b{color:#fff}
+/* --- Jira --- */
+.jr-item.gap{border-color:rgba(255,194,75,.38)}
+.jr-head{display:flex;align-items:center;gap:11px;padding:10px 12px}
+.rp-pill.jr-pill{color:#dcc3ff;background:rgba(157,77,255,.22)}
+.jr-links{display:grid;gap:6px;padding:0 12px 10px}
+.jr-link{display:flex;align-items:center;gap:10px;min-width:0;padding:8px 10px;border-radius:11px;text-decoration:none;color:#fff;background:rgba(112,0,255,.14);border:1px solid rgba(157,77,255,.3);transition:background .2s,border-color .2s,transform .2s var(--spring)}
+a.jr-link:hover{background:rgba(112,0,255,.27);border-color:rgba(157,77,255,.62)}a.jr-link:active{transform:scale(.985)}
+.jr-link.txt{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1)}
+.jr-ico{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:linear-gradient(135deg,#0052cc,#2684ff);font-weight:900;font-size:11px;color:#fff}
+.jr-key{flex:none;font-size:13.5px;font-weight:800;letter-spacing:-.01em}
+.jr-host{flex:1;min-width:0;font-size:11.5px;color:var(--text-muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jr-ext{flex:none;width:14px;height:14px;margin-left:auto;color:var(--purple-light)}.jr-ext svg{width:100%;height:100%;display:block}
+.jr-act{display:flex;justify-content:flex-end;padding:0 12px 10px}
+
 .rep-foot{flex:none;padding:10px 16px 14px;border-top:1px solid rgba(255,255,255,.07);background:linear-gradient(180deg,rgba(13,4,30,.2),rgba(13,4,30,.75))}
 .rep-copy{width:100%;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.09);color:#fff;font-weight:800;font-size:14.5px}
 .rep-copy:hover{background:rgba(255,255,255,.14)}.rep-copy:active{transform:scale(.98)}
 .rep-copy svg{width:16px;height:16px}
 @media(max-width:430px){.rep-filt button{padding:5px 5px 5px 8px;gap:4px;font-size:11px}.rep-filt button i{padding:1px 4px;min-width:14px}}
-@media(max-width:380px){.rp-grid{gap:4px}.rp-cell{padding:7px 8px}.rep-head{padding-left:14px}.rep-body{padding-left:12px;padding-right:12px}.rep-tools{margin:0 -12px 8px;padding-left:12px;padding-right:12px}.rep-foot{padding-left:12px;padding-right:12px}}
+@media(max-width:380px){.rep-tabs-w{padding-left:12px;padding-right:12px}.rp-grid{gap:4px}.rp-cell{padding:7px 8px}.rep-head{padding-left:14px}.rep-body{padding-left:12px;padding-right:12px}.rep-tools{margin:0 -12px 8px;padding-left:12px;padding-right:12px}.rep-foot{padding-left:12px;padding-right:12px}}
 </style>
 <div class="rep-ov" id="rep-ov" aria-hidden="true"><div class="rep-modal" id="rep-modal" role="dialog" aria-modal="true" aria-labelledby="rep-title" tabindex="-1">
 <div class="rep-grab" aria-hidden="true"></div>
@@ -3288,6 +3318,7 @@ html.force-lite .rep-tools{-webkit-backdrop-filter:none;backdrop-filter:none;bac
 <div class="rep-ttl"><h2 class="rep-title" id="rep-title">Отчёт СЛА</h2><p class="rep-sub" id="rep-sub">Выбери дату и территорию</p></div>
 <button class="rep-x" id="rep-x" type="button" aria-label="Закрыть"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button>
 </header>
+<div class="rep-tabs-w" id="rep-tabs-w" hidden><div class="rep-tabs" id="rep-tabs" data-tab="sla" role="tablist" aria-label="Раздел отчёта"><button type="button" role="tab" data-t="sla" aria-selected="true">СЛА</button><button type="button" role="tab" data-t="jira" aria-selected="false">Jira <i id="rep-tab-n"></i></button></div></div>
 <div class="rep-body" id="rep-body">
 <section class="rep-ctl">
 <div class="rep-row">
@@ -3311,8 +3342,9 @@ html.force-lite .rep-tools{-webkit-backdrop-filter:none;backdrop-filter:none;bac
 <button class="rep-go" id="rep-go" type="button"><span class="rep-spin" aria-hidden="true"></span><span id="rep-go-t">Сформировать отчёт</span></button>
 </section>
 <div id="rep-out" aria-live="polite"></div>
+<div id="rep-jira" hidden></div>
 </div>
-<footer class="rep-foot" id="rep-foot" hidden><button class="rep-copy" id="rep-copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>Скопировать всё для Telegram</span></button></footer>
+<footer class="rep-foot" id="rep-foot" hidden><button class="rep-copy" id="rep-copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>Скопировать всё для Telegram</span></button><button class="rep-copy" id="rep-copy-j" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>Скопировать тикеты для Telegram</span></button></footer>
 </div></div>
 <script>
 (function(){
@@ -3330,7 +3362,8 @@ var sb=$("btn-submit");sb&&sb.addEventListener("click",function(e){if(late()&&!w
 /* ---- отчёт ---- */
 var ov=$("rep-ov"),modal=$("rep-modal"),bodyEl=$("rep-body"),dt=$("rep-date"),tr=$("rep-terr"),out=$("rep-out"),cp=$("rep-copy"),foot=$("rep-foot"),sub=$("rep-sub"),goBtn=$("rep-go"),goTxt=$("rep-go-t"),
 dbtn=$("rep-date-btn"),dtxt=$("rep-date-txt"),calw=$("rep-calw"),cal=$("rep-cal"),calT=$("cal-title"),calG=$("cal-grid"),seg=$("rep-seg"),quick=$("rep-quick"),thumb=null;
-var texts=[],items=[],missList=[],busy=false,built=false,flt="all",qry="",calY=0,calM=0,hasRes=false;
+var jout=$("rep-jira"),tabsW=$("rep-tabs-w"),tabs=$("rep-tabs"),cpj=$("rep-copy-j"),MAIN="https://script.google.com/macros/s/AKfycbw_70rF0X3TqKNoi0894rdo2Ze2mR6lDLcWjEeVre23v09ZkL-gJLgk82YPGihFDaGm/exec";
+var texts=[],items=[],missList=[],busy=false,built=false,flt="all",qry="",calY=0,calM=0,hasRes=false,tab="sla",jflt="with",jqry="",jtext="",jok=true;
 var MON=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
 MONG=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"],
 MONS=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"],WD=["вс","пн","вт","ср","чт","пт","сб"];
@@ -3338,7 +3371,9 @@ var SV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width=
 var I={chev:SV.replace("2.2","2.6")+'<path d="M6 9l6 6 6-6"/></svg>',copy:SV+'<rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
 check:SV.replace("2.2","2.8")+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',alert:SV+'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.6v.01"/></svg>',
 clock:SV+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',empty:SV+'<path d="M4 7h16M4 12h16M4 17h10"/></svg>',
-search:SV+'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',x:SV+'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>'};
+search:SV+'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',x:SV+'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>',
+info:SV+'<circle cx="12" cy="12" r="9"/><path d="M12 11v5.2M12 7.8v.01"/></svg>',ext:SV.replace("2.2","2.4")+'<path d="M7 17L17 7M9 7h8v8"/></svg>',
+tick:SV+'<path d="M4 9.5a2.5 2.5 0 0 0 0 5V17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2.5a2.5 2.5 0 0 1 0-5V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z"/><path d="M14.5 6.5v11" stroke-dasharray="1.6 2.6"/></svg>'};
 var pad=function(n){return("0"+n).slice(-2)};
 function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
 function parseISO(s){var p=String(s||"").split("-");return p.length===3?new Date(+p[0],+p[1]-1,+p[2]):null}
@@ -3375,22 +3410,26 @@ window.addEventListener("resize",function(){moveThumb(true)});
 function openRep(){buildSeg();if(!dt.value)setDate(today());ov.classList.add("show");ov.setAttribute("aria-hidden","false");
 requestAnimationFrame(function(){moveThumb(true);modal.focus({preventScroll:true})})}
 function closeRep(){toggleCal(false);ov.classList.remove("show");ov.setAttribute("aria-hidden","true")}
+/* ---- ссылки Jira из поля jira (на форме они пишутся через запятую) ---- */
+function parseLinks(v){var a=Array.isArray(v)?v:String(v==null?"":v).split(/[\s,;]+/),r=[];a.forEach(function(x){x=String(x).trim();if(x&&r.indexOf(x)<0)r.push(x)});return r}
+function linkInfo(u){var url=/^https?:\/\//i.test(u),key=u,host="";if(url){try{var o=new URL(u);host=o.host;key=o.pathname.split("/").filter(Boolean).pop()||o.host}catch(_){key=u.split(/[?#]/)[0].split("/").filter(Boolean).pop()||u}}return{u:u,url:url,key:key,host:host}}
+function pl(n){var a=n%10,b=n%100;return b>10&&b<20?"тикетов":a===1?"тикет":a>1&&a<5?"тикета":"тикетов"}
 /* ---- данные одного ПВЗ (текст для Telegram — как раньше) ---- */
 function card(p,d,dd){var M=parseInt(d.missing,10)||0,F=parseInt(d.formed,10)||0,A=F?F-M:null,pct=F?(A/F*100).toFixed(1)+"%":"—",em=mins(d.end),L=em!==null&&em>LATE,
 s16=!F?"—":em===null?"—":em<=SLA16?pct:"н/д (приёмка завершена в "+d.end+")";
 var l=["📍 "+p,"📅 Дата: "+dd,"📉 SLA ≤ 16:00: "+s16,"📊 SLA до конца дня: "+pct,"📦 Сформировано: "+(F||"—")+" | 📥 Принято: "+(A===null?"—":A)+" (Недовоз: "+M+")","🚚 Приезд доставки: "+(d.arrive||"—"),"🚚 Уезд доставки: "+(d.leave||"—"),"🏢 Первый пик на ПВЗ: "+(d.start||"—"),"🏢 Последний пик на ПВЗ: "+(d.end||"—")];
 if(L)l.push("⏰ Причина задержки (после 15:00): "+(d.lateReason||"не указана"));
-return{p:p,d:d,t:l.join("\n"),k:L?"bad":M>0?"warn":"ok",M:M,F:F,A:A,pct:pct,L:L,s16:(!F||em===null)?"—":em<=SLA16?pct:"н/д"}}
+return{p:p,d:d,t:l.join("\n"),k:L?"bad":M>0?"warn":"ok",M:M,F:F,A:A,pct:pct,L:L,s16:(!F||em===null)?"—":em<=SLA16?pct:"н/д",links:parseLinks(d.jira)}}
 /* ---- разметка ---- */
 function cell(l,v,cls,note){return'<div class="rp-cell'+(cls?" "+cls:"")+'"><span>'+l+"</span><b>"+esc(v)+"</b>"+(note?"<em>"+esc(note)+"</em>":"")+"</div>"}
 function stop(v,l){var ok=v&&v!=="—";return'<div class="tl-s'+(ok?"":" nil")+'"><i></i><b>'+esc(ok?v:"—")+"</b><small>"+l+"</small></div>"}
-function rowHtml(c,i){var d=c.d,m=[];if(c.F)m.push(c.A+" из "+c.F+" принято");if(c.M)m.push('<span class="m-y">недовоз '+c.M+"</span>");if(c.L)m.push('<span class="m-r">после 15:00</span>');
+function rowHtml(c,i){var d=c.d,m=[];if(c.F)m.push(c.A+" из "+c.F+" принято");else m.push("СЛА не посчитан");if(c.M)m.push('<span class="m-y">недовоз '+c.M+"</span>");if(c.L)m.push('<span class="m-r">после 15:00</span>');
 var late=c.L?'<div class="rp-late">'+I.clock+"<div><b>Приёмка после 15:00.</b> Причина: "+esc(d.lateReason||"не указана")+"</div></div>":"";
 return'<article class="rp-item '+c.k+'" data-i="'+i+'" data-n="'+esc(c.p.toLowerCase())+'" data-s="'+(c.M>0?1:0)+'" data-l="'+(c.L?1:0)+'">'
 +'<button type="button" class="rp-row" aria-expanded="false"><span class="rp-dot"></span><span class="rp-main"><b class="rp-name">'+esc(c.p)+'</b><span class="rp-meta">'+(m.join(" · ")||"Заказы не указаны")+"</span></span>"
 +'<span class="rp-pill'+(c.F?(c.M>0?" y":""):" nil")+'">'+esc(c.F?c.pct:"—")+'</span><span class="rp-chev" aria-hidden="true">'+I.chev+"</span></button>"
 +'<div class="rp-det"><div class="rp-det-in"><div class="rp-det-pad">'
-+'<div class="rp-sla">'+cell("СЛА ≤ 16:00",c.s16,"",c.s16==="н/д"?"приёмка до "+(d.end||"—"):"")+cell("СЛА до конца дня",c.F?c.pct:"—")+"</div>"
++(c.F?'<div class="rp-sla">'+cell("СЛА ≤ 16:00",c.s16,"",c.s16==="н/д"?"приёмка до "+(d.end||"—"):"")+cell("СЛА до конца дня",c.pct)+"</div>":'<div class="rp-hint">'+I.info+"<span>СЛА не посчитан: при внесении данных не указано «Сформировано заказов».</span></div>")
 +'<div class="rp-grid">'+cell("Сформировано",c.F||"—")+cell("Принято",c.A===null?"—":c.A)+cell("Недовоз",c.M,c.M>0?"y":"")+"</div>"
 +'<div class="rp-tl"><div class="tl-cap"><span>Доставка</span><span>Пики на ПВЗ</span></div><div class="tl-row">'+stop(d.arrive,"Приезд")+stop(d.leave,"Уезд")+stop(d.start,"Первый")+stop(d.end,"Последний")+"</div></div>"
 +late+'<button type="button" class="rp-copy1" data-idle="1">'+I.copy+"<span>Копировать</span></button></div></div></div></article>"}
@@ -3415,36 +3454,89 @@ var f=t.closest(".rep-filt button");if(f&&!f.disabled){flt=f.getAttribute("data-
 if(t.closest(".rep-retry"))go()});
 /* ---- состояния ---- */
 function setBusy(b){busy=b;goBtn.disabled=b;goBtn.classList.toggle("loading",b);goTxt.textContent=b?"Загружаю данные…":hasRes?"Обновить отчёт":"Сформировать отчёт"}
-function showError(e){hasRes=false;foot.hidden=true;sub.textContent="Не удалось загрузить";
+function showError(e){hasRes=false;foot.hidden=true;sub.textContent="Не удалось загрузить";tabsW.hidden=true;tab="sla";tabs.setAttribute("data-tab","sla");out.hidden=false;jout.hidden=true;
 out.innerHTML='<div class="rep-state err"><div class="ico">'+I.alert+"</div><b>Не удалось получить отчёт</b><span>"+esc(e&&e.message||"ошибка сети")+'</span><span class="hint">Проверь, что в Apps Script добавлен action=sla_report и сделан новый деплой.</span><button type="button" class="rep-retry">Повторить</button></div>'}
-function render(dd){var n=items.length,total=n+missList.length,sF=0,sA=0,sh=0,lt=0;
-items.forEach(function(c){if(c.F){sF+=c.F;sA+=c.A}if(c.M>0)sh++;if(c.L)lt++});
+function render(dd){var n=items.length,total=n+missList.length,sF=0,sA=0,sh=0,lt=0,noF=0;
+items.forEach(function(c){if(c.F){sF+=c.F;sA+=c.A}else noF++;if(c.M>0)sh++;if(c.L)lt++});
 var avg=sF?(sA/sF*100).toFixed(1)+"%":"—",cov=total?Math.round(n/total*100):0;
 var tl=seg.querySelector('[aria-selected="true"]'),tn=tr.value==="all"?"Все территории":(tl?tl.textContent:"");
 var p=dd.split(".");sub.textContent=(+p[0])+" "+MONG[+p[1]-1]+" "+p[2]+" · "+tn;
 var h='<div class="rep-kpis">'
 +'<div class="kpi"><span class="k-l">Внесли данные</span><b class="k-v">'+n+"<small>/"+total+'</small></b><span class="k-bar"><u style="width:'+cov+'%"></u></span></div>'
-+'<div class="kpi"><span class="k-l">Средний СЛА</span><b class="k-v">'+avg+"</b></div>"
++'<div class="kpi" title="СЛА = (сформировано − недовоз) ÷ сформировано. Средний считается по сумме заказов тех ПВЗ, где указано «Сформировано заказов»."><span class="k-l">Средний СЛА</span><b class="k-v">'+avg+'</b><span class="k-n">'+(n-noF?"по "+(n-noF)+" из "+n+" ПВЗ":n?"нет «Сформировано»":"")+"</span></div>"
 +'<div class="kpi"><span class="k-l">С недовозом</span><b class="k-v'+(sh?" y":"")+'">'+sh+"</b></div>"
 +'<div class="kpi" title="Приёмка завершена после 15:00"><span class="k-l">После 15:00</span><b class="k-v'+(lt?" r":"")+'">'+lt+"</b></div></div>";
+if(noF)h+='<div class="rep-note">'+I.info+"<span>СЛА = (сформировано − недовоз) ÷ сформировано, средний — по сумме заказов. Не посчитан у <b>"+noF+" из "+n+"</b> ПВЗ: при внесении данных не указано «Сформировано заказов».</span></div>";
 var F=[["all","Все",total],["short","Недовоз",sh],["late","Поздно",lt],["nodata","Нет данных",missList.length]];
 h+='<div class="rep-tools"><label class="rep-search">'+I.search+'<input id="rep-q" type="text" placeholder="Поиск по ПВЗ" autocomplete="off" inputmode="search" aria-label="Поиск по ПВЗ"></label><div class="rep-filt">'
 +F.map(function(f){return'<button type="button" data-f="'+f[0]+'"'+(f[2]?"":" disabled")+(f[0]==="all"?' class="on"':"")+">"+f[1]+" <i>"+f[2]+"</i></button>"}).join("")+"</div></div>";
 h+='<div class="rep-list">'+items.map(rowHtml).join("")+"</div>";
 if(missList.length)h+='<div class="rp-miss" id="rep-miss"><h4>'+I.x+"Не внесли данные · "+missList.length+'</h4><div class="rp-chips">'+missList.map(function(x){return'<span data-n="'+esc(x.toLowerCase())+'">'+esc(x)+"</span>"}).join("")+"</div></div>";
 h+='<div class="rep-state" id="rep-empty" hidden><div class="ico">'+I.empty+"</div><span></span></div>";
-out.innerHTML=h;flt="all";qry="";
-if(bodyEl.scrollHeight>bodyEl.clientHeight){var y=bodyEl.scrollTop+out.getBoundingClientRect().top-bodyEl.getBoundingClientRect().top-8;bodyEl.scrollTo({top:Math.max(0,y),behavior:"smooth"})}}
+out.innerHTML=h;flt="all";qry=""}
+function scrollToPane(p,smooth){if(bodyEl.scrollHeight>bodyEl.clientHeight){var y=bodyEl.scrollTop+p.getBoundingClientRect().top-bodyEl.getBoundingClientRect().top-8;bodyEl.scrollTo({top:Math.max(0,y),behavior:smooth?"smooth":"auto"})}}
+/* ---- вкладка Jira ---- */
+function linkHtml(u){var o=linkInfo(u);
+if(!o.url)return'<span class="jr-link txt"><span class="jr-ico">J</span><span class="jr-key">'+esc(o.key)+"</span></span>";
+return'<a class="jr-link" href="'+esc(o.u)+'" target="_blank" rel="noopener noreferrer"><span class="jr-ico">J</span><span class="jr-key">'+esc(o.key)+'</span><span class="jr-host">'+esc(o.host)+'</span><span class="jr-ext" aria-hidden="true">'+I.ext+"</span></a>"}
+function jrow(c,i){var n=c.links.length,gap=c.M>0&&!n,m=[];
+if(c.M)m.push('<span class="m-y">недовоз '+c.M+"</span>");if(c.L)m.push('<span class="m-r">после 15:00</span>');
+if(gap)m.push('<span class="m-y">тикет не прикреплён</span>');if(!m.length)m.push(n?"Недовоза нет":"Тикет не прикреплён");
+return'<article class="rp-item jr-item '+c.k+(gap?" gap":"")+'" data-i="'+i+'" data-n="'+esc((c.p+" "+c.links.join(" ")).toLowerCase())+'" data-w="'+(n?1:0)+'" data-g="'+(gap?1:0)+'">'
++'<div class="jr-head"><span class="rp-dot"></span><span class="rp-main"><b class="rp-name">'+esc(c.p)+'</b><span class="rp-meta">'+m.join(" · ")+"</span></span>"
++'<span class="rp-pill jr-pill'+(n?"":" nil")+'">'+(n?n+" "+pl(n):"нет")+"</span></div>"
++(n?'<div class="jr-links">'+c.links.map(linkHtml).join("")+'</div><div class="jr-act"><button type="button" class="rp-copy1 jr-copy">'+I.copy+"<span>Копировать ссылки</span></button></div>":"")+"</article>"}
+function buildJiraText(dd){var L=["🎫 Jira-тикеты · "+dd],gap=[],any=false;
+items.forEach(function(c){if(c.links.length){any=true;var t=[];if(c.M)t.push("недовоз: "+c.M);if(c.L)t.push("после 15:00");L.push("");L.push("📍 "+c.p+(t.length?" ("+t.join(", ")+")":""));c.links.forEach(function(u){L.push("🔗 "+u)})}else if(c.M>0)gap.push(c.p)});
+if(gap.length){L.push("");L.push("⚠️ Недовоз без тикета ("+gap.length+"): "+gap.join(", "))}
+return any||gap.length?L.join("\n"):""}
+function renderJira(dd){
+if(!jok){jtext="";jout.innerHTML='<div class="rep-state"><div class="ico">'+I.tick+'</div><b>Jira за эту дату недоступна</b><span>Сервер пока не отдаёт ссылки на тикеты за прошлые даты.</span><span class="hint">В Apps Script в action=sla_report добавь поле jira — то же значение, что сохраняется при внесении данных. За сегодняшнюю дату тикеты подтягиваются сами.</span></div>';$("rep-tab-n").textContent="";return}
+var n=items.length,w=0,T=0,g=0;items.forEach(function(c){var k=c.links.length;if(k){w++;T+=k}else if(c.M>0)g++});
+$("rep-tab-n").textContent=T||"";
+jflt=w?"with":g?"gap":"all";jqry="";
+var cov=n?Math.round(w/n*100):0;
+var h='<div class="rep-kpis">'
++'<div class="kpi"><span class="k-l">ПВЗ с тикетами</span><b class="k-v">'+w+"<small>/"+n+'</small></b><span class="k-bar"><u style="width:'+cov+'%"></u></span></div>'
++'<div class="kpi"><span class="k-l">Всего тикетов</span><b class="k-v">'+T+"</b></div>"
++'<div class="kpi" title="ПВЗ, где был недовоз, а тикет Jira не прикреплён"><span class="k-l">Недовоз без Jira</span><b class="k-v'+(g?" y":"")+'">'+g+"</b></div>"
++'<div class="kpi"><span class="k-l">Без тикетов</span><b class="k-v">'+(n-w)+"</b></div></div>";
+if(!w)h+='<div class="rep-note">'+I.info+"<span>"+(g?"Ни один ПВЗ не прикрепил тикет, хотя у <b>"+g+"</b> есть недовоз.":"Тикетов не прикреплено — конфликтов при приёмке не было.")+"</span></div>";
+var F=[["with","С тикетами",w],["gap","Недовоз без Jira",g],["all","Все",n]];
+h+='<div class="rep-tools"><label class="rep-search">'+I.search+'<input id="rj-q" type="text" placeholder="Поиск по ПВЗ или тикету" autocomplete="off" inputmode="search" aria-label="Поиск по ПВЗ или тикету"></label><div class="rep-filt">'
++F.map(function(f){return'<button type="button" data-f="'+f[0]+'"'+(f[2]?"":" disabled")+">"+f[1]+" <i>"+f[2]+"</i></button>"}).join("")+"</div></div>";
+h+='<div class="rep-list">'+items.map(jrow).join("")+"</div>";
+h+='<div class="rep-state" id="rj-empty" hidden><div class="ico">'+I.tick+"</div><span></span></div>";
+jout.innerHTML=h;jtext=buildJiraText(dd);applyJiraFilter()}
+function applyJiraFilter(){var shown=0;
+[].forEach.call(jout.querySelectorAll(".jr-item"),function(r){var ok=(jflt==="all"||(jflt==="with"&&r.getAttribute("data-w")==="1")||(jflt==="gap"&&r.getAttribute("data-g")==="1"))&&(!jqry||r.getAttribute("data-n").indexOf(jqry)>-1);r.hidden=!ok;if(ok)shown++});
+[].forEach.call(jout.querySelectorAll(".rep-filt button"),function(b){b.classList.toggle("on",b.getAttribute("data-f")===jflt)});
+var em=$("rj-empty");if(em){em.hidden=shown>0;em.querySelector("span").textContent=jqry?"Ничего не найдено по «"+jqry+"»":jflt==="gap"?"Везде, где был недовоз, тикет прикреплён":"Тикетов не прикреплено"}}
+jout.addEventListener("input",function(e){if(e.target.id==="rj-q"){jqry=e.target.value.trim().toLowerCase();applyJiraFilter()}});
+jout.addEventListener("click",function(e){var t=e.target,cb=t.closest(".jr-copy");
+if(cb){var it=cb.closest(".jr-item");copyText(items[+it.getAttribute("data-i")].links.join("\n"),function(ok){flash(cb,ok)});return}
+var f=t.closest(".rep-filt button");if(f&&!f.disabled){jflt=f.getAttribute("data-f");applyJiraFilter()}});
+cpj.addEventListener("click",function(){copyText(jtext,function(ok){flash(cpj,ok)})});
+/* ---- вкладки СЛА / Jira ---- */
+function syncFoot(){var s=tab==="sla";cp.hidden=!s;cpj.hidden=s;foot.hidden=s?!texts.length:!jtext}
+function setTab(t,smooth){tab=t;tabs.setAttribute("data-tab",t);[].forEach.call(tabs.querySelectorAll("button"),function(b){b.setAttribute("aria-selected",String(b.getAttribute("data-t")===t))});
+out.hidden=t!=="sla";jout.hidden=t!=="jira";syncFoot();scrollToPane(t==="sla"?out:jout,smooth)}
+tabs.addEventListener("click",function(e){var b=e.target.closest("button");if(b&&b.getAttribute("data-t")!==tab)setTab(b.getAttribute("data-t"),false)});
 /* ---- сформировать ---- */
-function go(){if(busy)return;var p=dt.value.split("-");if(p.length<3)return;var dd=p[2]+"."+p[1]+"."+p[0];
+function go(){if(busy)return;var p=dt.value.split("-");if(p.length<3)return;var dd=p[2]+"."+p[1]+"."+p[0],isToday=dt.value===today();
 toggleCal(false);setBusy(true);foot.hidden=true;sub.textContent="Загружаю…";
-out.innerHTML='<div class="rep-skel"><i></i><i></i><i></i><i></i><i></i></div>';
+var sk='<div class="rep-skel"><i></i><i></i><i></i><i></i><i></i></div>';out.innerHTML=sk;jout.innerHTML=sk;
 fetch(API+"?action=sla_report&date="+encodeURIComponent(dd)).then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.error||"пустой ответ");
-var list=[];(window.TERRITORIES||[]).forEach(function(t){if(tr.value==="all"||t.id===tr.value)(t.pvz||[]).forEach(function(x){if(list.indexOf(x)<0)list.push(x)})});
-var by={};(j.entries||[]).forEach(function(e){by[e.pvz]=e});items=[];missList=[];texts=[];
+var ents=j.entries||[],has=ents.some(function(e){return e&&Object.prototype.hasOwnProperty.call(e,"jira")});
+if(has||!isToday)return{j:j,has:has,jm:null};
+/* sla_report не отдаёт jira — для сегодняшней даты берём из who_filled_today (там поле jira уже есть) */
+return fetch(MAIN+"?action=who_filled_today").then(function(r){return r.json()}).then(function(x){var m={};if(x&&x.ok&&Array.isArray(x.entries)){x.entries.forEach(function(e){m[e.pvz]=e.jira});return{j:j,has:true,jm:m}}return{j:j,has:false,jm:null}},function(){return{j:j,has:false,jm:null}})
+}).then(function(r){var j=r.j,list=[];
+(window.TERRITORIES||[]).forEach(function(t){if(tr.value==="all"||t.id===tr.value)(t.pvz||[]).forEach(function(x){if(list.indexOf(x)<0)list.push(x)})});
+var by={};(j.entries||[]).forEach(function(e){if(r.jm)e.jira=r.jm[e.pvz]||"";by[e.pvz]=e});items=[];missList=[];texts=[];
 list.forEach(function(x){var d=by[x];if(!d){missList.push(x);return}var c=card(x,d,dd);texts.push(c.t);items.push(c)});
 if(missList.length)texts.push("❌ Не внесли данные ("+missList.length+"): "+missList.join(", "));
-hasRes=true;render(dd);foot.hidden=!texts.length}).catch(showError).then(function(){setBusy(false)})}
+jok=r.has;hasRes=true;render(dd);renderJira(dd);tabsW.hidden=false;setTab(tab,true)}).catch(showError).then(function(){setBusy(false)})}
 /* ---- события ---- */
 $("btn-report").addEventListener("click",openRep);$("rep-x").addEventListener("click",closeRep);goBtn.addEventListener("click",go);
 ov.addEventListener("click",function(e){if(e.target===ov)closeRep()});
