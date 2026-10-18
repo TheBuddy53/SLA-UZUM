@@ -1,8 +1,18 @@
 <!DOCTYPE html>
+<!--
+  СЛА приёмки · Uzum ПВЗ · Версия 2 · 18.10.2026
+  © 2026 Автор проекта. Все права защищены.
+  Дизайн-система «Бархат», структура интерфейса, вёрстка, анимации, звуки, тексты и код — объект авторского права.
+  Копирование, клонирование, переработка и публикация на других ресурсах без письменного разрешения автора запрещены.
+  UZ-SLA-ORIGIN-7f3a9c1e-2026
+-->
 
 <html lang="ru">
 <head>
 <meta charset="utf-8"/>
+<meta name="author" content="Автор проекта СЛА приёмки"/>
+<meta name="copyright" content="© 2026 Автор проекта. Все права защищены. Копирование запрещено."/>
+<meta name="robots" content="noindex, nofollow, noarchive"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 <title>UZUM · СЛА приёмки</title>
 <link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23A855F7'/%3E%3Cstop offset='1' stop-color='%237000FF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='45' font-family='Arial, sans-serif' font-weight='900' font-size='38' fill='white' text-anchor='middle'%3EU%3C/text%3E%3C/svg%3E" rel="icon" type="image/svg+xml"/>
@@ -522,7 +532,6 @@ window.addEventListener('uzum:liteToggled', function(e){
 <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
 <div class="card-head-row">
 <div class="section-label" data-i18n="form.enterData">Внести данные</div>
-<div class="norm-tag" data-i18n="form.normTag">Норматив 1ч</div>
 </div>
 <div class="field">
 <label data-i18n="form.pvzLabel">ПВЗ</label>
@@ -583,8 +592,8 @@ window.addEventListener('uzum:liteToggled', function(e){
 <div class="field">
 <label data-i18n="form.endLabel">Окончание приёмки</label>
 <input id="end-time" type="time"/>
-<div class="late-hint" id="late-hint">Причина задержки появится, если приёмка дольше 1ч, закончилась после 15:00 или данные вносят после 15:00</div>
 </div>
+<div class="field rp-formed"><label for="formed-count"><span data-i18n="form.formedLabel">Сформировано заказов</span> <span class="rp-tag" data-i18n="form.formedTag">нужно для СЛА</span></label><input class="rp-in" id="formed-count" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-i18n-attr="placeholder:form.formedPh" placeholder="напр. 27"></div>
 <div class="field">
 <label data-i18n="form.missingLabel">Неприбывшие заказы (кол-во)</label>
 <div class="stepper-wrap">
@@ -593,14 +602,30 @@ window.addEventListener('uzum:liteToggled', function(e){
 <span class="stepper-btn" id="missing-count-inc" aria-hidden="true">+</span>
 </div>
 </div>
+<div class="field jira-field">
+<label><span data-i18n="jira.fieldLabel">Jira-тикет</span> <span class="rp-tag" data-i18n="jira.optional">по желанию</span></label>
+<div class="jira-input-row">
+<input id="jira-input" placeholder="https://jira.uzum.../browse/..." type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false"/>
+<button class="jira-add-btn" id="jira-add" type="button" aria-label="+">+</button>
+</div>
+<div class="late-hint jira-hint" data-i18n="jira.hint">Вставь ссылку на тикет — если по приёмке был скан-конфликт или атипичный возврат</div>
+<div class="jira-chip-list" id="jira-chip-list"></div>
+</div>
+<div class="nrm" id="norm-card" data-st="idle">
+<div class="nrm-t"><span class="nrm-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2M12 7.8v.01"/></svg></span><span data-i18n="norm.title">Когда нужна причина</span><em id="nrm-state">пока не нужна</em></div>
+<div class="nrm-r">
+<div class="nrm-c" id="nrm-c-dur"><i></i><b id="nrm-dur">&gt; 60 мин</b><small data-i18n="norm.durS">норматив</small></div>
+<div class="nrm-c" id="nrm-c-end"><i></i><b>&gt; 15:00</b><small data-i18n="norm.endS">конец приёмки</small></div>
+<div class="nrm-c" id="nrm-c-now"><i></i><b>&gt; 15:00</b><small data-i18n="norm.nowS">ввод данных</small></div>
+</div>
+<div class="nrm-f unk" id="nrm-f"></div>
+</div>
 <div class="duration-box" id="duration-box" style="display:none">
 <span class="lbl" data-i18n="form.durationLabel">Заняло по времени</span>
+<span class="dur-norm" id="dur-norm"></span>
 <span class="val" id="duration-val">—</span>
 </div>
-<div class="field rp-formed" style="margin-top:14px"><label for="formed-count">Сформировано заказов <span class="rp-tag">нужно для СЛА</span></label><input class="rp-in" id="formed-count" type="number" inputmode="numeric" min="0" placeholder="напр. 27"></div>
-<div class="late-box" id="late-box"><div class="late-inner"><div class="late-head" id="late-head">⏰ Укажи причину задержки</div>
-<select class="rp-in" id="late-select"><option value="">Выбери причину…</option><option value="Поздняя доставка на ПВЗ">Поздняя доставка на ПВЗ</option><option value="Большой объём заказов">Большой объём заказов</option><option value="Не хватало сотрудников">Не хватало сотрудников</option><option value="Проблемы с системой / интернетом">Проблемы с системой / интернетом</option><option value="Недовоз / пересорт">Недовоз / пересорт</option><option value="Другое">Другое</option></select>
-<input class="rp-in" id="late-other" maxlength="200" placeholder="Опиши причину" style="display:none"></div></div>
+<div class="late-box" id="late-box"><div class="late-inner"><div class="late-head" id="late-head"><span class="lh-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4.2l2.6 1.6M5 4.6 8 3M19 4.6 16 3"/></svg></span><span data-i18n="late.head">Укажи причину задержки</span></div><div class="late-why" id="late-why"></div><select class="rp-in uz-native-hidden" id="late-select" tabindex="-1" aria-hidden="true"><option value="">Выбери причину…</option><option value="Поздняя доставка на ПВЗ">Поздняя доставка на ПВЗ</option><option value="Большой объём заказов">Большой объём заказов</option><option value="Не хватало сотрудников">Не хватало сотрудников</option><option value="Проблемы с системой / интернетом">Проблемы с системой / интернетом</option><option value="Недовоз / пересорт">Недовоз / пересорт</option><option value="Другое">Другое</option></select><button type="button" class="dd-trigger rsn-btn placeholder" id="reason-btn"><span class="rsn-ic" aria-hidden="true"></span><span id="reason-label">Выбери причину…</span><span class="dd-arrow">▾</span></button><input class="rp-in" id="late-other" maxlength="200" placeholder="Опиши причину" style="display:none"></div></div>
 <div style="height:16px"></div>
 <button class="btn primary glass-edge" disabled="" id="btn-submit" type="button">
 <span aria-hidden="true" class="btn-rim"></span>
@@ -610,16 +635,6 @@ window.addEventListener('uzum:liteToggled', function(e){
 <span data-i18n="form.submitLabel" id="submit-label">Сохранить в таблицу</span>
 </button>
 <button class="btn glass-edge btn-report" id="btn-report" type="button"><span aria-hidden="true" class="btn-rim"></span><span aria-hidden="true" class="btn-specular"></span><span aria-hidden="true" class="btn-bloom2"></span><span class="rep-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 20v-6M12 20V5M19 20V10"/></svg></span><span>Взять отчёт СЛА</span></button>
-</div>
-<div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.14s">
-<div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
-<div class="section-label" data-i18n="jira.title">Jira · вложения по ПВЗ</div>
-<div class="hint-text" data-i18n="jira.hint" style="margin-bottom:12px">Вставь ссылку на тикет — если по приёмке был скан-конфликт или атипичный возврат</div>
-<div class="jira-input-row">
-<input id="jira-input" placeholder="https://jira.uzum.../browse/..." type="text"/>
-<button class="jira-add-btn" id="jira-add" type="button">+</button>
-</div>
-<div class="jira-chip-list" id="jira-chip-list"></div>
 </div>
 <div class="card glass-edge stagger parallax-el" data-depth="0.06" style="animation-delay:0.18s">
 <div class="grain"></div><div class="glass-sheen"></div><div class="cinematic-glare"></div>
@@ -656,8 +671,9 @@ document.querySelectorAll(".stagger").forEach(function(e){e.style.opacity="1",e.
 <div class="footer-copy parallax-el" data-depth="0.02">
 <span id="footer-copy-text"><span data-i18n="footer.copy">© Uzum,</span> <span id="footer-year">2026</span></span>
 <span aria-hidden="true" class="footer-legal-dot">·</span>
-<span data-i18n="footer.version" id="footer-version-text">Версия 1 · 30.08.2026</span>
+<span data-i18n="footer.version" id="footer-version-text">Версия 2 · 18.10.2026</span>
 </div>
+<div class="footer-rights parallax-el" data-depth="0.02" data-i18n="footer.rights">Дизайн, структура и код защищены авторским правом · копирование запрещено</div>
 </div>
 <div class="side-col">
 <div class="card glass-edge stagger parallax-el" data-depth="0.05" style="animation-delay:0.08s">
@@ -701,7 +717,7 @@ document.querySelectorAll(".stagger").forEach(function(e){e.style.opacity="1",e.
 </div>
 </div>
 </div>
-<div class="sla-note"><span aria-hidden="true">💡</span><span data-i18n="sla.note">Норматив считается от начала приёмки до её окончания — время берётся из формы.</span></div>
+<div class="sla-note"><span class="sn-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V16h5.2v-.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></span><span data-i18n="sla.note">Норматив считается от начала приёмки до её окончания — время берётся из формы.</span></div>
 </div>
 </div>
 </div>
@@ -763,7 +779,7 @@ window.UZ_I18N_DICT = {
     "footer.privacy": "Политика конфиденциальности",
     "footer.consent": "Согласие на обработку данных",
     "footer.copy": "© Uzum,",
-    "footer.version": "Версия 1 · 30.08.2026",
+    "footer.version": "Версия 2 · 18.10.2026",
     "duration.hourShort": "ч",
     "duration.minShort": "м",
     "sla.title": "Расчёт времени на приёмку",
@@ -822,7 +838,64 @@ window.UZ_I18N_DICT = {
     "report.jiraSectionTitle": "Jira · связанные тикеты",
     "report.jiraEmpty": "Тикетов не прикреплено — конфликтов при приёмке не было",
     "legal.privacyTitle": "Политика конфиденциальности",
-    "legal.consentTitle": "Согласие на обработку данных"
+    "legal.consentTitle": "Согласие на обработку данных",
+    "form.formedLabel": "Сформировано заказов",
+    "form.formedTag": "нужно для СЛА",
+    "form.formedPh": "напр. 27",
+    "form.missingGtFormed": "Неприбывших больше, чем сформировано — проверь числа",
+    "norm.title": "Когда нужна причина",
+    "norm.stIdle": "пока не нужна",
+    "norm.stOk": "всё в норме",
+    "norm.stHit": "нужна причина",
+    "norm.durT": "> {n} мин",
+    "norm.durS": "норматив",
+    "norm.endS": "конец приёмки",
+    "norm.nowS": "ввод данных",
+    "norm.capKnown": "{f} заказов → норматив {lim} мин",
+    "norm.capUnknown": "Норматив считается по числу заказов — укажи «Сформировано». Пока действует {lim} мин.",
+    "norm.took": "Заняло {t}",
+    "norm.durBox": "норма {lim} {m}",
+    "late.head": "Укажи причину задержки",
+    "late.choose": "Выбери причину…",
+    "late.other": "Опиши причину",
+    "late.whyDur": "Дольше нормы: {t} при {lim} мин",
+    "late.whyEnd": "Приёмка завершена после 15:00",
+    "late.whyNow": "Данные вносятся после 15:00",
+    "late.sheetTitle": "Причина задержки",
+    "late.sheetSub": "Выбери одну — она попадёт в отчёт",
+    "late.r1": "Поздняя доставка на ПВЗ",
+    "late.r2": "Большой объём заказов",
+    "late.r3": "Не хватало сотрудников",
+    "late.r4": "Проблемы с системой / интернетом",
+    "late.r5": "Недовоз / пересорт",
+    "late.r6": "Другое",
+    "jira.fieldLabel": "Jira-тикет",
+    "jira.optional": "по желанию",
+    "lang.rowTitle": "Язык",
+    "lang.rowSub": "Til · RU / UZ",
+    "pv.pickTitle": "Выбери ПВЗ",
+    "pv.pickSub": "Классика или франшиза · {n} точек",
+    "pv.whoTitle": "Кто сдал / кто нет",
+    "mini.done": "Внесли",
+    "mini.left": "Осталось",
+    "mini.late": "Просрочка",
+    "pv.whoSub": "Сдали {a} из {b} · просрочка {c}",
+    "pv.segAll": "Все",
+    "pv.segClassic": "Классика",
+    "pv.segFr": "Франшиза",
+    "pv.fAll": "Все",
+    "pv.fNo": "Не сдали",
+    "pv.fYes": "Сдали",
+    "pv.fLate": "Просрочка",
+    "pv.done": "внесено",
+    "pv.late": "просрочка",
+    "pv.pending": "ещё не внесли",
+    "pv.empty": "Ничего не нашли",
+    "pv.emptySub": "Попробуй другой запрос",
+    "pv.close": "Закрыть",
+    "pv.terr.anya": "Аня Грицкова",
+    "pv.terr.unknown_franchise": "Ту Светлана",
+    "footer.rights": "Дизайн, структура и код защищены авторским правом · копирование запрещено"
   },
   uz: {
     "brand.openHub": "UZUM HUB’ni ochish",
@@ -863,7 +936,7 @@ window.UZ_I18N_DICT = {
     "footer.privacy": "Maxfiylik siyosati",
     "footer.consent": "Ma'lumotlarni qayta ishlashga rozilik",
     "footer.copy": "© Uzum,",
-    "footer.version": "1-versiya · 30.08.2026",
+    "footer.version": "2-versiya · 18.10.2026",
     "duration.hourShort": "soat",
     "duration.minShort": "daq",
     "sla.title": "Qabul vaqtini hisoblash",
@@ -922,18 +995,75 @@ window.UZ_I18N_DICT = {
     "report.jiraSectionTitle": "Jira · bog‘liq tiketlar",
     "report.jiraEmpty": "Tiket biriktirilmagan — qabulda nizolar bo‘lmagan",
     "legal.privacyTitle": "Maxfiylik siyosati",
-    "legal.consentTitle": "Ma'lumotlarni qayta ishlashga rozilik"
+    "legal.consentTitle": "Ma'lumotlarni qayta ishlashga rozilik",
+    "form.formedLabel": "Shakllantirilgan buyurtmalar",
+    "form.formedTag": "SLA uchun kerak",
+    "form.formedPh": "masalan, 27",
+    "form.missingGtFormed": "Yetib kelmaganlar shakllantirilganidan ko‘p — raqamlarni tekshiring",
+    "norm.title": "Sabab qachon kerak",
+    "norm.stIdle": "hozircha kerak emas",
+    "norm.stOk": "hammasi me’yorda",
+    "norm.stHit": "sabab kerak",
+    "norm.durT": "> {n} daq",
+    "norm.durS": "me’yor",
+    "norm.endS": "qabul tugashi",
+    "norm.nowS": "ma’lumot kiritish",
+    "norm.capKnown": "{f} ta buyurtma → me’yor {lim} daq",
+    "norm.capUnknown": "Me’yor buyurtmalar soniga qarab hisoblanadi — «Shakllantirilgan»ni kiriting. Hozircha {lim} daq amal qiladi.",
+    "norm.took": "{t} ketdi",
+    "norm.durBox": "me’yor {lim} {m}",
+    "late.head": "Kechikish sababini ko‘rsating",
+    "late.choose": "Sababni tanlang…",
+    "late.other": "Sababni yozing",
+    "late.whyDur": "Me’yordan uzoq: {t}, me’yor {lim} daq",
+    "late.whyEnd": "Qabul 15:00 dan keyin tugagan",
+    "late.whyNow": "Ma’lumot 15:00 dan keyin kiritilmoqda",
+    "late.sheetTitle": "Kechikish sababi",
+    "late.sheetSub": "Bittasini tanlang — hisobotga tushadi",
+    "late.r1": "PVZga kech yetkazilgan",
+    "late.r2": "Buyurtmalar hajmi katta",
+    "late.r3": "Xodimlar yetarli bo‘lmagan",
+    "late.r4": "Tizim / internet muammolari",
+    "late.r5": "Kam keltirilgan / qayta saralash",
+    "late.r6": "Boshqa",
+    "jira.fieldLabel": "Jira tiketi",
+    "jira.optional": "ixtiyoriy",
+    "lang.rowTitle": "Til",
+    "lang.rowSub": "Язык · RU / UZ",
+    "pv.pickTitle": "PVZni tanlang",
+    "pv.pickSub": "Klassika yoki franshiza · {n} ta nuqta",
+    "pv.whoTitle": "Kim topshirdi / kim yo‘q",
+    "mini.done": "Kiritildi",
+    "mini.left": "Qoldi",
+    "mini.late": "Kechikish",
+    "pv.whoSub": "{b} tadan {a} tasi topshirdi · kechikish {c}",
+    "pv.segAll": "Hammasi",
+    "pv.segClassic": "Klassika",
+    "pv.segFr": "Franshiza",
+    "pv.fAll": "Hammasi",
+    "pv.fNo": "Topshirmagan",
+    "pv.fYes": "Topshirgan",
+    "pv.fLate": "Kechikkan",
+    "pv.done": "kiritilgan",
+    "pv.late": "kechikkan",
+    "pv.pending": "hali kiritilmagan",
+    "pv.empty": "Hech narsa topilmadi",
+    "pv.emptySub": "Boshqa so‘rov sinab ko‘ring",
+    "pv.close": "Yopish",
+    "pv.terr.anya": "Anya Gritskova",
+    "pv.terr.unknown_franchise": "Tu Svetlana",
+    "footer.rights": "Dizayn, tuzilma va kod mualliflik huquqi bilan himoyalangan · nusxa ko‘chirish taqiqlanadi"
   }
 };
 
 window.UZ_I18N_LEGAL = {
   ru: {
-    privacy: "<h3>1. Какие данные мы собираем</h3><p>При использовании «СЛА приёмки» мы получаем от Telegram Login Widget базовые данные вашего аккаунта (ID, имя, username), а также данные, которые вы вносите сами: выбранный ПВЗ, время открытия ПВЗ, факты приезда магистрали и уезда, время начала и окончания приёмки, количество неприбывших заказов и ссылки на связанные тикеты Jira.</p><h3>2. Как мы используем данные</h3><p>Данные используются исключительно для контроля соблюдения СЛА приёмки на ПВЗ: расчёта сроков, формирования отчётов и статистики по точкам. Все внесённые записи синхронизируются с рабочей Google Таблицей отдела.</p><h3>3. Хранение и защита</h3><p>Данные хранятся в Google Таблице и защищены доступом по учётной записи Telegram. Срок хранения ограничен сроком, необходимым для целей учёта СЛА, либо требованиями внутренних регламентов Uzum.</p><h3>4. Передача третьим лицам</h3><p>Мы не продаём и не передаём данные третьим лицам, за исключением передачи внутри экосистемы Uzum (ответственным по СЛА и руководителям направления ПВЗ) для контроля рабочих показателей.</p><h3>5. Ваши права</h3><p>Вы вправе запросить информацию об обрабатываемых данных, их исправление или удаление, обратившись к вашему администратору Uzum PVZ.</p>",
-    consent: "<h3>Согласие</h3><p>Продолжая использовать «СЛА приёмки», вы подтверждаете, что ознакомлены с условиями обработки персональных данных и даёте согласие на обработку следующих данных: идентификатор и имя пользователя Telegram, а также данные, вносимые в процессе учёта приёмки (ПВЗ, время, факты приезда/уезда, кол-во неприбывших заказов, ссылки на тикеты).</p><h3>Цели обработки</h3><ul><li>Идентификация пользователя внутри рабочего процесса СЛА приёмки</li><li>Фиксация и хранение записей о приёмке на ПВЗ</li><li>Формирование отчётов и статистики соблюдения СЛА</li></ul><h3>Срок действия и отзыв согласия</h3><p>Согласие действует на весь период использования сервиса. Вы можете отозвать согласие в любой момент, обратившись к вашему администратору Uzum PVZ. После отзыва согласия доступ к функциям сервиса может быть ограничен.</p>"
+    privacy: "<h3>1. Какие данные мы собираем</h3><p>При использовании «СЛА приёмки» мы получаем от Telegram Login Widget базовые данные вашего аккаунта (ID, имя, username), а также данные, которые вы вносите сами: выбранный ПВЗ, время открытия ПВЗ, факты приезда магистрали и уезда, время начала и окончания приёмки, количество неприбывших и сформированных заказов, причину задержки (если она требуется) и ссылки на связанные тикеты Jira.</p><h3>2. Как мы используем данные</h3><p>Данные используются исключительно для контроля соблюдения СЛА приёмки на ПВЗ: расчёта сроков, формирования отчётов и статистики по точкам. Все внесённые записи синхронизируются с рабочей Google Таблицей отдела.</p><h3>3. Хранение и защита</h3><p>Данные хранятся в Google Таблице и защищены доступом по учётной записи Telegram. Срок хранения ограничен сроком, необходимым для целей учёта СЛА, либо требованиями внутренних регламентов Uzum.</p><h3>4. Передача третьим лицам</h3><p>Мы не продаём и не передаём данные третьим лицам, за исключением передачи внутри экосистемы Uzum (ответственным по СЛА и руководителям направления ПВЗ) для контроля рабочих показателей.</p><h3>5. Ваши права</h3><p>Вы вправе запросить информацию об обрабатываемых данных, их исправление или удаление, обратившись к вашему администратору Uzum PVZ.</p><h3>6. Авторские права и защита от копирования</h3><p>«СЛА приёмки» — авторская разработка. Идея сервиса, его концепция, дизайн-система («Бархат»), структура и логика интерфейса, вёрстка, анимации, звуки, тексты и программный код созданы автором проекта и охраняются законодательством об авторском праве и международными договорами. Все права защищены.</p><p>Без письменного разрешения автора запрещается:</p><ul><li>копировать, воспроизводить, клонировать и распространять сайт или его части — дизайн, структуру, вёрстку, стили, код и логику работы;</li><li>создавать похожие, производные или «переделанные» сервисы на основе внешнего вида, структуры или идей сайта;</li><li>использовать скрейпинг, зеркалирование, автоматические и иные средства копирования;</li><li>выдавать работу автора за свою или публиковать её на других ресурсах.</li></ul><p>За нарушение предусмотрена ответственность по закону: требование немедленно прекратить использование, удаление материалов (в том числе жалобы владельцам хостинга и платформ), возмещение убытков и обращение в суд. Скопировал — отвечаешь.</p>",
+    consent: "<h3>Согласие</h3><p>Продолжая использовать «СЛА приёмки», вы подтверждаете, что ознакомлены с условиями обработки персональных данных и даёте согласие на обработку следующих данных: идентификатор и имя пользователя Telegram, а также данные, вносимые в процессе учёта приёмки (ПВЗ, время, факты приезда/уезда, кол-во неприбывших и сформированных заказов, причина задержки, ссылки на тикеты).</p><h3>Цели обработки</h3><ul><li>Идентификация пользователя внутри рабочего процесса СЛА приёмки</li><li>Фиксация и хранение записей о приёмке на ПВЗ</li><li>Формирование отчётов и статистики соблюдения СЛА</li></ul><h3>Срок действия и отзыв согласия</h3><p>Согласие действует на весь период использования сервиса. Вы можете отозвать согласие в любой момент, обратившись к вашему администратору Uzum PVZ. После отзыва согласия доступ к функциям сервиса может быть ограничен.</p><h3>Интеллектуальная собственность</h3><p>Используя «СЛА приёмки», вы признаёте, что сайт — объект авторского права автора проекта, и обязуетесь не копировать, не воспроизводить и не передавать третьим лицам его дизайн, структуру, код и материалы без письменного согласия автора. Подробнее — в Политике конфиденциальности, раздел 6.</p>"
   },
   uz: {
-    privacy: "<h3>1. Biz qanday ma'lumotlarni yig‘amiz</h3><p>«Qabul SLA»dan foydalanganda biz Telegram Login Widget orqali hisobingizning asosiy ma'lumotlarini (ID, ism, username) olamiz, shuningdek siz o‘zingiz kiritadigan ma'lumotlarni: tanlangan PVZ, PVZ ochilish vaqti, magistral kelishi va jo‘nab ketishi faktlari, qabul boshlanishi va tugashi vaqti, yetib kelmagan buyurtmalar soni hamda tegishli Jira tiketlariga havolalarni.</p><h3>2. Ma'lumotlardan qanday foydalanamiz</h3><p>Ma'lumotlar faqat PVZda qabul SLA'siga rioya qilishni nazorat qilish uchun ishlatiladi: muddatlarni hisoblash, nuqtalar bo‘yicha hisobot va statistika shakllantirish uchun. Kiritilgan barcha yozuvlar bo‘lim ishchi Google Jadvali bilan sinxronlashtiriladi.</p><h3>3. Saqlash va himoya</h3><p>Ma'lumotlar Google Jadvalida saqlanadi va Telegram hisobi orqali kirish huquqi bilan himoyalangan. Saqlash muddati SLA hisobi maqsadlari uchun zarur bo‘lgan muddat yoki Uzum ichki reglamentlari talablari bilan chegaralangan.</p><h3>4. Uchinchi shaxslarga uzatish</h3><p>Biz ma'lumotlarni sotmaymiz va uchinchi shaxslarga uzatmaymiz, faqat ish ko‘rsatkichlarini nazorat qilish uchun Uzum ekotizimi ichida (SLA bo‘yicha mas'ullar va PVZ yo‘nalishi rahbarlariga) uzatish bundan mustasno.</p><h3>5. Sizning huquqlaringiz</h3><p>Siz Uzum PVZ administratoringizga murojaat qilib, qayta ishlanayotgan ma'lumotlar haqida ma'lumot so‘rash, ularni tuzatish yoki o‘chirishni talab qilish huquqiga egasiz.</p>",
-    consent: "<h3>Rozilik</h3><p>«Qabul SLA»dan foydalanishni davom ettirib, siz shaxsiy ma'lumotlarni qayta ishlash shartlari bilan tanishganingizni tasdiqlaysiz va quyidagi ma'lumotlarni qayta ishlashga rozilik bildirasiz: Telegram foydalanuvchisining identifikatori va ismi, shuningdek qabulni hisobga olish jarayonida kiritiladigan ma'lumotlar (PVZ, vaqt, kelish/jo‘nash faktlari, yetib kelmagan buyurtmalar soni, tiketlarga havolalar).</p><h3>Qayta ishlash maqsadlari</h3><ul><li>Qabul SLA ish jarayoni ichida foydalanuvchini identifikatsiya qilish</li><li>PVZdagi qabul haqidagi yozuvlarni qayd etish va saqlash</li><li>SLA'ga rioya qilish bo‘yicha hisobot va statistika shakllantirish</li></ul><h3>Amal qilish muddati va rozilikni bekor qilish</h3><p>Rozilik xizmatdan foydalanishning butun davri uchun amal qiladi. Siz Uzum PVZ administratoringizga murojaat qilib, istalgan vaqtda rozilikni bekor qilishingiz mumkin. Rozilik bekor qilingandan so‘ng xizmat funksiyalariga kirish cheklanishi mumkin.</p>"
+    privacy: "<h3>1. Biz qanday ma'lumotlarni yig‘amiz</h3><p>«Qabul SLA»dan foydalanganda biz Telegram Login Widget orqali hisobingizning asosiy ma'lumotlarini (ID, ism, username) olamiz, shuningdek siz o‘zingiz kiritadigan ma'lumotlarni: tanlangan PVZ, PVZ ochilish vaqti, magistral kelishi va jo‘nab ketishi faktlari, qabul boshlanishi va tugashi vaqti, yetib kelmagan va shakllantirilgan buyurtmalar soni, kechikish sababi (agar talab qilinsa) hamda tegishli Jira tiketlariga havolalarni.</p><h3>2. Ma'lumotlardan qanday foydalanamiz</h3><p>Ma'lumotlar faqat PVZda qabul SLA'siga rioya qilishni nazorat qilish uchun ishlatiladi: muddatlarni hisoblash, nuqtalar bo‘yicha hisobot va statistika shakllantirish uchun. Kiritilgan barcha yozuvlar bo‘lim ishchi Google Jadvali bilan sinxronlashtiriladi.</p><h3>3. Saqlash va himoya</h3><p>Ma'lumotlar Google Jadvalida saqlanadi va Telegram hisobi orqali kirish huquqi bilan himoyalangan. Saqlash muddati SLA hisobi maqsadlari uchun zarur bo‘lgan muddat yoki Uzum ichki reglamentlari talablari bilan chegaralangan.</p><h3>4. Uchinchi shaxslarga uzatish</h3><p>Biz ma'lumotlarni sotmaymiz va uchinchi shaxslarga uzatmaymiz, faqat ish ko‘rsatkichlarini nazorat qilish uchun Uzum ekotizimi ichida (SLA bo‘yicha mas'ullar va PVZ yo‘nalishi rahbarlariga) uzatish bundan mustasno.</p><h3>5. Sizning huquqlaringiz</h3><p>Siz Uzum PVZ administratoringizga murojaat qilib, qayta ishlanayotgan ma'lumotlar haqida ma'lumot so‘rash, ularni tuzatish yoki o‘chirishni talab qilish huquqiga egasiz.</p><h3>6. Mualliflik huquqi va nusxa ko‘chirishdan himoya</h3><p>«Qabul SLA» — muallifning shaxsiy ishlanmasi. Xizmat g‘oyasi, konsepsiyasi, dizayn tizimi («Barxat»), interfeys tuzilmasi va mantig‘i, maketi, animatsiyalari, tovushlari, matnlari hamda dasturiy kodi loyiha muallifi tomonidan yaratilgan va mualliflik huquqi to‘g‘risidagi qonunchilik hamda xalqaro shartnomalar bilan himoyalangan. Barcha huquqlar himoyalangan.</p><p>Muallifning yozma ruxsatisiz quyidagilar taqiqlanadi:</p><ul><li>saytni yoki uning qismlarini — dizayn, tuzilma, maket, uslublar, kod va ish mantig‘ini — nusxalash, ko‘paytirish, klonlash va tarqatish;</li><li>saytning tashqi ko‘rinishi, tuzilmasi yoki g‘oyalari asosida o‘xshash, hosila yoki «qayta ishlangan» xizmatlar yaratish;</li><li>skreyping, ko‘zgu nusxalash (mirroring), avtomatik va boshqa nusxalash vositalaridan foydalanish;</li><li>muallif ishini o‘zinikidek ko‘rsatish yoki boshqa resurslarda e’lon qilish.</li></ul><p>Buzganlik uchun qonunga muvofiq javobgarlik nazarda tutilgan: foydalanishni darhol to‘xtatish talabi, materiallarni o‘chirish (jumladan, hosting va platforma egalariga shikoyat), zararni qoplash va sudga murojaat. Nusxa ko‘chirsangiz — javob berasiz.</p>",
+    consent: "<h3>Rozilik</h3><p>«Qabul SLA»dan foydalanishni davom ettirib, siz shaxsiy ma'lumotlarni qayta ishlash shartlari bilan tanishganingizni tasdiqlaysiz va quyidagi ma'lumotlarni qayta ishlashga rozilik bildirasiz: Telegram foydalanuvchisining identifikatori va ismi, shuningdek qabulni hisobga olish jarayonida kiritiladigan ma'lumotlar (PVZ, vaqt, kelish/jo‘nash faktlari, yetib kelmagan va shakllantirilgan buyurtmalar soni, kechikish sababi, tiketlarga havolalar).</p><h3>Qayta ishlash maqsadlari</h3><ul><li>Qabul SLA ish jarayoni ichida foydalanuvchini identifikatsiya qilish</li><li>PVZdagi qabul haqidagi yozuvlarni qayd etish va saqlash</li><li>SLA'ga rioya qilish bo‘yicha hisobot va statistika shakllantirish</li></ul><h3>Amal qilish muddati va rozilikni bekor qilish</h3><p>Rozilik xizmatdan foydalanishning butun davri uchun amal qiladi. Siz Uzum PVZ administratoringizga murojaat qilib, istalgan vaqtda rozilikni bekor qilishingiz mumkin. Rozilik bekor qilingandan so‘ng xizmat funksiyalariga kirish cheklanishi mumkin.</p><h3>Intellektual mulk</h3><p>«Qabul SLA»dan foydalanib, siz sayt loyiha muallifining mualliflik huquqi obyekti ekanini tan olasiz va muallifning yozma roziligisiz uning dizayni, tuzilmasi, kodi va materiallarini nusxalamaslik, ko‘paytirmaslik hamda uchinchi shaxslarga bermaslik majburiyatini olasiz. Batafsil — Maxfiylik siyosatining 6-bo‘limida.</p>"
   }
 };
 
@@ -1030,6 +1160,7 @@ window.UZ_I18N_LEGAL = {
     try { if (typeof window.__i18nRerenderReport === "function") window.__i18nRerenderReport(); } catch(e){}
 
     // footer-copy-text содержит смешанный контент — год уже отдельный span, не трогаем
+    try { document.dispatchEvent(new CustomEvent("uz:lang", { detail: lang })); } catch(e){}
   }
   window.applyUzTranslations = applyTranslations;
 
@@ -1114,7 +1245,7 @@ window.onTelegramAuth=function(e){const t=a()||{};t.telegramId=e.id,t.telegramFi
 // звуков подряд (тик по ховеру + клик) не клиппировало сигнал. withAudio() —
 // единая точка входа: если контекст уже running, синтез сразу; если нет —
 // ждём один resume() (не плодим по промису на каждый пропущенный клик).
-let o=null,l=null;function c(){try{if(!o){const e=window.AudioContext||window.webkitAudioContext;if(!e)return null;o=new e}return l||(l=o.createDynamicsCompressor(),l.threshold.value=-18,l.knee.value=24,l.ratio.value=4,l.attack.value=.003,l.release.value=.15,l.connect(o.destination)),o}catch(e){return null}}let d=null;function u(e){const t=c();t&&("running"!==t.state?(d||(d=t.resume().catch(()=>{}).then(()=>{d=null})),d.then(()=>{"running"===t.state&&e(t)})):e(t))}function m(e,t,n,i,a){u(r=>{const s=r.currentTime+(a||0),o=r.createOscillator(),c=r.createGain();o.type=n||"sine",o.frequency.setValueAtTime(e,s),c.gain.setValueAtTime(0,s),c.gain.linearRampToValueAtTime(i||.12,s+.012),c.gain.exponentialRampToValueAtTime(1e-4,s+t),o.connect(c).connect(l),o.start(s),o.stop(s+t+.02)})}
+let o=null,l=null;function c(){try{if(!o){const S_=window.UZSND&&window.UZSND.shared&&window.UZSND.shared();if(S_)o=S_.ctx,l=o.createGain(),l.connect(S_.bus);else{const e=window.AudioContext||window.webkitAudioContext;if(!e)return null;o=new e}}return l||(l=o.createDynamicsCompressor(),l.threshold.value=-18,l.knee.value=24,l.ratio.value=4,l.attack.value=.003,l.release.value=.15,l.connect(o.destination)),o}catch(e){return null}}let d=null;function u(e){const t=c();t&&("running"!==t.state?(d||(d=t.resume().catch(()=>{}).then(()=>{d=null})),d.then(()=>{"running"===t.state&&e(t)})):e(t))}function m(e,t,n,i,a){u(r=>{const s=r.currentTime+(a||0),o=r.createOscillator(),c=r.createGain();o.type=n||"sine",o.frequency.setValueAtTime(e,s),c.gain.setValueAtTime(0,s),c.gain.linearRampToValueAtTime(i||.12,s+.012),c.gain.exponentialRampToValueAtTime(1e-4,s+t),o.connect(c).connect(l),o.start(s),o.stop(s+t+.02)})}
 // Нотный синтезатор для letter-fx: чистая синусоида + тихая пятая гармоника
 // ("стеклянный" тембр), короткая атака, экспоненциальное затухание.
 document.addEventListener("visibilitychange",()=>{!document.hidden&&o&&"running"!==o.state&&o.resume().catch(()=>{})});
@@ -1130,19 +1261,19 @@ document.addEventListener("pointerdown",
 function(){UZ("welcome")},{once:!0,passive:!0});
 // ============ БУКВЫ, ИГРАЮЩИЕ С КУРСОРОМ ============
 let q=new Map;// container -> { letters, rects }
-function _(e){q.set(e,{letters:null,rects:null});let t=null,n=0,i=0;e.addEventListener("pointermove",a=>{a.pointerType&&"mouse"!==a.pointerType||(n=a.clientX,i=a.clientY,t||(t=requestAnimationFrame(()=>{t=null,function(e,t,n){const i=q.get(e);i&&(i.rects||(i.letters=Array.from(e.querySelectorAll(".letter-fx")),i.rects=i.letters.map(e=>e.getBoundingClientRect())),i.letters.forEach((e,a)=>{const r=i.rects[a],s=r.left+r.width/2,o=r.top+r.height/2,l=Math.hypot(t-s,n-o);if(l<62){const t=1-l/62,n=t*t*(3-2*t);e.classList.remove("is-releasing"),e.style.transform=`translateY(${(-2.4*n).toFixed(2)}px) scale(${(1+.09*n).toFixed(3)})`,e.style.filter=`drop-shadow(0 0 ${(6*n).toFixed(1)}px rgba(157,77,255,${(.6*n).toFixed(2)}))`,e.classList.remove("is-settling"),e._letterFxNear||v(a),e._letterFxNear=!0}else e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))}))}(e,n,i)})))},{passive:!0}),e.addEventListener("pointerleave",()=>{const t=q.get(e);t&&t.letters&&t.letters.forEach(e=>{e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))})})}window.addEventListener("resize",()=>{q.forEach(e=>{e.rects=null})},{passive:!0});
+function _(e){const __had=q.has(e);q.set(e,{letters:null,rects:null});if(__had)return;let t=null,n=0,i=0;e.addEventListener("pointermove",a=>{a.pointerType&&"mouse"!==a.pointerType||(n=a.clientX,i=a.clientY,t||(t=requestAnimationFrame(()=>{t=null,function(e,t,n){const i=q.get(e);i&&(i.rects&&i.sy===window.scrollY&&performance.now()-i.ts<450||(i.letters=Array.from(e.querySelectorAll(".letter-fx")),i.rects=i.letters.map(e=>e.getBoundingClientRect()),i.sy=window.scrollY,i.ts=performance.now()),i.letters.forEach((e,a)=>{const r=i.rects[a],s=r.left+r.width/2,o=r.top+r.height/2,l=Math.hypot(t-s,n-o);if(l<62){const t=1-l/62,n=t*t*(3-2*t);e.classList.remove("is-releasing"),e.style.transform=`translateY(${(-2.4*n).toFixed(2)}px) scale(${(1+.09*n).toFixed(3)})`,e.style.filter=`drop-shadow(0 0 ${(6*n).toFixed(1)}px rgba(157,77,255,${(.6*n).toFixed(2)}))`,e.classList.remove("is-settling"),e._letterFxNear||v(a),e._letterFxNear=!0}else e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))}))}(e,n,i)})))},{passive:!0}),e.addEventListener("pointerleave",()=>{const t=q.get(e);t&&t.letters&&t.letters.forEach(e=>{e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))})})}window.addEventListener("resize",()=>{q.forEach(e=>{e.rects=null})},{passive:!0});
 // Применяет эффект ко всем ещё не обработанным текстам внутри root (по умолчанию
 // всему документу). Безопасно вызывать повторно — уже обработанные элементы
 // помечаются data-letter-fx и пропускаются, так что можно дёргать эту функцию
 // после любого динамического рендера (детальный отчёт по ПВЗ, легальная шторка и т.д.)
-function k(e){(e||document).querySelectorAll(".hint-text, .sheet-hint, .section-label, .entry-empty, .mascot-status, .norm-tag, .lbl, .report-jira-empty, .report-metric-label, .report-section-title, .report-submitted, .sheet-title, .report-name, .entry-time").forEach(e=>{e.dataset.letterFx||(e.dataset.letterFx="1",function(e){const t=(e,t)=>{if(!t.length)return;const n=document.createElement("span");n.className="fx-word",t.forEach(e=>n.appendChild(e)),e.appendChild(n),t.length=0},n=e=>{Array.from(e.childNodes).forEach(i=>{if(3===i.nodeType){const n=i.textContent;if(!n)return;const a=document.createDocumentFragment();let r=[];Array.from(n).forEach(e=>{if(" "===e||" "===e)return t(a,r),void a.appendChild(document.createTextNode(e));const n=document.createElement("span");n.className="letter-fx",n.textContent=e,r.push(n)}),t(a,r),e.replaceChild(a,i)}else if(1===i.nodeType){if(i.classList.contains("key"))return;n(i)}})};n(e)}(e),_(e))})}
+window.__uzFx=function(e){k(e)};function k(e){(e||document).querySelectorAll(".hint-text, .sheet-hint, .section-label, .entry-empty, .mascot-status, .norm-tag, .lbl, .report-jira-empty, .report-metric-label, .report-section-title, .report-submitted, .sheet-title, .report-name, .entry-time, .tier-range, .tier-time, .sla-note>span:not(.sn-ic), .late-hint, .nrm-t>span:not(.nrm-ic), .footer, .footer-rights").forEach(e=>{e.dataset.letterFx||(e.dataset.letterFx="1",function(e){const t=(e,t)=>{if(!t.length)return;const n=document.createElement("span");n.className="fx-word",t.forEach(e=>n.appendChild(e)),e.appendChild(n),t.length=0},n=e=>{Array.from(e.childNodes).forEach(i=>{if(3===i.nodeType){const n=i.textContent;if(!n)return;const a=document.createDocumentFragment();let r=[];Array.from(n).forEach(e=>{if(" "===e||" "===e)return t(a,r),void a.appendChild(document.createTextNode(e));const n=document.createElement("span");n.className="letter-fx",n.textContent=e,r.push(n)}),t(a,r),e.replaceChild(a,i)}else if(1===i.nodeType){if(i.classList.contains("key"))return;n(i)}})};n(e)}(e),_(e))})}
 // ============ КНОПКИ — СИСТЕМА ЭФФЕКТОВ ============
 function C(e){const t=e.currentTarget,n=t.getBoundingClientRect(),i=1.4*Math.max(n.width,n.height);let a,r;0===e.detail?(a=n.left+n.width/2,r=n.top+n.height/2):(a=void 0!==e.clientX?e.clientX:n.left+n.width/2,r=void 0!==e.clientY?e.clientY:n.top+n.height/2);const s=document.createElement("span");s.className="ripple",s.style.width=s.style.height=i+"px",s.style.left=a-n.left-i/2+"px",s.style.top=r-n.top-i/2+"px",t.appendChild(s),setTimeout(()=>s.remove(),700)}function P(e){const t=e.currentTarget;t.querySelector(".btn-click-shine")&&(t.classList.remove("shine-hit"),t.offsetWidth,t.classList.add("shine-hit"),clearTimeout(t._shineTimer),t._shineTimer=setTimeout(()=>t.classList.remove("shine-hit"),320))}function z(e){if("touch"!==e.pointerType)return;const t=e.currentTarget;if(!t.querySelector(".btn-specular"))return;const n=t.getBoundingClientRect();t.style.setProperty("--mouse-x",(e.clientX-n.left)/n.width*100+"%"),t.style.setProperty("--mouse-y",(e.clientY-n.top)/n.height*100+"%"),t.classList.remove("specular-touch-hit"),t.offsetWidth,t.classList.add("specular-touch-hit"),clearTimeout(t._specularTouchTimer),t._specularTouchTimer=setTimeout(()=>t.classList.remove("specular-touch-hit"),520)}function V(e){const t=e.currentTarget;t.classList.remove("motion-hit"),t.offsetWidth,t.classList.add("motion-hit"),clearTimeout(t._motionBlurTimer),t._motionBlurTimer=setTimeout(()=>t.classList.remove("motion-hit"),240)}k(),document.querySelectorAll(".btn").forEach(e=>{e.addEventListener("pointerdown",C),e.addEventListener("pointerdown",P),e.addEventListener("pointerdown",V),e.addEventListener("pointerdown",z)}),
 // Курсорный specular-блик на кнопках — только для мыши/трекпада на hover-совместимом
 // устройстве, делегированный обработчик на document покрывает и будущие .btn в DOM.
 (()=>{if(!(window.matchMedia&&window.matchMedia("(hover: hover) and (pointer: fine)").matches))return;document.querySelectorAll(".btn").forEach(e=>e.classList.add("specular-ready"));let e=0;document.addEventListener("pointermove",t=>{if(t.pointerType&&"mouse"!==t.pointerType)return;const n=performance.now();if(n-e<30)return;e=n;const i=t.target.closest&&t.target.closest(".btn.specular-ready");if(!i)return;const a=i.getBoundingClientRect();i.style.setProperty("--mouse-x",(t.clientX-a.left)/a.width*100+"%"),i.style.setProperty("--mouse-y",(t.clientY-a.top)/a.height*100+"%")},{passive:!0})})();
 // ============ ФОН СТАЛ ИНТЕРАКТИВНЫМ (parallax) ============
-const N=window.matchMedia("(pointer: coarse)").matches?40:95,R=Array.from(document.querySelectorAll(".parallax-el")),O=R.filter(e=>e.classList.contains("card")),$=R.filter(e=>!e.classList.contains("card"));let D=0,j=0,U=0,Y=0,J=null,G=0;function W(e){e=e||performance.now(),G||(G=e);let t=(e-G)/1e3;t=Math.min(t,1/30),G=e;const n=1-Math.pow(.92,60*t);D+=(U-D)*n,j+=(Y-j)*n;const i=document.getElementById("mesh-track");i&&(i.style.transform=`translate3d(${D.toFixed(2)}px, ${j.toFixed(2)}px, 0)`);const a=N?Math.max(-1,Math.min(1,U/N*2.4)):0,r=N?Math.max(-1,Math.min(1,Y/N*2.4)):0,s=document.getElementById("brand-glow-ring");if(s){const e=10;s.style.setProperty("--ray-tilt",(a*e).toFixed(2)+"deg")}$.forEach(e=>{const t=parseFloat(e.dataset.depth||"0.15"),n=Math.sqrt(t/.22),i=(24*a*n).toFixed(2),s=(24*-r*n).toFixed(2);e.style.transform=`perspective(900px) translate3d(${(D*t).toFixed(2)}px, ${(j*t).toFixed(2)}px, 0) rotateX(${s}deg) rotateY(${i}deg)`}),O.forEach(e=>{const t=parseFloat(e.dataset.depth||"0.15"),n=Math.sqrt(t/.22);e.style.setProperty("--pfx",(D*t).toFixed(2)+"px"),e.style.setProperty("--pfy",(j*t).toFixed(2)+"px"),e.style.setProperty("--ptx",(24*a*n).toFixed(2)+"deg"),e.style.setProperty("--pty",(24*-r*n).toFixed(2)+"deg")}),Math.abs(U-D)>.05||Math.abs(Y-j)>.05?J=requestAnimationFrame(W):(J=null,G=0)}window.addEventListener("pointermove",e=>{if(e.pointerType&&"mouse"!==e.pointerType)return;U=(e.clientX/window.innerWidth-.5)*N,Y=(e.clientY/window.innerHeight-.5)*N,J||(J=requestAnimationFrame(W))},{passive:!0}),
+const N=window.matchMedia("(pointer: coarse)").matches?40:95,R=Array.from(document.querySelectorAll(".parallax-el")),O=R.filter(e=>e.classList.contains("card")),$=R.filter(e=>!e.classList.contains("card"));let D=0,j=0,U=0,Y=0,J=null,G=0;function W(e){e=e||performance.now(),G||(G=e);let t=(e-G)/1e3;t=Math.min(t,1/30),G=e;const n=1-Math.pow(.92,60*t);D+=(U-D)*n,j+=(Y-j)*n;const i=document.getElementById("mesh-track");i&&(i.style.transform=`translate3d(${D.toFixed(2)}px, ${j.toFixed(2)}px, 0)`);const __k=window.__uzTilt?window.__uzTilt():2.4,a=N?Math.max(-1,Math.min(1,U/N*__k)):0,r=N?Math.max(-1,Math.min(1,Y/N*__k)):0,s=document.getElementById("brand-glow-ring");if(s){const e=10;s.style.setProperty("--ray-tilt",(a*e).toFixed(2)+"deg")}$.forEach(e=>{const t=parseFloat(e.dataset.depth||"0.15"),n=Math.sqrt(t/.22),i=(24*a*n).toFixed(2),s=(24*-r*n).toFixed(2);e.style.transform=`perspective(900px) translate3d(${(D*t).toFixed(2)}px, ${(j*t).toFixed(2)}px, 0) rotateX(${s}deg) rotateY(${i}deg)`}),O.forEach(e=>{const t=parseFloat(e.dataset.depth||"0.15"),n=Math.sqrt(t/.22);e.style.setProperty("--pfx",(D*t).toFixed(2)+"px"),e.style.setProperty("--pfy",(j*t).toFixed(2)+"px"),e.style.setProperty("--ptx",(24*a*n).toFixed(2)+"deg"),e.style.setProperty("--pty",(24*-r*n).toFixed(2)+"deg")}),Math.abs(U-D)>.05||Math.abs(Y-j)>.05?J=requestAnimationFrame(W):(J=null,G=0)}window.addEventListener("pointermove",e=>{if(e.pointerType&&"mouse"!==e.pointerType)return;window.__uzSrc="m",U=(e.clientX/window.innerWidth-.5)*N,Y=(e.clientY/window.innerHeight-.5)*N,J||(J=requestAnimationFrame(W))},{passive:!0}),
 // Наклон устройства (тач-экраны без мыши) — та же tickMesh(), просто другой источник ptx/pty.
 0,document.querySelectorAll(".card").forEach(e=>{e.addEventListener("pointermove",t=>{if(t.pointerType&&"mouse"!==t.pointerType)return;const n=e.getBoundingClientRect();e.style.setProperty("--mouse-x",(t.clientX-n.left)/n.width*100+"%"),e.style.setProperty("--mouse-y",(t.clientY-n.top)/n.height*100+"%")},{passive:!0}),e.addEventListener("pointerleave",()=>{e.style.setProperty("--mouse-x","50%"),e.style.setProperty("--mouse-y","-20%")})}),
 // [PERF FIX] На переключении в force-lite сбрасываем зависшие inline-значения
@@ -1157,15 +1288,15 @@ window.addEventListener("uzum:liteToggled",e=>{if(!0)return;document.querySelect
 // Ничего нового по геометрии страницы не читаем и не пересчитываем — только
 // точечные CSS custom properties, поэтому layout thrashing не добавляется.
 (()=>{
-  const DEAD_ZONE=.5,// мёртвая зона от мелкого тремора рук, в градусах
-        MAX_TILT=9,// жёсткий clamp по осям (в диапазоне ±8..±10, как просили)
+  const DEAD_ZONE=.8,// мёртвая зона от мелкого тремора рук, в градусах
+        MAX_TILT=7,// жёсткий clamp по осям (в диапазоне ±8..±10, как просили)
         gyroState={active:!1,calibrated:!1,baseBeta:0,baseGamma:0,lastMove:0};
   function clamp(e,t,n){return Math.max(t,Math.min(n,e))}
   function applyDeadZone(e){return Math.abs(e)<DEAD_ZONE?0:e}
   function resetTilt(){U=0,Y=0,D=0,j=0,gyroState.calibrated=!1}
   function onOrientation(e){
-    if(window.__uzumLite||document.documentElement.classList.contains("force-lite"))return;
     if(null===e.beta||null===e.gamma)return;
+    window.__uzSrc="g";
     // Автокалибровка нуля: первое показание становится "горизонтом", чтобы
     // интерфейс не перекашивало при обычном наклонном хвате телефона.
     if(!gyroState.calibrated){gyroState.baseBeta=e.beta,gyroState.baseGamma=e.gamma,gyroState.calibrated=!0;return}
@@ -1181,7 +1312,7 @@ window.addEventListener("uzum:liteToggled",e=>{if(!0)return;document.querySelect
   }
   function recalibrateOnce(){gyroState.calibrated=!1}
   function startGyro(){
-    if(gyroState.active||window.__uzumLite||document.documentElement.classList.contains("force-lite"))return;
+    if(gyroState.active)return;
     if(!window.DeviceOrientationEvent)return;
     gyroState.active=!0,
     window.addEventListener("deviceorientation",onOrientation,{passive:!0}),
@@ -1201,7 +1332,7 @@ window.addEventListener("uzum:liteToggled",e=>{if(!0)return;document.querySelect
     const e=()=>{DeviceOrientationEvent.requestPermission().then(e=>{"granted"===e&&startGyro()}).catch(()=>{}),document.removeEventListener("touchend",e),document.removeEventListener("click",e)};
     document.addEventListener("touchend",e,{passive:!0}),document.addEventListener("click",e)
   }
-  if(!window.__uzumLite&&!document.documentElement.classList.contains("force-lite")){
+  {
     if("function"==typeof window.DeviceOrientationEvent?.requestPermission)requestIOSPermission();
     else startGyro()
   }
@@ -1209,15 +1340,14 @@ window.addEventListener("uzum:liteToggled",e=>{if(!0)return;document.querySelect
   // W() и так останавливает rAF сам при отсутствии движения (см. выше).
   document.addEventListener("visibilitychange",()=>{
     if(document.hidden)gyroState.active&&window.removeEventListener("deviceorientation",onOrientation),gyroState.active=!1;
-    else if(!window.__uzumLite&&!document.documentElement.classList.contains("force-lite")&&!gyroState.active)startGyro(),gyroState.calibrated=!1
+    else if(!gyroState.active)startGyro(),gyroState.calibrated=!1
   }),
   // Синхронизация с ручным переключением Lite-режима: мгновенно отписываемся
   // и обнуляем и целевые (U/Y), и текущие сглаженные (D/j) координаты —
   // иначе последнее показание гироскопа "затирает" сброс, сделанный выше
   // в основном обработчике uzum:liteToggled на следующем же кадре.
   window.addEventListener("uzum:liteToggled",e=>{
-    if(e.detail&&e.detail.isLite)stopGyro();
-    else!gyroState.active&&startGyro()
+    !gyroState.active&&startGyro()
   })
 })(),
 // ============ КАПЛИ С ЗАГОЛОВКА БРЕНДА ============
@@ -1235,11 +1365,11 @@ window.addEventListener("uzum:liteToggled",e=>{if(!0)return;document.querySelect
 // ============ МАСКОТ (глазки) ============
 const X=document.getElementById("eye-l"),H=document.getElementById("eye-r"),Z=document.getElementById("pupil-l"),K=document.getElementById("pupil-r"),Q=document.getElementById("mascot-status");function ee(e){Q.textContent=e}function te(e,t){[[X,Z,"l"],[H,K,"r"]].forEach(([n,i,a])=>{if(window.__eyeBusy&&window.__eyeBusy[a])return;const r=n.getBoundingClientRect(),s=r.left+r.width/2,o=r.top+r.height/2,l=e-s,c=t-o,d=Math.min(5,Math.hypot(l,c)/12),u=Math.atan2(c,l);i.style.transform=`translate(${Math.cos(u)*d}px, ${Math.sin(u)*d}px)`})}
 // ============ ЭЛАСТИЧНЫЕ КНОПКИ (лёгкий tap-отклик для остальных элементов) ============
-function ne(e){e.style.transition="transform 0.08s ease-out",e.style.transform="scale(0.94)",setTimeout(()=>{e.style.transition="transform 0.4s var(--spring)",e.style.transform="scale(1)"},90)}document.addEventListener("mousemove",e=>te(e.clientX,e.clientY)),document.addEventListener("touchmove",e=>{e.touches[0]&&te(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0}),(()=>{const e=[{el:X,pupil:Z,key:"l"},{el:H,pupil:K,key:"r"}],t=window.matchMedia("(prefers-reduced-motion: reduce)").matches,n={l:!1,r:!1};
+function ne(e){e.style.transition="transform 0.08s ease-out",e.style.transform="scale(0.94)",setTimeout(()=>{e.style.transition="transform 0.4s var(--spring)",e.style.transform="scale(1)"},90)}(()=>{let _x=0,_y=0,_p=0;document.addEventListener("mousemove",e=>{_x=e.clientX,_y=e.clientY,_p||(_p=requestAnimationFrame(()=>{_p=0,te(_x,_y)}))},{passive:!0})})(),document.addEventListener("touchmove",e=>{e.touches[0]&&te(e.touches[0].clientX,e.touches[0].clientY)},{passive:!0}),(()=>{const e=[{el:X,pupil:Z,key:"l"},{el:H,pupil:K,key:"r"}],t=window.matchMedia("(prefers-reduced-motion: reduce)").matches,n={l:!1,r:!1};
 // Органичное авто-моргание: треугольное распределение (сумма двух uniform-
 // семплов) вместо плоского Math.random() — концентрация около центра
 // диапазона (~6s) с редкими крайними значениями, как у настоящего моргания.
-if(!t){const t=3500,n=8500;e.forEach(({el:e})=>{const i=e.querySelector(".bot-eye-lid");i&&setTimeout(function a(){setTimeout(function(){document.hidden||e.classList.contains("eye-click")||(i.classList.remove("auto-blink-now"),i.offsetWidth,i.classList.add("auto-blink-now"),u(e=>{const t=e.currentTime,n=e.createGain();n.gain.setValueAtTime(1e-4,t),n.gain.exponentialRampToValueAtTime(.05,t+.01),n.gain.exponentialRampToValueAtTime(1e-4,t+.12),n.connect(l);const i=e.createBiquadFilter();i.type="lowpass",i.frequency.value=2200,i.Q.value=.3,i.connect(n);const a=e.createOscillator();a.type="sine",a.frequency.setValueAtTime(1500,t),a.frequency.exponentialRampToValueAtTime(1150,t+.1),a.connect(i),a.start(t),a.stop(t+.12);const r=e.createOscillator();r.type="sine",r.frequency.setValueAtTime(750,t);const s=e.createGain();s.gain.value=.35,r.connect(s),s.connect(n),r.start(t),r.stop(t+.12)})),a()},function(){const e=Math.random(),i=Math.random();return t+(e+i)/2*(n-t)}())},400*Math.random())})}
+/* моргание — см. motion.js (общее для обоих глаз, звук по кадру) */
 // Клик по глазу — короткая сцена: покраснение/моргание/motion-blur/вспышка,
 // всё через CSS-класс .eye-click (см. @keyframes eyeSmoothBlinkScene и др.).
 e.forEach(({el:e,pupil:i,key:a})=>{if(!e)return;let r=!1,s=[];function o(){s.forEach(clearTimeout),s=[]}document.addEventListener("visibilitychange",()=>{document.hidden&&o()}),window.addEventListener("pagehide",o),t?e.addEventListener("click",()=>{e.classList.add("eye-click"),setTimeout(()=>e.classList.remove("eye-click"),300)}):e.addEventListener("click",function(){var t,o;r||(r=!0,n[a]=!0,u(e=>{const t=e.currentTime,n=e.createGain();n.gain.setValueAtTime(1e-4,t),n.gain.exponentialRampToValueAtTime(.13,t+.006),n.gain.exponentialRampToValueAtTime(1e-4,t+.13),n.connect(l),[[1700,1],[2550,.35]].forEach(([i,a],r)=>{const s=e.createOscillator();s.type="sine",s.frequency.setValueAtTime(i,t+.01*r);const o=e.createGain();o.gain.value=a,s.connect(o),o.connect(n),s.start(t+.01*r),s.stop(t+.14)});const i=e.createOscillator();i.type="sine",i.frequency.setValueAtTime(850,t);const a=e.createGain();a.gain.value=.18,i.connect(a),a.connect(n),i.start(t),i.stop(t+.14)}),i.style.transform="translate(0, 0)",e.classList.remove("eye-click"),e.offsetWidth,e.classList.add("eye-click"),
@@ -1258,7 +1388,7 @@ document.querySelectorAll("input, select").forEach(e=>{e.addEventListener("focus
 // главной CTA-кнопке (#btn-submit), остальные мелкие тапы остаются на elasticPress.
 function(e,t={}){if(!e)return;if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;const n=(t,n)=>{const i=e.dataset[t],a=void 0!==i&&""!==i?parseFloat(i):NaN;return Number.isFinite(a)?a:n},i=n("stiffness",t.stiffness??320),a=n("damping",t.damping??6),r=n("stretch",t.stretch??.95),s=n("flickBoost",t.flickBoost??1.35),o=void 0!==e.dataset.maxPull&&""!==e.dataset.maxPull?parseFloat(e.dataset.maxPull):t.maxPull??34;let l=0,c=0,d=0,u=0,m=0,p=0,f=0,v=0,h=!1,y=null,g=null,E=0,w="function"==typeof o?34:o,x=[],L=[],T=null,b=null;function F(){const t=e.getBoundingClientRect();l=t.width,c=t.height,"function"==typeof o&&(w=o(l,c))}function A(n){E||(E=n);let s=(n-E)/1e3;if(s=Math.min(s,1/30),E=n,e.classList.add("elastic-live"),t.blockedClass&&e.classList.contains(t.blockedClass))return d=0,u=0,m=0,p=0,f=0,v=0,h=!1,e.style.transform="",e.style.filter="",e.classList.remove("elastic-live"),g=null,void(E=0);m+=(-i*(d-f)-a*m)/1*s,p+=(-i*(u-v)-a*p)/1*s,d+=m*s,u+=p*s;const o=Math.hypot(m,p),y=Math.min(1,Math.hypot(d,u)/w),x=1+Math.min(.62,(Math.abs(d)/l+.5*y)*r+o/1700),L=1+Math.min(.62,(Math.abs(u)/c+.5*y)*r+o/1700),T=1-Math.min(.38,(Math.abs(u)/c+.35*y)*r*.45),b=1-Math.min(.38,(Math.abs(d)/l+.35*y)*r*.45),F=Math.max(-9,Math.min(9,.22*d));e.style.transform=`translate(${d.toFixed(1)}px, ${u.toFixed(1)}px) rotate(${F.toFixed(1)}deg) scale(${(x*T).toFixed(3)}, ${(L*b).toFixed(3)})`;const M=Math.min(.35,o/2600);e.style.filter=M>.02?`brightness(${(1+M).toFixed(2)})`:"";if(!h&&o<2&&Math.abs(d-f)<.15&&Math.abs(u-v)<.15)return d=0,u=0,m=0,p=0,e.style.transform="",e.style.filter="",e.classList.remove("elastic-live"),g=null,void(E=0);g=requestAnimationFrame(A)}function M(t){if(null!==y&&t&&t.pointerId!==y)return;if(!h)return;h=!1;const n=y;y=null;try{null!==n&&e.releasePointerCapture(n)}catch(e){}if(f=0,v=0,x.length){const e=x.reduce((e,t)=>e+t,0)/x.length,t=L.reduce((e,t)=>e+t,0)/L.length;m+=e*(s-1),p+=t*(s-1)}x=[],L=[],g||(g=requestAnimationFrame(A))}F(),window.addEventListener("resize",F),e.addEventListener("pointerdown",n=>{if(!t.blockedClass||!e.classList.contains(t.blockedClass)){h=!0,y=n.pointerId,x=[],L=[],T=null,b=null,m=0,p=0;try{e.setPointerCapture(y)}catch(e){}clearTimeout(e._elasticWatchdog),e._elasticWatchdog=setTimeout(()=>{h&&M({pointerId:y})},3e3),F(),e.dataset.startX=n.clientX,e.dataset.startY=n.clientY,e.dataset.lastMoveT=performance.now(),g||(g=requestAnimationFrame(A))}}),e.addEventListener("pointermove",t=>{if(!h||t.pointerId!==y)return;const n=function(e,t){const n=Math.hypot(e,t);if(n<=w)return{x:e,y:t};const i=w/n;return{x:e*i,y:t*i}}(t.clientX-parseFloat(e.dataset.startX),t.clientY-parseFloat(e.dataset.startY));f=n.x,v=n.y;const i=performance.now(),a=i-(parseFloat(e.dataset.lastMoveT)||i);e.dataset.lastMoveT=i,a>0&&a<100&&(x.push((n.x-(T??n.x))/(a/1e3)),L.push((n.y-(b??n.y))/(a/1e3)),x.length>5&&x.shift(),L.length>5&&L.shift()),T=n.x,b=n.y}),e.addEventListener("pointerup",M),e.addEventListener("pointercancel",M),e.addEventListener("lostpointercapture",M),t.noHoverPull||(e.addEventListener("pointerenter",t=>{if(h)return;const n=e.getBoundingClientRect(),i=(t.clientX-(n.left+n.width/2))/(n.width/2),a=(t.clientY-(n.top+n.height/2))/(n.height/2);f=6*i,v=6*a,g||(g=requestAnimationFrame(A))}),e.addEventListener("pointerleave",()=>{h||(f=0,v=0,g||(g=requestAnimationFrame(A)))}))}(document.getElementById("btn-submit"),{stiffness:320,damping:15,stretch:1.2,flickBoost:1.6,maxPull:e=>Math.max(30,.28*e)}),document.getElementById("brand-mark").addEventListener("click",function(){ne(this),UZ("sparkle"),this.classList.remove("mark-pulse"),this.offsetWidth,this.classList.add("mark-pulse"),clearTimeout(this._markPulseTimer),this._markPulseTimer=setTimeout(()=>this.classList.remove("mark-pulse"),700),ee(window.t("mascot.hello")),setTimeout(()=>ee(me?window.t("toast.fillingPvz")+me:window.t("mascot.choosePvz")),1400)});
 // ============ ФОРМА ============
-function getTodayParts(){const d=new Date();return{dd:String(d.getDate()).padStart(2,"0"),mm:String(d.getMonth()+1).padStart(2,"0"),yyyy:d.getFullYear()}}
+function getTodayParts(){const d=new Date(Date.now()+18e6);return{dd:String(d.getUTCDate()).padStart(2,"0"),mm:String(d.getUTCMonth()+1).padStart(2,"0"),yyyy:d.getUTCFullYear()}}
 function todayStr(){const p=getTodayParts();return `${p.dd}.${p.mm}.${p.yyyy}`}
 function refreshTodayPill(){const el=document.getElementById("today-pill");el&&(el.textContent=todayStr())}
 refreshTodayPill();
@@ -1330,11 +1460,11 @@ const e=a();if(e&&e.pvz){const t=ge.querySelector(`.dd-item[data-value="${CSS.es
 // поддерживается в конкретном WebView) — напрямую задаём стиль родителю .field.
 const e=pe.closest(".field");e&&(e.style.position="relative",e.style.zIndex="50"),ddShowCategoryStep(),L()}()}),document.addEventListener("click",e=>{pe.contains(e.target)||xe()});
 // ---- Toggle "до открытия / время" для факта приезда и факта уезда ----
-const Le={arrive:"before_open",leave:"before_open"},Te={arrive:document.getElementById("fact-arrive"),leave:document.getElementById("fact-leave")};function be(e){if(!e)return null;const[t,n]=e.split(":").map(Number);return 60*t+n}function Fe(){const e=be(oe.value),t=be(le.value);if(null===e||null===t)return void(ce.style.display="none");let n=t-e;n<0&&(n+=1440);const i=Math.floor(n/60),a=n%60;de.textContent=`${i}${window.t("duration.hourShort")} ${String(a).padStart(2,"0")}${window.t("duration.minShort")}`,ce.style.display="flex";const r=n>60;r&&!ce.classList.contains("warn")&&M(),ce.classList.toggle("warn",r)}function Ae(){ue.disabled=!me}document.querySelectorAll(".toggle-opt").forEach(e=>{e.addEventListener("click",()=>{const t=e.dataset.target,n=e.dataset.mode;Le[t]=n,document.querySelectorAll(`.toggle-opt[data-target="${t}"]`).forEach(e=>e.classList.remove("active")),e.classList.add("active");const i=Te[t];"time"===n?(i.style.display="block",i.focus()):(i.style.display="none",i.value=""),y(),ne(e)})}),oe.addEventListener("change",()=>{h(),Fe()}),le.addEventListener("change",()=>{h(),Fe()});const Me={info:"",success:"✅",error:"⚠️",loading:""};function Ie(e,t){
+const Le={arrive:"before_open",leave:"before_open"},Te={arrive:document.getElementById("fact-arrive"),leave:document.getElementById("fact-leave")};function be(e){if(!e)return null;const[t,n]=e.split(":").map(Number);return 60*t+n}function Fe(){const e=be(oe.value),t=be(le.value);if(null===e||null===t)return void(ce.style.display="none");let n=t-e;n<0&&(n+=1440);const i=Math.floor(n/60),a=n%60;de.textContent=`${i}${window.t("duration.hourShort")} ${String(a).padStart(2,"0")}${window.t("duration.minShort")}`,ce.style.display="flex";const r=window.__slaOver?window.__slaOver(n):n>60;r&&!ce.classList.contains("warn")&&M(),ce.classList.toggle("warn",r)}function Ae(){ue.disabled=!me}document.querySelectorAll(".toggle-opt").forEach(e=>{e.addEventListener("click",()=>{const t=e.dataset.target,n=e.dataset.mode;Le[t]=n,document.querySelectorAll(`.toggle-opt[data-target="${t}"]`).forEach(e=>e.classList.remove("active")),e.classList.add("active");const i=Te[t];"time"===n?(i.style.display="block",i.focus()):(i.style.display="none",i.value=""),y(),ne(e)})}),oe.addEventListener("change",()=>{h(),Fe()}),le.addEventListener("change",()=>{h(),Fe()});const Me={info:"",success:"✅",error:"⚠️",loading:""};function Ie(e,t){
 // Обратная совместимость: старые вызовы передавали boolean isError вторым аргументом.
 !0===t?t="error":!1!==t&&void 0!==t||(t="info");const n=document.getElementById("toast"),i=document.getElementById("toast-msg")||n,a=document.getElementById("toast-icon");i!==n?i.textContent=e:n.textContent=e,a&&(a.textContent=Me[t]||""),n.classList.remove("toast-info","toast-success","toast-error","toast-loading","error"),n.classList.add("toast-"+t,"show"),clearTimeout(n._hideTimer),n._hideTimer=setTimeout(()=>n.classList.remove("show"),3200)}
 // ============ JIRA ЧИПЫ ============
-const Be=document.getElementById("jira-input"),Se=document.getElementById("jira-add"),qe=document.getElementById("jira-chip-list"),_e=[];function ke(){const e=Be.value.trim();if(!e)return;_e.push(e);const t=document.createElement("div");t.className="jira-chip";let n=e;try{n=e.split("/").filter(Boolean).pop()||e}catch(e){}t.innerHTML=`<a href="${e}" target="_blank" rel="noopener">${n}</a><span class="rm">✕</span>`,t.querySelector(".rm").addEventListener("click",()=>{const n=_e.indexOf(e);n>-1&&_e.splice(n,1),t.remove(),A()}),qe.appendChild(t),Be.value="",F(),ne(Se),Ce()}function Ce(){Be.classList.add("jira-just-added"),clearTimeout(Be._flashTimer),Be._flashTimer=setTimeout(()=>Be.classList.remove("jira-just-added"),900)}Se.addEventListener("click",ke),Be.addEventListener("keydown",e=>{"Enter"===e.key&&ke()}),Be.addEventListener("paste",()=>{
+const Be=document.getElementById("jira-input"),Se=document.getElementById("jira-add"),qe=document.getElementById("jira-chip-list"),_e=[];function ke(){const tokens=Be.value.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean);if(!tokens.length)return;let added=0;tokens.forEach(e=>{if(_e.length>=12||_e.indexOf(e)>-1||e.length>300)return;_e.push(e);added++;const t=document.createElement("div");t.className="jira-chip";let n=e;try{n=e.split("/").filter(Boolean).pop()||e}catch(x){}const isUrl=/^https?:\/\//i.test(e),a=document.createElement(isUrl?"a":"span");if(isUrl){a.href=e;a.target="_blank";a.rel="noopener noreferrer"}else a.className="jc-t";a.textContent=n;const rm=document.createElement("span");rm.className="rm";rm.textContent="✕";t.appendChild(a),t.appendChild(rm),rm.addEventListener("click",()=>{const k=_e.indexOf(e);k>-1&&_e.splice(k,1),t.remove(),A()}),qe.appendChild(t)});Be.value="",added&&(F(),ne(Se),Ce())}window.__jiraReset=function(){_e.length=0,qe.innerHTML=""};function Ce(){Be.classList.add("jira-just-added"),clearTimeout(Be._flashTimer),Be._flashTimer=setTimeout(()=>Be.classList.remove("jira-just-added"),900)}Se.addEventListener("click",ke),Be.addEventListener("keydown",e=>{"Enter"===e.key&&ke()}),Be.addEventListener("paste",()=>{
 // фирменная подсветка сразу при вставке ссылки, до нажатия "+"
 setTimeout(Ce,0)});
 // ============ СПИСОК "СЕГОДНЯ ВНЕСЛИ" ============
@@ -1366,7 +1496,7 @@ function Re(e){const t=document.getElementById("entry-list"),n=t.querySelector("
 // Запоминаем полные данные этой записи по имени ПВЗ — на них опирается детальный отчёт
 window.lastFilledEntries[e.pvz]=e,i.addEventListener("click",()=>{"function"==typeof openPvzReport&&openPvzReport(e.pvz)}),i.addEventListener("keydown",t=>{"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),"function"==typeof openPvzReport&&openPvzReport(e.pvz))})}
 // ============ ОТПРАВКА ============
-window.lastFilledEntries=window.lastFilledEntries||{},ue.addEventListener("click",async()=>{const t=a()||{},n={date:todayStr(),pvz:me,arriveMode:Le.arrive,factArrive:"time"===Le.arrive?document.getElementById("fact-arrive").value:"",leaveMode:Le.leave,factLeave:"time"===Le.leave?document.getElementById("fact-leave").value:"",start:oe.value,end:le.value,missing:document.getElementById("missing-count").value,jira:_e.join(", "),telegramId:t.telegramId||"",telegramUsername:t.telegramUsername||"",lateReason:window.__slaLate?window.__slaLate():"",formed:(document.getElementById("formed-count")||{}).value||""};var i;ne(ue),(i=ue)&&(i.classList.remove("shine-hit"),i.offsetWidth,i.classList.add("shine-hit"),clearTimeout(i._shineTimer),i._shineTimer=setTimeout(()=>i.classList.remove("shine-hit"),320)),ue.disabled=!0,document.getElementById("submit-label").textContent=window.t("toast.saving");try{if(0===e.indexOf("PASTE_"))await new Promise(e=>setTimeout(e,450)),Re(n),Ie(window.t("toast.saveDemo"),"info");else{const i2=await fetch(e,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(n)}),i=await i2.json();if(!i.ok)throw new Error(i.error||window.t("toast.errorGeneric"));{Re(n),Ie(window.t("toast.saved"),"success"),window.__slaVerify&&window.__slaVerify(n,i,Ie);const e=ue.getBoundingClientRect();!function(e,t){if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;const n=["#9D4DFF","#7000FF","#34C77B","#FFD166","#FF6B6B","#FFFFFF"];for(let i=0;i<18;i++){const a=document.createElement("span");a.className="confetti-piece";const r=Math.random()*Math.PI*2,s=40+90*Math.random();a.style.setProperty("--dx",(Math.cos(r)*s).toFixed(1)+"px"),a.style.setProperty("--dy",(Math.sin(r)*s-30).toFixed(1)+"px"),a.style.left=e+"px",a.style.top=t+"px",a.style.background=n[i%n.length],a.style.animationDelay=.08*Math.random()+"s",document.body.appendChild(a),setTimeout(()=>a.remove(),1e3)}}(e.left+e.width/2,e.top+e.height/2)}}E(),ee(function(){const _v=Ve();return _v[Math.floor(Math.random()*_v.length)]}()),x(),setTimeout(()=>x(),220),document.getElementById("fact-arrive").value="",document.getElementById("fact-leave").value="",oe.value="",le.value="",document.getElementById("missing-count").value="0",ce.style.display="none"}catch(e){w(),Ie(window.t("toast.errorPrefix")+e.message,"error"),ee(window.t("toast.somethingWrong"))}finally{document.getElementById("submit-label").textContent=window.t("form.submitLabel"),Ae()}}),
+window.lastFilledEntries=window.lastFilledEntries||{},ue.addEventListener("click",async()=>{const t=a()||{},n={date:todayStr(),pvz:me,arriveMode:Le.arrive,factArrive:"time"===Le.arrive?document.getElementById("fact-arrive").value:"",leaveMode:Le.leave,factLeave:"time"===Le.leave?document.getElementById("fact-leave").value:"",start:oe.value,end:le.value,missing:document.getElementById("missing-count").value,jira:_e.join(", "),telegramId:t.telegramId||"",telegramUsername:t.telegramUsername||"",lateReason:window.__slaLate?window.__slaLate():"",formed:(document.getElementById("formed-count")||{}).value||""};var i;ne(ue),(i=ue)&&(i.classList.remove("shine-hit"),i.offsetWidth,i.classList.add("shine-hit"),clearTimeout(i._shineTimer),i._shineTimer=setTimeout(()=>i.classList.remove("shine-hit"),320)),ue.disabled=!0,document.getElementById("submit-label").textContent=window.t("toast.saving");try{if(0===e.indexOf("PASTE_"))await new Promise(e=>setTimeout(e,450)),Re(n),Ie(window.t("toast.saveDemo"),"info");else{const i2=await fetch(e,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(n)}),i=await i2.json();if(!i.ok)throw new Error(i.error||window.t("toast.errorGeneric"));{Re(n),Ie(window.t("toast.saved"),"success"),window.__slaVerify&&window.__slaVerify(n,i,Ie);const e=ue.getBoundingClientRect();!function(e,t){if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;const n=["#9D4DFF","#7000FF","#34C77B","#FFD166","#FF6B6B","#FFFFFF"];for(let i=0;i<18;i++){const a=document.createElement("span");a.className="confetti-piece";const r=Math.random()*Math.PI*2,s=40+90*Math.random();a.style.setProperty("--dx",(Math.cos(r)*s).toFixed(1)+"px"),a.style.setProperty("--dy",(Math.sin(r)*s-30).toFixed(1)+"px"),a.style.left=e+"px",a.style.top=t+"px",a.style.background=n[i%n.length],a.style.animationDelay=.08*Math.random()+"s",document.body.appendChild(a),setTimeout(()=>a.remove(),1e3)}}(e.left+e.width/2,e.top+e.height/2)}}E(),ee(function(){const _v=Ve();return _v[Math.floor(Math.random()*_v.length)]}()),x(),setTimeout(()=>x(),220),document.getElementById("fact-arrive").value="",document.getElementById("fact-leave").value="",oe.value="",le.value="",document.getElementById("missing-count").value="0",ce.style.display="none",window.__slaAfterSave&&window.__slaAfterSave()}catch(e){w(),Ie(window.t("toast.errorPrefix")+e.message,"error"),ee(window.t("toast.somethingWrong"))}finally{document.getElementById("submit-label").textContent=window.t("form.submitLabel"),Ae()}}),
 // разблокировка AudioContext по первому тапу (политика браузеров)
 document.body.addEventListener("touchstart",c,{once:!0}),document.body.addEventListener("click",c,{once:!0});let Oe=null;function $e(){clearTimeout(Oe),Oe=setTimeout(()=>document.body.classList.add("idle-paused"),25e3)}function De(){document.body.classList.remove("idle-paused"),$e()}
 // ===== Футер: год + версия =====
@@ -1409,7 +1539,7 @@ function(t,n){if(0===e.indexOf("PASTE_"))return void Ie(window.t("toast.deleteDe
 // Убираем карточку из списка на экране и из локального кэша.
 delete window.lastFilledEntries[t];var n=document.getElementById("entry-list");n&&(n.querySelectorAll(".entry-item").forEach(function(e){var n=e.querySelector(".pvz-name");n&&n.textContent===t&&(e.remove(),Pe=Math.max(0,Pe-1),ze())}),n.querySelector(".entry-item")||(n.innerHTML='<div class="entry-empty">'+window.t("entries.empty")+'</div>'));try{var i=JSON.parse(localStorage.getItem("sla_who_filled_today")||"[]");localStorage.setItem("sla_who_filled_today",JSON.stringify(i.filter(function(e){return e.pvz!==t})));var a=JSON.parse(localStorage.getItem("sla_who_filled_today_full")||"[]");localStorage.setItem("sla_who_filled_today_full",JSON.stringify(a.filter(function(e){return e.pvz!==t})))}catch(e){}}).catch(function(e){Ie(window.t("toast.errorPrefix")+e.message,"error"),n&&(n.disabled=!1,n.textContent=window.t("toast.deleteBtnLabel"))})}(t,T)}),m("report"),p(),UZ("sheetOpen")}}}function m(e){
 // mode: 'legal' | 'report'
-i.classList.toggle("sheet-mode-legal","legal"===e),i.classList.toggle("sheet-mode-report","report"===e)}function p(){t.classList.add("show"),i.style.visibility="visible",i.style.pointerEvents="auto",i.classList.remove("closing"),i.classList.remove("show"),i.offsetWidth,i.classList.add("show")}function f(){t.classList.remove("show"),i.classList.remove("show"),i.classList.add("closing"),i.style.pointerEvents="none",setTimeout(function(){i.classList.remove("closing"),i.style.visibility="hidden"},420)}function v(e){m("legal"),function(e){var t=_legalDict()[e];t&&(r&&(r.textContent=t.title),s&&(s.innerHTML=t.body,s.scrollTop=0),s&&(s.dataset.legalKind=e))}(e),p(),UZ("sheetOpen")}function h(e){return String(null==e?"":e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}window.__i18nRerenderLegal=function(){if(i&&i.classList.contains("sheet-mode-legal")&&s&&s.dataset.legalKind){v(s.dataset.legalKind)}};}(),(Ye=document.getElementById("footer-year"))&&(Ye.textContent=String((new Date).getFullYear())),
+i.classList.toggle("sheet-mode-legal","legal"===e),i.classList.toggle("sheet-mode-report","report"===e)}function p(){t.classList.add("show"),i.style.visibility="visible",i.style.pointerEvents="auto",i.classList.remove("closing"),i.classList.remove("show"),i.offsetWidth,i.classList.add("show")}function f(){t.classList.remove("show"),i.classList.remove("show"),i.classList.add("closing"),i.style.pointerEvents="none",setTimeout(function(){i.classList.remove("closing"),i.style.visibility="hidden"},420)}function v(e){m("legal"),function(e){var t=_legalDict()[e];t&&(r&&(r.textContent=t.title),s&&(s.innerHTML=t.body,s.scrollTop=0),s&&(s.dataset.legalKind=e))}(e),p(),UZ("sheetOpen")}function h(e){return String(null==e?"":e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}window.__i18nRerenderLegal=function(){if(i&&i.classList.contains("show")&&i.classList.contains("sheet-mode-legal")&&s&&s.dataset.legalKind){v(s.dataset.legalKind)}};}(),(Ye=document.getElementById("footer-year"))&&(Ye.textContent=String((new Date).getFullYear())),
 function(){
 var eqBtn=document.getElementById("eq-toggle");
 if(!eqBtn){return}
@@ -2257,9 +2387,9 @@ if(wavePathA&&wavePathB&&wavePathC)startIdle()
     whoBtn.id = "who-filled-btn";
     whoBtn.innerHTML =
       '<span class="wf-left">' +
-        '<span class="wf-icon">🗂️</span>' +
+        '<span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 6h10.5M9.5 12h10.5M9.5 18h10.5"/><path d="M3.5 6l1.4 1.4L7.4 4.9M3.5 12l1.4 1.4 2.5-2.5M3.5 18l1.4 1.4 2.5-2.5"/></svg></span>' +
         '<span class="wf-text">' +
-          '<span class="wf-title">Кто сдал / кто нет</span>' +
+          '<span class="wf-title" data-i18n="pv.whoTitle">' + (window.t ? window.t('pv.whoTitle') : 'Кто сдал / кто нет') + '</span>' +
         '</span>' +
       '</span>' +
       '<span class="wf-chevron">›</span>';
@@ -2270,9 +2400,9 @@ if(wavePathA&&wavePathB&&wavePathC)startIdle()
     miniStats.id = "entries-mini-stats";
     miniStats.style.display = "none";
     miniStats.innerHTML =
-      '<div class="entries-mini-stat good"><div class="val" id="mini-done">0</div><div class="lbl">Внесли</div></div>' +
-      '<div class="entries-mini-stat"><div class="val" id="mini-left">0</div><div class="lbl">Осталось</div></div>' +
-      '<div class="entries-mini-stat warn"><div class="val" id="mini-late">0</div><div class="lbl">Просрочка</div></div>';
+      '<div class="entries-mini-stat good"><div class="val" id="mini-done">0</div><div class="lbl" data-i18n="mini.done">' + (window.t ? window.t('mini.done') : 'Внесли') + '</div></div>' +
+      '<div class="entries-mini-stat"><div class="val" id="mini-left">0</div><div class="lbl" data-i18n="mini.left">' + (window.t ? window.t('mini.left') : 'Осталось') + '</div></div>' +
+      '<div class="entries-mini-stat warn"><div class="val" id="mini-late">0</div><div class="lbl" data-i18n="mini.late">' + (window.t ? window.t('mini.late') : 'Просрочка') + '</div></div>';
     whoBtn.parentNode.insertBefore(miniStats, entryListCard);
 
     // ---------- Модалка по центру экрана ----------
@@ -3431,6 +3561,301 @@ body.sla-exit #perf-toggle,body.sla-exit #snd-toggle,body.sla-exit #toast{opacit
 @media (prefers-reduced-motion:reduce){#brand-glow-ring.sla-rays-boost .glow-ray,#brand-glow-ring.sla-rays-boost .glow-core{transition:none}}
 
 </style>
+<style id="uz-sla3">
+/* ============================================================================
+   СЛА · v2 · стили формы, шторок и строки языка (система «Бархат»)
+   Автор проекта — все права защищены. © 2026
+   ============================================================================ */
+
+/* ---------- плашка «Когда нужна причина» ---------- */
+.nrm{position:relative;overflow:hidden;margin:4px 0 12px;padding:11px 11px 10px 14px;border-radius:16px;background:var(--vv-plate);border:1px solid rgba(255,255,255,.09);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 10px 18px -12px rgba(0,0,0,.8);transition:border-color .35s,box-shadow .35s}
+.nrm::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#b57cff,#6c06f4);transition:background .4s}
+.nrm[data-st=ok]{border-color:rgba(52,199,123,.26)}.nrm[data-st=ok]::before{background:linear-gradient(180deg,#7cf0b4,var(--green))}
+.nrm[data-st=hit]{border-color:rgba(255,194,75,.42);box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 0 26px -10px var(--yellow-glow),0 10px 18px -12px rgba(0,0,0,.8)}
+.nrm[data-st=hit]::before{background:linear-gradient(180deg,#ffe08a,var(--yellow))}
+.nrm-t{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;min-width:0;font:800 12px/1.2 var(--f-disp);letter-spacing:-.005em;color:#e1d7ff}
+.nrm-ic{flex:none;width:20px;height:20px;border-radius:7px;display:grid;place-items:center;color:#e3d2ff;background:linear-gradient(180deg,rgba(190,140,255,.4),rgba(112,0,255,.22));box-shadow:0 1px 0 rgba(6,1,18,.45),inset 0 1px 0 rgba(255,255,255,.3)}
+.nrm-ic svg{width:12px;height:12px}
+.nrm-t>span:nth-child(2){flex:1 1 auto;min-width:0;white-space:normal;text-wrap:balance}
+.nrm-t em{flex:none;margin-left:auto;font-style:normal;font-weight:800;font-size:10.5px;letter-spacing:.01em;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.09);color:#b9afe2;transition:background .3s,color .3s}
+.nrm[data-st=ok] .nrm-t em{background:rgba(52,199,123,.16);color:var(--green)}
+.nrm[data-st=hit] .nrm-t em{background:rgba(255,194,75,.18);color:var(--yellow)}
+.nrm-r{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px}
+.nrm-c{position:relative;display:flex;flex-direction:column;gap:2px;min-width:0;padding:8px 9px 8px;border-radius:12px;background:rgba(9,3,24,.36);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.36),inset 0 -1px 0 rgba(255,255,255,.05);transition:background .3s,box-shadow .3s,transform .4s var(--spring)}
+.nrm-c i{position:absolute;top:9px;right:9px;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);transition:background .3s,box-shadow .3s}
+.nrm-c b{font:800 13.5px/1.1 var(--f-disp);letter-spacing:-.02em;color:#efe6ff;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nrm-c small{font:600 10px/1.2 var(--f-text);color:#9d90c6;overflow-wrap:anywhere}
+.nrm-c.ok i{background:var(--green);box-shadow:0 0 8px var(--green-glow)}
+.nrm-c.hit{background:linear-gradient(180deg,rgba(255,194,75,.2),rgba(255,194,75,.07));box-shadow:inset 0 0 0 1px rgba(255,194,75,.5),0 0 18px -6px var(--yellow-glow);transform:translateY(-1px)}
+.nrm-c.hit i{background:var(--yellow);box-shadow:0 0 8px var(--yellow-glow);animation:nrmPulse 1.6s ease-in-out infinite}
+.nrm-c.hit b{color:#ffe3a3}
+.nrm-c.hit small{color:#e9c978}
+@keyframes nrmPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.55}}
+.nrm-f{margin-top:8px;font:600 11px/1.4 var(--f-text);color:#a99bd6}
+.nrm-f.unk{color:#b9afe2}
+
+/* ---------- причина задержки ---------- */
+.late-head{display:flex;align-items:center;gap:8px}
+.late-head .lh-ic{font-size:15px;line-height:1}
+.late-why{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 10px}
+.late-why:empty{display:none}
+.late-why span{font:700 10.5px/1.25 var(--f-disp);padding:4px 9px;border-radius:99px;background:rgba(255,194,75,.13);color:#ffd88a;border:1px solid rgba(255,194,75,.28)}
+.uz-native-hidden{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;border:0!important;overflow:hidden;clip:rect(0 0 0 0);opacity:0;pointer-events:none}
+.rsn-btn{gap:10px}
+.rsn-btn>span:nth-child(2){flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsn-ic{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#ffd88a;background:rgba(255,194,75,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);transition:background .3s,color .3s}
+.rsn-ic svg{width:17px;height:17px}
+.rsn-btn.has .rsn-ic{color:#fff;background:var(--vv-violet);box-shadow:0 2px 0 var(--vv-lip-p),inset 0 1px 0 rgba(255,255,255,.45)}
+.rsn-btn[aria-expanded=true]{border-color:#a56bff}
+.late-inner #late-other{margin-top:8px}
+
+/* ---------- поле ПВЗ ---------- */
+#pvz-dd-trigger{gap:10px}
+#pvz-dd-trigger>span:not(.dd-ic):not(.dd-arrow){flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dd-ic{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#d3b3ff;background:linear-gradient(180deg,rgba(190,140,255,.34),rgba(112,0,255,.2));box-shadow:0 2px 0 rgba(6,1,18,.4),inset 0 1px 0 rgba(255,255,255,.26)}
+.dd-ic svg{width:17px;height:17px}
+#pvz-dd-trigger:not(.placeholder) .dd-ic{color:#fff;background:var(--vv-violet);box-shadow:0 2px 0 var(--vv-lip-p),inset 0 1px 0 rgba(255,255,255,.45)}
+#pvz-dd-panel,#mega-sheet,#mega-sheet-overlay{display:none!important}
+
+/* ---------- Jira в форме ---------- */
+.jira-field .jira-input-row{display:flex;gap:8px}
+.jira-field .jira-input-row input{flex:1 1 auto;min-width:0}
+.jira-field .late-hint{margin:2px 2px 0}
+.jira-field .jira-chip-list{margin-top:8px}
+.jira-chip-list:empty{display:none}
+.jira-chip a,.jira-chip span.jc-t{max-width:min(62vw,260px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:inherit;text-decoration:none}
+
+/* ---------- блок «Заняло по времени» с нормативом ---------- */
+.duration-box{gap:10px}
+.duration-box .lbl{flex:1;min-width:0}
+.duration-box .dur-norm{flex:none;font:700 10.5px/1 var(--f-disp);padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.1);color:#cfc6ee;white-space:nowrap}
+
+/* ---------- строка «Язык» ---------- */
+.lang-row{display:flex;align-items:center;gap:12px;padding:8px 8px 8px 12px;border-radius:18px;cursor:pointer;position:relative;
+  background:var(--vv-plate),rgba(20,8,44,.55);border:1px solid rgba(190,140,255,.28);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 12px 22px -14px rgba(0,0,0,.85);-webkit-tap-highlight-color:transparent}
+.lr-ic{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:#e3d2ff;background:linear-gradient(180deg,rgba(190,140,255,.4),rgba(112,0,255,.22));box-shadow:0 2px 0 rgba(6,1,18,.45),inset 0 1px 0 rgba(255,255,255,.3)}
+.lr-ic svg{width:20px;height:20px}
+.lr-t{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.lr-t b{font:800 14.5px/1.15 var(--f-disp);letter-spacing:-.02em;color:#f1eaff}
+.lr-t small{font:800 10px/1.2 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:#a99bd6}
+.lr-slot{flex:none;display:flex}
+.lang-row .lang-toggle{width:112px;height:40px}
+.lang-row .lang-toggle-opt{font-size:13.5px}
+
+/* ---------- телефон: таблица «Расчёт времени» идёт ДО футера ---------- */
+@media (max-width:900px){
+ .page-shell{grid-template-columns:minmax(0,1fr);row-gap:16px}
+ .page-shell>.wrap{display:contents}
+ .page-shell>.side-col{order:5}
+ .wrap>.footer,.wrap>.footer-legal,.wrap>.footer-copy,.wrap>.footer-rights{order:9}
+}
+
+/* ---------- подпись про авторские права ---------- */
+.footer-rights{margin:2px auto 0;max-width:420px;padding:0 14px;text-align:center;font:600 9.5px/1.45 var(--f-text);letter-spacing:.02em;color:var(--text-dim);opacity:.62;text-wrap:balance}
+
+
+/* ============================================================================
+   Шторки: причина задержки · выбор ПВЗ · «Кто сдал / кто нет»
+   ============================================================================ */
+.rs-ov,.pv-ov{z-index:9710}
+.rs-sheet,.pv-sheet{width:min(520px,100%)}
+.pv-sheet{max-height:min(860px,92vh);max-height:min(860px,92dvh)}
+.rs-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;display:grid;gap:10px;align-content:start;padding:4px 16px 20px}
+.rs-why{display:flex;flex-wrap:wrap;gap:6px}
+.rs-why span{font:700 11px/1.25 var(--f-disp);padding:5px 10px;border-radius:99px;background:rgba(255,194,75,.14);color:#ffd88a;border:1px solid rgba(255,194,75,.3)}
+.rs-list{display:grid;gap:8px}
+.rs-row{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:16px;text-align:left;cursor:pointer;color:#f1eaff;
+  background:var(--vv-plate);border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 10px 18px -12px rgba(0,0,0,.8);
+  transition:background .2s,border-color .2s,box-shadow .25s,transform .3s var(--spring);animation:rsIn .38s var(--ease) both;animation-delay:calc(var(--i,0)*30ms);-webkit-tap-highlight-color:transparent}
+.rs-ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#d3b3ff;background:linear-gradient(180deg,rgba(190,140,255,.32),rgba(112,0,255,.18));box-shadow:0 2px 0 rgba(6,1,18,.45),inset 0 1px 0 rgba(255,255,255,.28);transition:background .25s,color .25s}
+.rs-ic svg{width:19px;height:19px}
+.rs-t{flex:1;min-width:0;font:800 14.5px/1.25 var(--f-disp);letter-spacing:-.015em}
+.rs-ck{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;border:1.5px solid rgba(255,255,255,.2);color:transparent;transition:background .25s,border-color .25s,color .25s,transform .35s var(--spring)}
+.rs-ck svg{width:13px;height:13px}
+.rs-row:hover,.rs-row:focus-visible{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border-color:rgba(190,140,255,.5);outline:0}
+.rs-row:active{transform:scale(.985)}
+.rs-row.on{background:linear-gradient(180deg,rgba(168,102,255,.4),rgba(112,0,255,.24));border-color:rgba(214,184,255,.7);box-shadow:0 0 0 1px rgba(157,77,255,.4),0 14px 24px -12px rgba(112,0,255,.9),inset 0 1px 0 rgba(255,255,255,.3)}
+.rs-row.on .rs-ck{background:var(--vv-violet);border-color:transparent;color:#fff;transform:scale(1.06)}
+.rs-row.on .rs-ic{background:var(--vv-violet);color:#fff}
+@keyframes rsIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.pv-ctl{flex:none;display:grid;gap:10px;padding:2px 16px 10px}
+.pv-seg{min-width:0}
+.pv-seg button{flex:1 1 0}
+.pv-search{position:relative;display:flex;align-items:center}
+.pv-search>svg{position:absolute;left:14px;width:18px;height:18px;color:#a99bd6;pointer-events:none}
+.pv-search input{width:100%;box-sizing:border-box;padding:13px 42px 13px 42px;border-radius:14px;color:#fff;font:700 15px/1.2 var(--f-text);letter-spacing:-.01em;outline:0;-webkit-appearance:none;appearance:none;
+  background-color:var(--vv-well);border:1px solid rgba(255,255,255,.1);border-bottom-color:rgba(255,255,255,.19);box-shadow:inset 0 3px 9px rgba(0,0,0,.48),inset 0 -1px 0 rgba(255,255,255,.04);transition:border-color .2s,box-shadow .2s}
+.pv-search input::placeholder{color:rgba(184,174,224,.5);font-weight:600}
+.pv-search input:focus{border-color:#a56bff;box-shadow:inset 0 3px 9px rgba(0,0,0,.4),0 0 0 3px rgba(157,77,255,.28),0 8px 24px -8px rgba(157,77,255,.85)}
+.pv-clr{position:absolute;right:8px;width:28px;height:28px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#cfc3f3;cursor:pointer}
+.pv-clr svg{width:12px;height:12px}
+.pv-clr[hidden]{display:none}
+.pv-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;display:grid;gap:7px;align-content:start;padding:0 16px 20px;position:relative}
+.pv-gh{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 -6px;padding:10px 6px 7px;font:800 10.5px/1.2 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;color:#bfb2ea;
+  background:linear-gradient(180deg,rgba(20,8,44,.97) 72%,rgba(20,8,44,0))}
+.pv-gt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pv-gt em{font-style:normal;letter-spacing:.04em;text-transform:none;font-weight:700;color:#8f82bb}
+.pv-gc{flex:none;font-variant-numeric:tabular-nums;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.08);letter-spacing:0;color:#e6dcff}
+.pv-row{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px 11px 14px;border-radius:14px;text-align:left;cursor:pointer;color:#f1eaff;--st:rgba(157,77,255,.85);
+  background:var(--vv-plate);border:1px solid rgba(255,255,255,.09);box-shadow:inset 3px 0 0 var(--st),inset 0 1px 0 rgba(255,255,255,.12),0 10px 18px -12px rgba(0,0,0,.8);
+  transition:background .2s,border-color .2s,transform .3s var(--spring);animation:rsIn .34s var(--ease) both;animation-delay:calc(var(--i,0)*16ms);-webkit-tap-highlight-color:transparent}
+.pv-row.ok{--st:var(--green)}.pv-row.bad{--st:var(--red)}
+.pv-row:hover:not(:disabled),.pv-row:focus-visible{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border-color:rgba(190,140,255,.5);outline:0}
+.pv-row:active:not(:disabled){transform:scale(.985)}
+.pv-row:disabled{opacity:.58;cursor:default}
+.pv-row.sel{background:linear-gradient(180deg,rgba(168,102,255,.4),rgba(112,0,255,.24));border-color:rgba(214,184,255,.7);box-shadow:inset 3px 0 0 #d6b8ff,0 0 0 1px rgba(157,77,255,.35),0 14px 24px -12px rgba(112,0,255,.9),inset 0 1px 0 rgba(255,255,255,.3)}
+.pv-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--st);box-shadow:0 0 8px var(--st)}
+.pv-main{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.pv-main b{font:800 14.5px/1.15 var(--f-disp);letter-spacing:-.02em}
+.pv-main small{font:600 11.5px/1.25 var(--f-text);color:#a99bd6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-pill{flex:none;padding:4px 9px;border-radius:99px;font:800 11px/1 var(--f-disp);color:var(--green);background:rgba(52,199,123,.14)}
+.pv-pill.bad{color:var(--red);background:rgba(255,92,122,.14)}
+.pv-chev{flex:none;width:16px;height:16px;color:#8f82bb}.pv-chev svg{width:100%;height:100%;display:block}
+.pv-ck{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--vv-violet);color:#fff;box-shadow:0 2px 0 var(--vv-lip-p),inset 0 1px 0 rgba(255,255,255,.45)}
+.pv-ck svg{width:13px;height:13px}
+.pv-empty{display:grid;justify-items:center;gap:4px;padding:34px 12px;text-align:center;color:#a99bd6}
+.pv-empty svg{width:34px;height:34px;color:#8f82bb;margin-bottom:6px}
+.pv-empty b{font:800 15px var(--f-disp);color:#e6dcff}.pv-empty small{font:600 12px var(--f-text)}
+.pv-filt{flex-wrap:nowrap}
+@media (prefers-reduced-motion:reduce){.rs-row,.pv-row{animation:none}.nrm-c.hit i{animation:none}}
+
+/* узкие экраны: точка-индикатор не залезает на цифры */
+@media (max-width:360px){.nrm-c{padding:8px 15px 8px 8px}.nrm-c b{font-size:12.5px}.nrm-c i{top:7px;right:7px}}
+
+/* ============================================================================
+   СЛА v2 · СЛОЙ ДВИЖЕНИЯ И УСТОЙЧИВОСТИ
+   Принцип: в экономе анимируем только transform/opacity (композитор, ноль перерисовок),
+   всё, что вне экрана / в простое / на слабом устройстве — само ставится на паузу.
+   ============================================================================ */
+
+/* ---------- токены системы дизайна (единые для новых компонентов) ---------- */
+:root{
+  --uz-ring:rgba(190,140,255,.78);
+  --uz-ring-soft:rgba(157,77,255,.28);
+  --uz-spring:cubic-bezier(.34,1.56,.64,1);
+  --uz-out:cubic-bezier(.22,1,.36,1);
+  --uz-tap:44px;
+}
+
+/* ---------- 1. Наклон: переменные регистрируем БЕЗ наследования ----------
+   Раньше --pfx/--pfy/--ptx/--pty наследовались всем потомкам карточки и каждый кадр
+   инвалидировали стили всего поддерева. Теперь пересчитывается только сама карточка. */
+@property --pfx{syntax:"<length>";inherits:false;initial-value:0px}
+@property --pfy{syntax:"<length>";inherits:false;initial-value:0px}
+@property --ptx{syntax:"<angle>";inherits:false;initial-value:0deg}
+@property --pty{syntax:"<angle>";inherits:false;initial-value:0deg}
+
+/* ---------- 2. Бегущие блики по кромкам карточек — теперь и в экономе ----------
+   Кольцо (маска) статичное и растрируется один раз; по нему едет полоса света.
+   Анимируется только transform → композитор, ноль перерисовок и ноль работы главного потока. */
+@supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)){
+  html.force-lite .cinematic-glare{display:block!important;overflow:hidden;background:none!important;animation:none!important;opacity:.8;contain:layout paint}
+  html.force-lite .cinematic-glare::after{content:"";position:absolute;top:0;bottom:0;left:0;width:78%;
+    background:linear-gradient(105deg,transparent 0,rgba(255,255,255,.55) 30%,rgba(255,255,255,.96) 50%,rgba(255,255,255,.55) 70%,transparent 100%);
+    transform:translate3d(-110%,0,0);will-change:transform;
+    animation:uzGlare 8.4s cubic-bezier(.3,0,.7,1) infinite;animation-delay:var(--gd,0s)}
+  @keyframes uzGlare{0%{transform:translate3d(-110%,0,0)}62%,100%{transform:translate3d(135%,0,0)}}
+  /* вне экрана / простой / слабое устройство — пауза и снятие слоя */
+  html.force-lite .cinematic-glare.gl-off::after,
+  html.force-lite.uz-slow .cinematic-glare::after,
+  body.idle-paused .cinematic-glare::after{animation-play-state:paused;will-change:auto}
+  html.force-lite.uz-slow .cinematic-glare{display:none!important}
+}
+
+/* ---------- 3. «Пылинки» света на фоне (экономе): 10 крошечных слоёв, только transform/opacity ---------- */
+#uz-motes{display:none;position:fixed;inset:0;z-index:-3;pointer-events:none;overflow:hidden;contain:strict}
+html.force-lite #uz-motes{display:block}
+html.force-lite.uz-slow #uz-motes,body.idle-paused #uz-motes i{display:none}
+#uz-motes i{position:absolute;left:var(--x,50%);top:100%;width:var(--s,4px);height:var(--s,4px);border-radius:50%;
+  background:radial-gradient(circle,rgba(236,214,255,.95) 0,rgba(176,110,255,.42) 42%,transparent 72%);
+  opacity:0;will-change:transform,opacity;animation:uzMote var(--d,22s) linear infinite;animation-delay:var(--l,0s)}
+@keyframes uzMote{0%{transform:translate3d(0,0,0);opacity:0}14%{opacity:var(--o,.5)}86%{opacity:var(--o,.5)}100%{transform:translate3d(var(--dx,20px),-118vh,0);opacity:0}}
+
+/* ---------- 4. Живые мелочи (композитор) ---------- */
+@keyframes uzDia{0%,100%{transform:rotate(45deg) scale(1);opacity:1}50%{transform:rotate(45deg) scale(1.28);opacity:.8}}
+.section-label::before{animation:uzDia 3.8s ease-in-out infinite}
+body.idle-paused .section-label::before{animation-play-state:paused}
+html.force-lite.uz-slow .section-label::before{animation:none}
+
+/* ---------- 5. Пружинящие элементы: translate/scale пишет контроллер, свои transform не трогаем ---------- */
+.sp-on{transition-property:transform,opacity,box-shadow,background-color,border-color,color,filter,background-position!important}
+.sp-on,.sp-on *{-webkit-tap-highlight-color:transparent}
+
+/* ---------- 6. Буквы под курсором: слой только у того блока, над которым курсор ---------- */
+.letter-fx{will-change:auto}
+[data-letter-fx]:hover .letter-fx{will-change:transform}
+
+/* ---------- 7. Скрытые шторки не крутят анимации ---------- */
+#paste-sheet:not(.show) *,#paste-sheet:not(.show) *::before,#paste-sheet:not(.show) *::after{animation-play-state:paused!important}
+.tp-ov:not(.show) *,.tp-ov:not(.show) *::before,.tp-ov:not(.show) *::after{animation-play-state:paused}
+
+/* ---------- 8. Чуть «сочнее» (в нашем стиле, без перерисовки дизайна) ---------- */
+/* фокус полей — тёплое фиолетовое свечение вместо плоской рамки */
+input:focus,.field textarea:focus{box-shadow:0 0 0 3px var(--uz-ring-soft),0 10px 26px -12px rgba(112,0,255,.65)}
+/* главная кнопка: глубже и ярче кромка, свечение под ней */
+.btn.primary:not(:disabled){box-shadow:0 14px 28px -8px var(--purple-glow),0 2px 0 rgba(255,255,255,.12) inset,0 -10px 18px -10px rgba(40,0,110,.55) inset}
+/* ступени норматива: приподнимаются под курсором и подсвечиваются своим цветом */
+.sla-tier{transition:border-color .18s linear,box-shadow .18s linear,translate .35s var(--uz-spring)}
+@media (hover:hover) and (pointer:fine){
+  .sla-tier:hover{translate:0 -2px}
+  .sla-tier.t1:hover{border-color:rgba(52,199,123,.45);box-shadow:0 14px 26px -14px rgba(52,199,123,.55)}
+  .sla-tier.t2:hover{border-color:rgba(255,194,75,.45);box-shadow:0 14px 26px -14px rgba(255,194,75,.5)}
+  .sla-tier.t3:hover{border-color:rgba(255,92,122,.45);box-shadow:0 14px 26px -14px rgba(255,92,122,.5)}
+}
+/* строки «Сегодня уже внесено» — цветная кромка слева появляется под курсором */
+.entry-item{position:relative}
+.entry-item::before{content:"";position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,#d9c2ff,#7000ff);opacity:0;transform:scaleY(.4);transition:opacity .25s linear,transform .35s var(--uz-spring)}
+@media (hover:hover){.entry-item:hover::before{opacity:1;transform:scaleY(1)}}
+
+/* ---------- 9. Устойчивость: единый фокус, тап-зоны, reduce-motion ---------- */
+:where(.rs-row,.pv-row,.lang-row,.pv-seg button,.pv-chip,.rep-x,.dd-trigger,.jira-add-btn,.toggle-opt,.rep-filt button):focus-visible{outline:2px solid var(--uz-ring);outline-offset:2px}
+:where(.rs-row,.pv-row,.pv-seg button,.rep-filt button,.rep-x,.pv-clr){min-height:var(--uz-tap)}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.rs-ov,.pv-ov{overscroll-behavior:contain}
+.pv-body,.rs-list{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+@media (prefers-reduced-motion:reduce){
+  html.force-lite .cinematic-glare::after,#uz-motes i,.section-label::before{animation:none!important}
+  .sla-tier,.entry-item::before{transition:none}
+}
+@media (forced-colors:active){
+  .rs-row,.pv-row,.lang-row{border:1px solid CanvasText}
+}
+
+/* ---------- 10. Полировка: иконки вместо emoji, переносы, подвал над плавающими кнопками ---------- */
+/* заголовок карточки с пилюлей справа: на узком — пилюля переносится, а не обрезается */
+.card-head-row{flex-wrap:wrap;row-gap:8px}
+.card-head-right{min-width:0;max-width:100%}
+.norm-tag{white-space:nowrap}
+.late-hint,.nrm-f,.hint-text,.sla-note>span:last-child{text-wrap:pretty}
+/* ступени норматива: глянцевые «шарики» вместо emoji */
+.sla-tier .tier-icon{font-size:0;line-height:0}
+.sla-tier .tier-icon::before{content:"";display:block;width:20px;height:20px;border-radius:50%;
+  background:radial-gradient(circle at 33% 27%,#fff 0,var(--o1) 24%,var(--o2) 64%,var(--o3) 100%);
+  box-shadow:0 0 15px var(--og),inset 0 -3px 5px rgba(0,0,0,.28),inset 0 1px 1px rgba(255,255,255,.55)}
+.sla-tier.t1{--o1:#a6f7cb;--o2:#34c77b;--o3:#127a47;--og:rgba(52,199,123,.6)}
+.sla-tier.t2{--o1:#ffe7a1;--o2:#ffc24b;--o3:#a56a00;--og:rgba(255,194,75,.6)}
+.sla-tier.t3{--o1:#ffb3c2;--o2:#ff5c7a;--o3:#a1122f;--og:rgba(255,92,122,.6)}
+/* лампочка в подсказке и иконка «Кто сдал» — те же линейные иконки, что в шторках */
+.sla-note{align-items:flex-start;gap:8px}
+.sla-note .sn-ic{flex:none;width:18px;height:18px;margin-top:1px;color:#ffd88a;display:grid;place-items:center}
+.sla-note .sn-ic svg{width:15px;height:15px}
+.wf-icon{display:grid;place-items:center;color:#f1e7ff}
+.wf-icon svg{width:20px;height:20px}
+.late-head .lh-ic{display:grid;place-items:center;width:22px;height:22px;border-radius:8px;color:#ffd88a;background:rgba(255,194,75,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.late-head .lh-ic svg{width:14px;height:14px}
+/* телефон: подвал не прячется под плавающими кнопками «Режим…» и «Звук» */
+@media (max-width:900px){.page-shell{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+
+/* свёрнутый блок причины: раньше кнопку внутри можно было достать Tab-ом и озвучивал экранный диктор, хотя её не видно */
+.late-box{visibility:hidden;transition:grid-template-rows .45s var(--ease),opacity .35s,margin .35s,visibility 0s linear .45s}
+.late-box.show{visibility:visible;transition:grid-template-rows .45s var(--ease),opacity .35s,margin .35s,visibility 0s}
+
+</style>
+
 <div class="tp-ov" id="tp-ov" aria-hidden="true"><div class="rep-modal tp-sheet" id="tp-sheet" role="dialog" aria-modal="true" aria-labelledby="tp-title" tabindex="-1">
 <div class="rep-grab" aria-hidden="true"></div>
 <header class="rep-head">
@@ -3487,18 +3912,7 @@ var API="https://script.google.com/macros/s/AKfycbw-W_2XWdTkBekgSZxWQCtoiTY1frGW
 var $=function(i){return document.getElementById(i)},LATE=900,SLA16=960;
 var mins=function(v){var m=/^(\d{1,2}):(\d{2})/.exec(v||"");return m?+m[1]*60+ +m[2]:null};
 var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
-/* ---- причина задержки: плашка сама появляется, если конец приёмки позже 15:00 ---- */
-var end=$("end-time"),st=$("start-time"),box=$("late-box"),sel=$("late-select"),oth=$("late-other"),fc=$("formed-count");
-function late15(){var m=mins(end&&end.value);return m!==null&&m>LATE}
-function over(){var a=mins(st&&st.value),b=mins(end&&end.value);if(a===null||b===null||a===b)return false;var n=b-a;if(n<0)n+=1440;return n>60}
-function nowLate(){var d=new Date();return d.getHours()*60+d.getMinutes()>LATE}
-function late(){return late15()||over()||nowLate()}
-function lateWhy(){return late15()?"Приёмка завершена после 15:00 — укажи причину":over()?"Приёмка заняла больше 1ч — укажи причину":"Данные вносятся после 15:00 — укажи причину"}
-var lhEl=$("late-head"),hhEl=$("late-hint"),lastHead="";
-function sync(){var l=late();if(l&&lhEl){var th="⏰ "+lateWhy();if(th!==lastHead){lhEl.textContent=th;lastHead=th}}box.classList.toggle("show",l);if(hhEl)hhEl.style.display=l?"none":"block";if(!l){sel.value="";oth.value=""}oth.style.display=sel.value==="Другое"?"block":"none";if(end.value===""&&st&&st.value==="")fc.value=""}
-if(end&&box){["input","change"].forEach(function(e){end.addEventListener(e,sync);st&&st.addEventListener(e,sync)});sel.addEventListener("change",sync);setInterval(function(){if(!document.hidden)sync()},700)}
-window.__slaLate=function(){if(!late())return"";if(sel.value==="Другое")return oth.value.trim()?"Другое: "+oth.value.trim():"";return sel.value};
-var sb=$("btn-submit");sb&&sb.addEventListener("click",function(e){if(late()&&!window.__slaLate()){e.stopImmediatePropagation();e.preventDefault();box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");sel.focus()}},true);
+/* причина задержки и норматив — см. блок «СЛА v2 · форма» в конце страницы */
 /* ---- отчёт ---- */
 var ov=$("rep-ov"),modal=$("rep-modal"),bodyEl=$("rep-body"),dt=$("rep-date"),tr=$("rep-terr"),out=$("rep-out"),cp=$("rep-copy"),foot=$("rep-foot"),sub=$("rep-sub"),goBtn=$("rep-go"),goTxt=$("rep-go-t"),
 dbtn=$("rep-date-btn"),dtxt=$("rep-date-txt"),calw=$("rep-calw"),cal=$("rep-cal"),calT=$("cal-title"),calG=$("cal-grid"),seg=$("rep-seg"),quick=$("rep-quick"),thumb=null;
@@ -3517,8 +3931,8 @@ tick:SV+'<path d="M4 9.5a2.5 2.5 0 0 0 0 5V17a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2.
 var pad=function(n){return("0"+n).slice(-2)};
 function iso(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
 function parseISO(s){var p=String(s||"").split("-");return p.length===3?new Date(+p[0],+p[1]-1,+p[2]):null}
-function today(){return iso(new Date())}
-function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return iso(d)}
+function today(){var d=new Date(Date.now()+18e6);return d.getUTCFullYear()+"-"+pad(d.getUTCMonth()+1)+"-"+pad(d.getUTCDate())}
+function daysAgo(n){var d=new Date(Date.now()+18e6-n*864e5);return d.getUTCFullYear()+"-"+pad(d.getUTCMonth()+1)+"-"+pad(d.getUTCDate())}
 /* ---- дата + календарь ---- */
 function setDate(v){dt.value=v;var d=parseISO(v);
 dtxt.textContent=d?WD[d.getDay()]+", "+d.getDate()+" "+MONS[d.getMonth()]+" "+d.getFullYear():"—";
@@ -3737,7 +4151,7 @@ Wheel.prototype.set=function(v,smooth){if(smooth){var d=((v-this.read())%this.n+
 function readout(){if(!built)return;sub.textContent="Выбрано · "+pad(wH.val)+":"+pad(wM.val)}
 function build(){if(built)return;wH=new Wheel($("tp-h"),24,readout);wM=new Wheel($("tp-m"),60,readout);built=true}
 function open(inp,key){if(ov.classList.contains("show"))return;cur=inp;viaKey=!!key;build();
-var m=RE.exec(inp.value||""),d=new Date(),h=m?Math.min(23,+m[1]):d.getHours(),mi=m?Math.min(59,+m[2]):d.getMinutes();
+var m=RE.exec(inp.value||""),d=new Date(Date.now()+18e6),h=m?Math.min(23,+m[1]):d.getUTCHours(),mi=m?Math.min(59,+m[2]):d.getUTCMinutes();
 ttl.textContent=TITLES[inp.id]||"Время";clrB.hidden=!m;lastFocus=document.activeElement;
 inp.classList.add("tp-open");ov.classList.add("show");ov.setAttribute("aria-hidden","false");
 var f=wH.items[0];ITEM=(f&&f.offsetHeight)||ITEM;
@@ -3752,7 +4166,7 @@ inputs.forEach(function(i){i.addEventListener("keydown",function(e){if(i.classLi
 /* «Указать время» у приезда/ухода — сразу открываем шторку, чтобы не тапать второй раз */
 [].forEach.call(document.querySelectorAll('.toggle-opt[data-mode="time"]'),function(b){b.addEventListener("click",function(){var i=$(b.getAttribute("data-target")==="arrive"?"fact-arrive":"fact-leave");if(i&&i.classList.contains("tp-in")&&!i.value)setTimeout(function(){open(i,false)},60)})});
 okB.addEventListener("click",ok);xB.addEventListener("click",close);clrB.addEventListener("click",clr);
-nowB.addEventListener("click",function(){var d=new Date();wH.set(d.getHours(),true);wM.set(d.getMinutes(),true)});
+nowB.addEventListener("click",function(){var d=new Date(Date.now()+18e6);wH.set(d.getUTCHours(),true);wM.set(d.getUTCMinutes(),true)});
 ov.addEventListener("click",function(e){if(e.target===ov)close()});
 ov.addEventListener("wheel",function(e){if(!e.target.closest(".tp-wheel"))e.preventDefault()},{passive:false});
 document.addEventListener("keydown",function(e){if(!ov.classList.contains("show"))return;
@@ -3909,18 +4323,21 @@ function makeIR(c,sec){var sr=c.sampleRate,n=Math.floor(sr*sec),b=c.createBuffer
  for(var ch=0;ch<2;ch++){var d=b.getChannelData(ch),y=0;
   for(var i=0;i<n;i++){var t=i/n,x=Math.random()*2-1;y+=(x-y)*(.62-.55*t);d[i]=i<pre?0:y*Math.pow(1-t,2.4)*Math.exp(-t*2.6)}}
  return b}
-function build(c){
+var IRC={},NZC={};
+function irFor(c){var k=c.sampleRate;return IRC[k]||(IRC[k]=makeIR(c,1.6))}
+function nzFor(c){var k=c.sampleRate;if(NZC[k])return NZC[k];var nb=c.createBuffer(1,k,k),nd=nb.getChannelData(0);for(var i=0;i<k;i++)nd[i]=Math.random()*2-1;return NZC[k]=nb}
+function build(c,vv){
  var o={ctx:c},sr=c.sampleRate;
  o.bus=c.createGain();
  var hp=c.createBiquadFilter();hp.type="highpass";hp.frequency.value=38;hp.Q.value=.6;
  var ls=c.createBiquadFilter();ls.type="lowshelf";ls.frequency.value=240;ls.gain.value=1.6;
  var hs=c.createBiquadFilter();hs.type="highshelf";hs.frequency.value=7200;hs.gain.value=-2.6;
  var ws=c.createWaveShaper(),cr=new Float32Array(2048);for(var k=0;k<2048;k++){var x=k/1023.5-1;cr[k]=Math.tanh(.8*x)/.8}ws.curve=cr;try{ws.oversample="2x"}catch(e){}
- var out=c.createGain();out.gain.value=vol;o.out=out;
+ var out=c.createGain();out.gain.value=vv==null?vol:vv;o.out=out;
  o.bus.connect(hp);hp.connect(ls);ls.connect(hs);hs.connect(ws);ws.connect(out);out.connect(c.destination);
- var cv=c.createConvolver();cv.buffer=makeIR(c,1.6);
+ var cv=c.createConvolver();cv.buffer=irFor(c);
  o.send=c.createGain();var rr=c.createGain();rr.gain.value=.55;o.send.connect(cv);cv.connect(rr);rr.connect(ls);
- var nb=c.createBuffer(1,sr,sr),nd=nb.getChannelData(0);for(var i=0;i<sr;i++)nd[i]=Math.random()*2-1;o.noise=nb;
+ o.noise=nzFor(c);
  return o}
 function ensure(){
  if(E)return E.ctx;if(!AC)return null;
@@ -4013,13 +4430,18 @@ var CUES={
   noise({t:.05,dur:.85,vol:.014,type:"highpass",f:5500,a:.12,rev:.5})},
  note:function(i){var f=SCALE[((i||0)%12+12)%12];tone({f:f,dur:.17,vol:.04,a:.003,harm:[[1,1,1],[2.005,.22,.9]],rev:.22})},
  toastInfo:function(){soft(N.Eb5,0,.05,.13);soft(N.Ab5,.05,.045,.2)},
- shimmer:function(){noise({dur:.3,vol:.012,type:"highpass",f:6500,a:.05,rev:.4})}
+ shimmer:function(){noise({dur:.3,vol:.012,type:"highpass",f:6500,a:.05,rev:.4})},
+ blink:function(){tone({f:rj(N.Eb6,.03),f2:N.Bb5,gl:.05,dur:.085,vol:.034,a:.002,rev:.12,harm:SOFT});tick(0,.01,5200);tone({t:.105,f:N.Ab5,dur:.1,vol:.02,a:.003,rev:.12,harm:SOFT})},
+ reasonPick:function(){soft(N.Eb5,0,.06,.12);bell(N.Ab5,.04,.075,.55,.32);bell(N.C6,.1,.06,.75,.36);tick(0,.01)},
+ pvzPick:function(){bell(N.Ab5,0,.07,.5,.3);bell(N.Eb6,.05,.06,.65,.34);tick(0,.01)},
+ normOk:function(){soft(N.Ab5,0,.045,.14);bell(N.C6,.05,.05,.6,.34)},
+ focus:function(){tone({f:rj(1900,.05),dur:.028,vol:.012,a:.002,rev:.05})}
 },
-GAP={hover:60,tick:16,tap:35,chip:35,expand:35,collapse:35,step:30,note:0,calNav:30},
-LOW={hover:1,tick:1,tap:1,chip:1,expand:1,collapse:1,step:1,calNav:1},
+GAP={hover:60,tick:16,tap:35,chip:35,expand:35,collapse:35,step:30,note:0,calNav:30,blink:0,focus:140,reasonPick:60,pvzPick:60,normOk:300},
+LOW={hover:1,tick:1,tap:1,chip:1,expand:1,collapse:1,step:1,calNav:1,focus:1},
 HAPTIC={success:[10,40,16],error:[35],nudge:[18],warn:[16],confirm:[8]};
 
-var LEVEL={"tap":1.387,"press":0.703,"hover":2.262,"toggle":1.522,"toggleOn":1.543,"toggleOff":1.676,"select":1.067,"pick":1.299,"open":1.548,"close":1.528,"sheetOpen":1.357,"sheetClose":1.611,"tick":1.465,"success":1.184,"error":1.109,"nudge":1.478,"warn":1.49,"chipAdd":1.373,"chipRemove":1.289,"copyOk":1.339,"reportReady":1.508,"expand":1.444,"collapse":1.4,"tab":1.682,"chip":1.586,"calOpen":1.548,"calClose":1.68,"calNav":1.616,"calPick":1.536,"confirm":1.219,"clear":1.487,"step":1.598,"lang":1.827,"perfOn":1.748,"perfOff":1.953,"sparkle":1.246,"boop":1.417,"welcome":1.283,"note":1.117,"toastInfo":1.943,"shimmer":4.975,"portalCharge":1.3,"portalGo":1.3};
+var LEVEL={"tap":1.387,"press":0.703,"hover":2.262,"toggle":1.522,"toggleOn":1.543,"toggleOff":1.676,"select":1.067,"pick":1.299,"open":1.548,"close":1.528,"sheetOpen":1.357,"sheetClose":1.611,"tick":1.465,"success":1.184,"error":1.109,"nudge":1.478,"warn":1.49,"chipAdd":1.373,"chipRemove":1.289,"copyOk":1.339,"reportReady":1.508,"expand":1.444,"collapse":1.4,"tab":1.682,"chip":1.586,"calOpen":1.548,"calClose":1.68,"calNav":1.616,"calPick":1.536,"confirm":1.219,"clear":1.487,"step":1.598,"lang":1.827,"perfOn":1.748,"perfOff":1.953,"sparkle":1.246,"boop":1.417,"welcome":1.283,"note":1.117,"toastInfo":1.943,"shimmer":4.975,"portalCharge":1.3,"portalGo":1.3,"blink":1.4,"reasonPick":1.05,"pvzPick":1.1,"normOk":1.5,"focus":2.6};
 function runCue(n,a,raw){var c=E.ctx,L=raw||LEVEL[n]==null?1:LEVEL[n],cur=c.createGain(),cs=c.createGain(),kc=E.cur,ks=E.curS;
  cur.gain.value=L;cs.gain.value=L;cur.connect(E.bus);cs.connect(E.send);E.cur=cur;E.curS=cs;
  try{CUES[n](a)}finally{E.cur=kc;E.curS=ks}}
@@ -4029,7 +4451,38 @@ function play(n,a){
  var now=performance.now(),g=GAP[n]==null?25:GAP[n];if(now-(last[n]||0)<g)return;last[n]=now;
  if(active>30&&LOW[n])return;
  if(coarse&&HAPTIC[n]&&navigator.vibrate){try{navigator.vibrate(HAPTIC[n])}catch(e){}}
+ var ck=ckey(n,a),bs=ck&&CACHE[ck];
+ if(bs){run(function(){try{playBuf(n,bs[(Math.random()*bs.length)|0])}catch(e){}});return}
+ if(ck)warm(n,a,ck);
  run(function(){try{runCue(n,a)}catch(e){}})}
+
+/* ---------- кэш частых коротких звуков ----------
+   Один раз рендерим офлайн (с тем же трактом: EQ, мягкий клиппер, «комната») и дальше играем ОДНИМ BufferSource
+   вместо 5-15 осцилляторов/фильтров/гейнов на каждый тык. Для звуков со случайным «дрожанием» держим 2-3 варианта. */
+var CACHE={},CTRY={},CQ=[],CBUSY=false,
+CSET={hover:[3,.3],tap:[3,.35],chip:[3,.3],press:[2,.45],boop:[2,.4],blink:[2,.5],focus:[2,.2],tick:[2,.25],expand:[1,.3],collapse:[1,.3],step:[1,.3],calNav:[1,.3],toggle:[1,.45],note:[1,.7]};
+function ckey(n,a){if(!CSET[n])return null;
+ if(n==="note")return n+"|"+(((a||0)%12+12)%12);
+ if(n==="step"||n==="calNav")return n+"|"+((a||1)>0?1:-1);
+ if(a!=null&&typeof a==="object")return null;
+ return a==null?n:null}
+function fade(b){for(var ch=0;ch<b.numberOfChannels;ch++){var d=b.getChannelData(ch),m=Math.min(d.length,Math.floor(b.sampleRate*.07));for(var i=0;i<m;i++)d[d.length-1-i]*=i/m}}
+function playBuf(n,b){var c=E.ctx,s=c.createBufferSource();s.buffer=b;s.connect(E.out);active++;s.onended=function(){active--;try{s.disconnect()}catch(e){}};s.start()}
+function warm(n,a,k){if(CTRY[k]||!(window.OfflineAudioContext||window.webkitOfflineAudioContext))return;CTRY[k]=1;CQ.push([n,a,k]);setTimeout(pump,60)}
+function pump(){
+ if(CBUSY||!CQ.length||!E)return;
+ var j=CQ.shift(),n=j[0],a=j[1],k=j[2],sp=CSET[n],OC=window.OfflineAudioContext||window.webkitOfflineAudioContext,sr=E.ctx.sampleRate,got=[],i=0;CBUSY=true;
+ (function one(){
+  if(i>=sp[0]){CACHE[k]=got;CBUSY=false;setTimeout(pump,45);return}
+  i++;var oc,keep=E;
+  try{oc=new OC(2,Math.ceil(sr*sp[1]),sr);E=build(oc,1);try{runCue(n,a,false)}finally{E=keep}}catch(e){E=keep;CBUSY=false;CTRY[k]=0;return}
+  oc.startRendering().then(function(b){fade(b);got.push(b);setTimeout(one,30)},function(){CBUSY=false;CTRY[k]=0})})()}
+function warmAll(){
+ var list=["hover","tap","chip","press","boop","blink","focus","tick","expand","collapse","toggle"],i;
+ for(i=0;i<list.length;i++)warm(list[i],undefined,list[i]);
+ warm("step",1,"step|1");warm("step",-1,"step|-1");warm("calNav",1,"calNav|1");warm("calNav",-1,"calNav|-1");
+ for(i=0;i<12;i++)warm("note",i,"note|"+i)}
+function latency(){var c=E&&E.ctx;if(!c)return 0;return(c.baseLatency||0)+(c.outputLatency||0)}
 
 /* офлайн-рендер для предпрослушивания/проверки: возвращает Promise<AudioBuffer> */
 function render(n,a,sec,raw){
@@ -4062,7 +4515,7 @@ function mountBtn(){
 
 /* ---------- привязка к элементам ---------- */
 function dis(el){return el.disabled||el.getAttribute("aria-disabled")==="true"}
-var OLD=["#brand-mark",".toggle-opt",".dd-item","#pvz-dd-trigger","#jira-add",".jira-chip .rm","#btn-submit",".entry-item",".footer-legal-link","#btn-report",".rep-x","#tp-x",".tp-wheel",".tp-i","#snd-toggle","#lang-toggle","#perf-toggle","#eq-toggle",".bot-eye,.eye","#rep-date-btn","#late-select","#rep-q","#rj-q"].join(",");
+var OLD=["#brand-mark",".toggle-opt",".dd-item","#pvz-dd-trigger","#jira-add",".jira-chip .rm","#btn-submit",".entry-item",".footer-legal-link","#btn-report",".rep-x","#tp-x",".tp-wheel",".tp-i","#snd-toggle","#lang-toggle","#perf-toggle","#eq-toggle",".bot-eye,.eye","#rep-date-btn","#late-select","#rep-q","#rj-q","#reason-btn",".rs-row",".pv-row",".lang-row"].join(",");
 var RULES=[
  ["#lang-toggle",function(){play("lang")}],
  ["#perf-toggle",function(){setTimeout(function(){play(document.documentElement.classList.contains("force-lite")?"perfOff":"perfOn")},40)}],
@@ -4071,7 +4524,7 @@ var RULES=[
  ["#rep-go",function(el){if(!dis(el))play("press")}],
  ["#tp-ok",function(){play("confirm")}],["#tp-clear",function(){play("clear")}],["#tp-now,.tp-chip",function(){play("chip")}],
  [".rp-row",function(el){setTimeout(function(){play(el.getAttribute("aria-expanded")==="true"?"expand":"collapse")},20)}],
- [".rep-filt button,.rep-quick button,#rep-seg button",function(el){if(!dis(el))play("chip")}],
+ [".rep-filt button,.rep-quick button,#rep-seg button,.pv-seg button",function(el){if(!dis(el))play("chip")}],
  ["#rep-tabs button",function(el){var t=el.getAttribute("data-t");play("tab",t==="jira"?.35:-.35)}],
  [".cal-d",function(el){if(el.classList.contains("dis"))return;var d=el.querySelector("span");play("calPick",d?parseInt(d.textContent,10)||0:0)}],
  ["#cal-prev",function(){play("calNav",-1)}],["#cal-next",function(el){if(!dis(el))play("calNav",1)}],
@@ -4081,10 +4534,10 @@ var RULES=[
 ];
 function onClick(e){var t=e.target;if(!t||!t.closest||t.closest("[data-snd=off]"))return;
  for(var i=0;i<RULES.length;i++){var el=t.closest(RULES[i][0]);if(el){RULES[i][1](el);return}}}
-var HOVER=".btn,.dd-trigger,.entry-item,.rep-filt button,.rp-row,.tp-chip,.cal-d,#rep-tabs button,.toggle-opt,.footer-legal-link,.dd-category-card,.perf-toggle,.snd-toggle,.lang-toggle,.eq-toggle,.rep-copy,.rp-copy1,.rep-quick button,#rep-seg button,.jira-add-btn,.rep-date-btn",lastHov=null;
+var HOVER=".btn,.dd-trigger,.entry-item,.rep-filt button,.rp-row,.tp-chip,.cal-d,#rep-tabs button,.toggle-opt,.footer-legal-link,.dd-category-card,.perf-toggle,.snd-toggle,.lang-toggle,.eq-toggle,.rep-copy,.rp-copy1,.rep-quick button,#rep-seg button,.jira-add-btn,.rep-date-btn,.rs-row,.lang-row",lastHov=null;
 function onOver(e){if(e.pointerType&&e.pointerType!=="mouse")return;var t=e.target;if(!t||!t.closest)return;var el=t.closest(HOVER);if(!el||el===lastHov||el.closest(".dd-item")||dis(el)||el.classList.contains("dis"))return;lastHov=el;play("hover")}
 function onOut(e){if(lastHov&&(!e.relatedTarget||!lastHov.contains(e.relatedTarget)))lastHov=null}
-function prime(){if(primed&&E&&E.ctx.state==="running")return;var c=ensure();if(!c)return;if(c.state!=="running"){try{c.resume()}catch(e){}}primed=true}
+function prime(){if(primed&&E&&E.ctx.state==="running")return;var c=ensure();if(!c)return;if(c.state!=="running"){try{c.resume()}catch(e){}}if(!primed){primed=true;setTimeout(warmAll,900)}}
 
 function whenEl(id,cb){var el=document.getElementById(id);if(el){cb(el);return}
  var mo=new MutationObserver(function(){var e=document.getElementById(id);if(e){mo.disconnect();cb(e)}});mo.observe(document.body,{childList:true,subtree:true})}
@@ -4094,12 +4547,16 @@ function wire(){
  ["pointerdown","touchend","keydown"].forEach(function(n){document.addEventListener(n,prime,{capture:true,passive:true})});
  document.addEventListener("click",function(e){prime();onClick(e)},true);
  document.addEventListener("pointerover",onOver,{capture:true,passive:true});document.addEventListener("pointerout",onOut,{capture:true,passive:true});
- document.addEventListener("change",function(e){if(e.target&&e.target.id==="late-select"&&e.target.value)play("select")},true);
+ 
  document.addEventListener("visibilitychange",function(){if(!document.hidden&&E&&E.ctx.state!=="running"){try{E.ctx.resume()}catch(e){}}});
  watchClass("rep-ov",function(el,p,n){if(has(n,"show")&&!has(p,"show"))play("sheetOpen");else if(!has(n,"show")&&has(p,"show"))play("sheetClose")});
  watchClass("tp-ov",function(el,p,n){if(has(n,"show")&&!has(p,"show"))play("sheetOpen");else if(!has(n,"show")&&has(p,"show"))play("sheetClose")});
  watchClass("rep-calw",function(el,p,n){if(has(n,"open")&&!has(p,"open"))play("calOpen");else if(!has(n,"open")&&has(p,"open"))play("calClose")});
  watchClass("late-box",function(el,p,n){if(has(n,"show")&&!has(p,"show"))play("warn")});
+ watchClass("rs-ov",function(el,p,n){if(has(n,"show")&&!has(p,"show"))play("sheetOpen");else if(!has(n,"show")&&has(p,"show"))play("sheetClose")});
+ watchClass("pv-ov",function(el,p,n){if(has(n,"show")&&!has(p,"show"))play("sheetOpen");else if(!has(n,"show")&&has(p,"show"))play("sheetClose")});
+ whenEl("norm-card",function(el){var pv=el.getAttribute("data-st");new MutationObserver(function(){var v=el.getAttribute("data-st");if(v!==pv){var was=pv;pv=v;if(v==="ok"&&was==="hit")play("normOk")}}).observe(el,{attributes:true,attributeFilter:["data-st"]})});
+ document.addEventListener("focusin",function(e){var t=e.target;if(t&&t.matches&&t.matches("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),textarea")&&!t.closest(".tp-wheel,[data-snd=off]"))play("focus")},true);
  watchClass("paste-sheet",function(el,p,n){if(has(n,"closing")&&!has(p,"closing"))play("sheetClose")});
  watchClass("mega-sheet-overlay",function(el,p,n){if(has(n,"show")&&!has(p,"show"))play("sheetOpen");else if(!has(n,"show")&&has(p,"show"))play("sheetClose")});
  watchClass("toast",function(el,p,n){if(has(n,"show")&&!has(p,"show")){if(has(n,"toast-error"))play("error");else if(has(n,"toast-info"))play("toastInfo")}});
@@ -4110,7 +4567,7 @@ function wire(){
  new MutationObserver(paint).observe(document.documentElement,{attributes:true,attributeFilter:["lang"]})}
 
 function setVolume(v){vol=Math.max(.1,Math.min(2,+v||1));if(E)E.out.gain.value=vol;try{localStorage.setItem("sla_sound_vol_v1",String(vol))}catch(e){}}
-window.UZSND={volume:function(){return vol},setVolume:setVolume,play:play,render:render,levels:function(){return LEVEL},cues:function(){return Object.keys(CUES)},enabled:function(){return on},set:function(v){setOn(v,true)},toggle:function(){setOn(!on)},ctx:function(){return E&&E.ctx}};
+window.UZSND={volume:function(){return vol},setVolume:setVolume,play:play,render:render,levels:function(){return LEVEL},cues:function(){return Object.keys(CUES)},enabled:function(){return on},set:function(v){setOn(v,true)},toggle:function(){setOn(!on)},ctx:function(){return E&&E.ctx},shared:function(){var c=ensure();return c&&E?{ctx:c,bus:E.bus}:null},latency:latency,warm:warmAll,cached:function(){return Object.keys(CACHE)}};
 function init(){if(window.__sndNoUI||document.getElementById("snd-toggle"))return;mountBtn();wire()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init()
 })();
@@ -4356,6 +4813,471 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
     // страховка: если навигацию кто-то отменил (блокировщик, WebView) — вернуть страницу в рабочее состояние
     later(reset, 8000);
   });
+})();
+
+</script>
+<script id="uz-sla3-js">
+/* ============================================================================
+   СЛА · v2 · форма: норматив по заказам, причина задержки, Jira, язык
+   Автор проекта — все права защищены. © 2026
+   ============================================================================ */
+(function(){"use strict";
+var $=function(i){return document.getElementById(i)};
+var T=function(k,v){return window.t?window.t(k,v):k};
+var SND=function(n,a){try{window.UZSND&&window.UZSND.play(n,a)}catch(e){}};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function pad(n){return("0"+n).slice(-2)}
+function toast(msg,type){var n=$("toast");if(!n)return;var m=$("toast-msg")||n,ic=$("toast-icon");m.textContent=msg;if(ic)ic.textContent=type==="error"?"⚠️":"";
+ n.classList.remove("toast-info","toast-success","toast-error","toast-loading","error");n.classList.add("toast-"+(type||"info"),"show");clearTimeout(n._hideTimer);n._hideTimer=setTimeout(function(){n.classList.remove("show")},3200)}
+window.__uzToast=toast;
+
+/* ---------- время по Ташкенту (UTC+5, без перехода на летнее) ---------- */
+function tk(){var d=new Date(Date.now()+18e6);return{y:d.getUTCFullYear(),mo:d.getUTCMonth()+1,d:d.getUTCDate(),h:d.getUTCHours(),mi:d.getUTCMinutes()}}
+window.__tk=tk;
+var LATE=900; /* 15:00 */
+function mins(v){var m=/^(\d{1,2}):(\d{2})/.exec(v||"");return m?+m[1]*60+ +m[2]:null}
+function nowMins(){var t=tk();return t.h*60+t.mi}
+/* норматив: [0;200) → 60 · [200;400) → 120 · от 400 → 150 минут. Не указали «Сформировано» — действует базовые 60 */
+function normFor(f){f=+f;if(!(f>0))return{lim:60,tier:0,known:false};if(f>=400)return{lim:150,tier:3,known:true};if(f>=200)return{lim:120,tier:2,known:true};return{lim:60,tier:1,known:true}}
+window.__slaNorm=normFor;
+
+var st=$("start-time"),en=$("end-time"),fc=$("formed-count"),box=$("late-box"),sel=$("late-select"),oth=$("late-other"),nc=$("norm-card"),sb=$("btn-submit");
+if(!st||!en||!fc||!box||!sel||!oth||!nc)return;
+
+/* «Сформировано» — только цифры */
+fc.addEventListener("input",function(){var v=fc.value.replace(/\D+/g,"").slice(0,4).replace(/^0+(?=\d)/,"");if(v!==fc.value)fc.value=v});
+
+function diff(){var a=mins(st.value),b=mins(en.value);if(a===null||b===null)return null;var n=b-a;if(n<0)n+=1440;return n}
+function calc(){
+ var f=parseInt(fc.value,10),N=normFor(f),n=diff(),b=mins(en.value),
+ dur=n===null?null:n>N.lim,end=b===null?null:b>LATE,now=nowMins()>LATE;
+ return{f:isNaN(f)?0:f,N:N,n:n,dur:dur,end:end,now:now,need:!!(dur||end||now)}}
+function fmt(n){return Math.floor(n/60)+T("duration.hourShort")+" "+pad(n%60)+T("duration.minShort")}
+window.__slaOver=function(n){return n>normFor(parseInt(fc.value,10)).lim};
+
+/* ---------- плашка «Когда нужна причина» ---------- */
+var chips={dur:$("nrm-c-dur"),end:$("nrm-c-end"),now:$("nrm-c-now")},
+ elDurT=$("nrm-dur"),elCap=$("nrm-f"),elSt=$("nrm-state"),elWhy=$("late-why"),dBox=$("duration-box"),dNorm=$("dur-norm");
+var last="";
+function chip(c,v){if(!c)return;c.classList.toggle("hit",v===true);c.classList.toggle("ok",v===false)}
+function render(force){
+ var s=calc(),sig=[s.f,s.N.lim,s.n,s.dur,s.end,s.now,window.UZ_LANG,sel.value].join("|");
+ if(!force&&sig===last)return s;last=sig;
+ chip(chips.dur,s.dur);chip(chips.end,s.end);chip(chips.now,s.now);
+ var any=s.n!==null||s.end!==null,state=s.need?"hit":any?"ok":"idle";
+ if(nc.getAttribute("data-st")!==state){nc.setAttribute("data-st",state)}
+ if(elSt)elSt.textContent=T(state==="hit"?"norm.stHit":state==="ok"?"norm.stOk":"norm.stIdle");
+ if(elDurT)elDurT.textContent=T("norm.durT",{n:s.N.lim});
+ if(elCap){var c=s.N.known?T("norm.capKnown",{f:s.f,lim:s.N.lim}):T("norm.capUnknown",{lim:s.N.lim});elCap.textContent=c;
+  elCap.classList.toggle("unk",!s.N.known)}
+ /* причина */
+ var was=box.classList.contains("show");
+ if(s.need!==was)box.classList.toggle("show",s.need);
+ if(elWhy){var w=[];if(s.dur)w.push(T("late.whyDur",{t:fmt(s.n),lim:s.N.lim}));if(s.end)w.push(T("late.whyEnd"));if(s.now)w.push(T("late.whyNow"));
+  elWhy.innerHTML=w.map(function(x){return"<span>"+esc(x)+"</span>"}).join("")}
+ if(!s.need&&(sel.value||oth.value)){sel.value="";oth.value="";paintReason()}
+ oth.style.display=(s.need&&sel.value==="Другое")?"block":"none";
+ /* блок «Заняло по времени» — тот же норматив */
+ if(dBox&&s.n!==null){dBox.classList.toggle("warn",!!s.dur);if(dNorm)dNorm.textContent=T("norm.durBox",{lim:s.N.lim,m:T("duration.minShort")})}
+ return s}
+function tick(){render(false)}
+["input","change"].forEach(function(e){en.addEventListener(e,tick);st.addEventListener(e,tick);fc.addEventListener(e,tick)});
+setInterval(function(){if(!document.hidden)tick()},15000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)tick()});
+document.addEventListener("uz:lang",function(){paintReason();rebuildReasonRows();render(true)});
+
+/* ---------- причина: значение для отправки ---------- */
+window.__slaLate=function(){var s=calc();if(!s.need)return"";if(sel.value==="Другое")return oth.value.trim()?"Другое: "+oth.value.trim():"";return sel.value};
+
+/* ---------- кастомный выбор причины (шторка в стиле «Отчёта СЛА») ---------- */
+var SV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+var REASONS=[
+ ["Поздняя доставка на ПВЗ","late.r1",'<path d="M3 6.5h10.5v9H3z"/><path d="M13.5 9.5H18l3 3.3v2.7h-7.5"/><circle cx="7.2" cy="17.8" r="1.8"/><circle cx="17" cy="17.8" r="1.8"/>'],
+ ["Большой объём заказов","late.r2",'<path d="M12 3l8 4.2v9.6L12 21l-8-4.2V7.2z"/><path d="M4 7.2l8 4.3 8-4.3M12 11.5V21"/>'],
+ ["Не хватало сотрудников","late.r3",'<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19c.4-3.2 2.9-5 5.8-5s5.4 1.8 5.8 5"/><path d="M16 5.6a3 3 0 010 5.8M17.5 14.4c2 .5 3.2 2.1 3.5 4.6"/>'],
+ ["Проблемы с системой / интернетом","late.r4",'<path d="M3 9.2a13 13 0 0118 0M6 12.6a8.7 8.7 0 0112 0M9 16a4.4 4.4 0 016 0"/><circle cx="12" cy="19.2" r=".9" fill="currentColor"/>'],
+ ["Недовоз / пересорт","late.r5",'<path d="M3 7h3.5c2.2 0 3.4 1 4.6 3l1.8 3.2c1.2 2 2.4 3.3 4.6 3.3H21M3 17h3.5c1.6 0 2.7-.5 3.7-1.7M21 7h-3.5c-1.6 0-2.7.6-3.7 1.8"/><path d="M18.5 4.5L21 7l-2.5 2.5M18.5 14.5L21 17l-2.5 2.5"/>'],
+ ["Другое","late.r6",'<path d="M4 20l4.2-1 10-10a2.1 2.1 0 00-3-3l-10 10z"/><path d="M13.5 7.5l3 3"/>']];
+var rBtn=$("reason-btn"),rLab=$("reason-label"),rOv,rSheet,rList,rLast=null,rOpen=false;
+function reasonLabel(v){for(var i=0;i<REASONS.length;i++)if(REASONS[i][0]===v)return T(REASONS[i][1]);return""}
+function paintReason(){if(!rBtn||!rLab)return;var v=sel.value;rLab.textContent=v?reasonLabel(v):T("late.choose");rBtn.classList.toggle("placeholder",!v);rBtn.classList.toggle("has",!!v);
+ var ic=rBtn.querySelector(".rsn-ic");if(ic){var d=REASONS.filter(function(r){return r[0]===v})[0];ic.innerHTML=SV+(d?d[2]:'<path d="M12 8v5M12 16.2v.01"/><circle cx="12" cy="12" r="9"/>')+"</svg>"}
+ oth.placeholder=T("late.other")}
+function buildReason(){
+ rOv=document.createElement("div");rOv.className="tp-ov rs-ov";rOv.id="rs-ov";rOv.setAttribute("aria-hidden","true");
+ rOv.innerHTML='<div class="rep-modal tp-sheet rs-sheet" id="rs-sheet" role="dialog" aria-modal="true" aria-labelledby="rs-title" tabindex="-1"><div class="rep-grab" aria-hidden="true"></div>'
+ +'<header class="rep-head"><span class="rep-badge rs-badge" aria-hidden="true">'+SV+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>'
+ +'<div class="rep-ttl"><h2 class="rep-title" id="rs-title"></h2><p class="rep-sub" id="rs-sub"></p></div>'
+ +'<button class="rep-x" id="rs-x" type="button"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button></header>'
+ +'<div class="rs-body"><div class="rs-why" id="rs-why"></div><div class="rs-list" id="rs-list" role="listbox"></div></div></div>';
+ document.body.appendChild(rOv);rSheet=$("rs-sheet");rList=$("rs-list");
+ rOv.addEventListener("click",function(e){if(e.target===rOv)closeReason()});
+ rOv.addEventListener("wheel",function(e){if(!e.target.closest(".rs-body"))e.preventDefault()},{passive:false});
+ $("rs-x").addEventListener("click",closeReason);
+ rList.addEventListener("click",function(e){var b=e.target.closest(".rs-row");if(b)pickReason(b.getAttribute("data-v"))});
+ rebuildReasonRows()}
+function rebuildReasonRows(){if(!rList)return;
+ $("rs-title").textContent=T("late.sheetTitle");$("rs-sub").textContent=T("late.sheetSub");$("rs-x").setAttribute("aria-label",T("pv.close"));
+ rList.innerHTML=REASONS.map(function(r,i){var on=sel.value===r[0];return'<button type="button" class="rs-row'+(on?" on":"")+'" role="option" aria-selected="'+on+'" data-v="'+esc(r[0])+'" style="--i:'+i+'"><span class="rs-ic">'+SV+r[2]+'</svg></span><span class="rs-t">'+esc(T(r[1]))+'</span><span class="rs-ck">'+SV.replace("2.1","2.8")+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>'}).join("");
+ var w=$("rs-why");if(w){var s=calc(),a=[];if(s.dur)a.push(T("late.whyDur",{t:fmt(s.n),lim:s.N.lim}));if(s.end)a.push(T("late.whyEnd"));if(s.now)a.push(T("late.whyNow"));w.innerHTML=a.map(function(x){return"<span>"+esc(x)+"</span>"}).join("");w.hidden=!a.length}}
+function openReason(){if(rOpen)return;if(!rOv)buildReason();else rebuildReasonRows();rOpen=true;rLast=document.activeElement;
+ rBtn&&rBtn.setAttribute("aria-expanded","true");rOv.classList.add("show");rOv.setAttribute("aria-hidden","false");
+ var on=rList.querySelector(".rs-row.on")||rList.querySelector(".rs-row");try{(on||rSheet).focus({preventScroll:true})}catch(e){}}
+function closeReason(){if(!rOpen)return;rOpen=false;rOv.classList.remove("show");rOv.setAttribute("aria-hidden","true");rBtn&&rBtn.setAttribute("aria-expanded","false");
+ try{rLast&&rLast.focus&&rLast.focus({preventScroll:true})}catch(e){}}
+function pickReason(v){sel.value=v;sel.dispatchEvent(new Event("change",{bubbles:true}));paintReason();last="";render(true);
+ [].forEach.call(rList.children,function(b){var on=b.getAttribute("data-v")===v;b.classList.toggle("on",on);b.setAttribute("aria-selected",on)});
+ SND("reasonPick");setTimeout(function(){closeReason();if(v==="Другое")setTimeout(function(){try{oth.focus()}catch(e){}},260)},230)}
+if(rBtn){rBtn.addEventListener("click",function(e){e.preventDefault();openReason()});
+ rBtn.setAttribute("aria-haspopup","dialog");rBtn.setAttribute("aria-expanded","false")}
+document.addEventListener("keydown",function(e){if(!rOpen)return;
+ if(e.key==="Escape"){e.preventDefault();e.stopPropagation();closeReason();return}
+ var rows=[].slice.call(rList.querySelectorAll(".rs-row")),i=rows.indexOf(document.activeElement);
+ if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();var n=e.key==="ArrowDown"?(i+1)%rows.length:(i<=0?rows.length-1:i-1);rows[n].focus();return}
+ if(e.key==="Tab"){var f=rows.concat([$("rs-x")]);var a=document.activeElement,k=f.indexOf(a);if(e.shiftKey){if(k<=0){e.preventDefault();f[f.length-1].focus()}}else if(k===f.length-1||k<0){e.preventDefault();f[0].focus()}}},true);
+paintReason();
+
+/* ---------- защита от «битых» данных при сохранении ---------- */
+if(sb)sb.addEventListener("click",function(e){
+ var s=calc(),miss=parseInt(($("missing-count")||{}).value,10)||0;
+ function stop(){e.stopImmediatePropagation();e.preventDefault()}
+ if(s.f>0&&miss>s.f){stop();toast(T("form.missingGtFormed"),"error");var m=$("missing-count");m&&m.focus();return}
+ if(s.need&&!window.__slaLate()){stop();box.classList.remove("shake");void box.offsetWidth;box.classList.add("shake");
+  if(sel.value==="Другое"){try{oth.focus()}catch(x){}}else openReason()}
+},true);
+
+/* ---------- Jira внутри формы ---------- */
+function jiraReset(){try{window.__jiraReset&&window.__jiraReset()}catch(e){}}
+window.__slaAfterSave=function(){fc.value="";sel.value="";oth.value="";oth.style.display="none";jiraReset();paintReason();last="";render(true)};
+window.__slaPvzChanged=function(){jiraReset()};
+
+/* ---------- строка «Язык» вверху: понятно, куда жать ---------- */
+(function(){var tg=$("lang-toggle"),top=document.querySelector(".topbar");if(!tg||!top||$("lang-row"))return;
+ var row=document.createElement("div");row.className="lang-row stagger-none";row.id="lang-row";
+ row.innerHTML='<span class="lr-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3z"/></svg></span>'
+ +'<span class="lr-t"><b data-i18n="lang.rowTitle">Язык</b><small data-i18n="lang.rowSub">Til · RU / UZ</small></span><span class="lr-slot"></span>';
+ top.parentNode.insertBefore(row,top.nextSibling);row.querySelector(".lr-slot").appendChild(tg);
+ /* клик по любой части строки переключает язык (сам тумблер обрабатывает своё нажатие) */
+ row.addEventListener("click",function(e){if(e.target.closest("#lang-toggle"))return;try{tg.click()}catch(_){}});
+ row.setAttribute("role","group");
+ var head=document.querySelector(".card-head-right");if(head&&!head.children.length)head.remove();
+ if(window.applyUzTranslations&&window.UZ_LANG==="uz")window.applyUzTranslations()})();
+
+/* первый расчёт */
+render(true);
+})();
+
+/* ============================================================================
+   СЛА · v2 · шторка территорий: «Выбери ПВЗ» и «Кто сдал / кто нет»
+   Стиль — как у «Отчёта СЛА»: значок, заголовок, сегмент, поиск, карточки-строки со статусом
+   Автор проекта — все права защищены. © 2026
+   ============================================================================ */
+(function(){"use strict";
+var $=function(i){return document.getElementById(i)};
+var T=function(k,v){return window.t?window.t(k,v):k};
+var SND=function(n,a){try{window.UZSND&&window.UZSND.play(n,a)}catch(e){}};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+var SV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+var I={
+ pin:SV+'<path d="M12 21s-6.5-5.6-6.5-11A6.5 6.5 0 0112 3.5 6.5 6.5 0 0118.5 10c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>',
+ list:SV+'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>',
+ search:SV+'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',
+ x:SV.replace("2.1","2.4")+'<path d="M6 6l12 12M18 6L6 18"/></svg>',
+ chev:SV.replace("2.1","2.6")+'<path d="M9 6l6 6-6 6"/></svg>',
+ check:SV.replace("2.1","2.8")+'<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ empty:SV+'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8.5 11h5"/></svg>'};
+var CLOSE='<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>';
+
+function terrs(){return window.TERRITORIES||[]}
+function terrById(id){var a=terrs();for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
+function terrName(id){var t=terrById(id);if(!t)return"";var k="pv.terr."+id,v=T(k);return v===k?(t.short||t.label):v}
+function catOf(name){return/^Fr/i.test(name)?"franchise":"classic"}
+function norm(s){return String(s==null?"":s).trim().toLowerCase()}
+function filledMap(){var m={},l=$("entry-list");if(!l)return m;
+ [].forEach.call(l.querySelectorAll(".entry-item"),function(it){var n=it.querySelector(".pvz-name");if(!n)return;var t=it.querySelector(".entry-time");
+  m[n.textContent.trim()]={late:!!it.querySelector(".status-dot.bad"),time:t?t.textContent.trim():""}});return m}
+function ddItems(){var l=$("pvz-dd-list");if(!l)return[];return[].map.call(l.querySelectorAll(".dd-item"),function(e){return{v:e.getAttribute("data-value")||e.textContent.trim(),cat:e.getAttribute("data-category")||catOf(e.textContent),terr:e.getAttribute("data-territory")||""}})}
+function whoItems(){var out=[];terrs().forEach(function(t){(t.pvz||[]).forEach(function(n){out.push({v:n,cat:t.kind==="franchise"?"franchise":"classic",terr:t.id})})});return out}
+function curPvz(){var f=$("pvz-dd-trigger"),l=$("pvz-dd-label");if(!f||!l||f.classList.contains("placeholder"))return"";return l.textContent.trim()}
+
+var ov,sh,mode="pick",seg="classic",flt="all",qry="",built=false,isOpen=false,lastFocus=null,mo=null,raf=0;
+function build(){if(built)return;built=true;
+ ov=document.createElement("div");ov.className="tp-ov pv-ov";ov.id="pv-ov";ov.setAttribute("aria-hidden","true");
+ ov.innerHTML='<div class="rep-modal tp-sheet pv-sheet" id="pv-sheet" role="dialog" aria-modal="true" aria-labelledby="pv-title" tabindex="-1"><div class="rep-grab" aria-hidden="true"></div>'
+ +'<header class="rep-head"><span class="rep-badge" id="pv-badge" aria-hidden="true"></span><div class="rep-ttl"><h2 class="rep-title" id="pv-title"></h2><p class="rep-sub" id="pv-sub"></p></div>'
+ +'<button class="rep-x" id="pv-x" type="button">'+CLOSE+'</button></header>'
+ +'<div class="pv-ctl"><div class="rep-seg pv-seg" id="pv-seg" role="tablist"><span class="rep-seg-thumb" id="pv-thumb"></span>'
+ +'<button type="button" role="tab" data-k="all"></button><button type="button" role="tab" data-k="classic"></button><button type="button" role="tab" data-k="franchise"></button></div>'
+ +'<label class="pv-search">'+I.search+'<input id="pv-q" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" class="pv-clr" id="pv-clr" hidden>'+I.x+'</button></label>'
+ +'<div class="rep-filt pv-filt" id="pv-filt" hidden></div></div>'
+ +'<div class="pv-body" id="pv-body" role="listbox"></div></div>';
+ document.body.appendChild(ov);sh=$("pv-sheet");
+ ov.addEventListener("click",function(e){if(e.target===ov)close()});
+ ov.addEventListener("wheel",function(e){if(!e.target.closest(".pv-body"))e.preventDefault()},{passive:false});
+ $("pv-x").addEventListener("click",close);
+ $("pv-seg").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;seg=b.getAttribute("data-k");paintSeg();render(true)});
+ $("pv-filt").addEventListener("click",function(e){var b=e.target.closest("button");if(!b||b.disabled)return;flt=b.getAttribute("data-f");paintFilt();render(true)});
+ var q=$("pv-q");q.addEventListener("input",function(){qry=norm(q.value);$("pv-clr").hidden=!q.value;render(true)});
+ $("pv-clr").addEventListener("click",function(){q.value="";qry="";$("pv-clr").hidden=true;render(true);q.focus()});
+ q.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();var r=$("pv-body").querySelector(".pv-row:not([disabled])");if(r)r.click()}else if(e.key==="ArrowDown"){e.preventDefault();var f=$("pv-body").querySelector(".pv-row:not([disabled])");if(f)f.focus()}});
+ $("pv-body").addEventListener("click",function(e){var b=e.target.closest(".pv-row");if(!b||b.disabled)return;choose(b.getAttribute("data-v"))});
+ $("pv-body").addEventListener("keydown",function(e){var rows=[].slice.call($("pv-body").querySelectorAll(".pv-row:not([disabled])")),i=rows.indexOf(document.activeElement);if(i<0)return;
+  if(e.key==="ArrowDown"){e.preventDefault();(rows[i+1]||rows[0]).focus()}else if(e.key==="ArrowUp"){e.preventDefault();if(i===0)q.focus();else rows[i-1].focus()}});
+ document.addEventListener("keydown",function(e){if(!isOpen)return;
+  if(e.key==="Escape"){e.preventDefault();e.stopPropagation();close();return}
+  if(e.key==="Tab"){var f=[].filter.call(sh.querySelectorAll("button,input"),function(x){return !x.hidden&&!x.disabled&&x.offsetParent!==null});if(!f.length)return;var a=document.activeElement,i=f.indexOf(a);
+   if(e.shiftKey){if(i<=0){e.preventDefault();f[f.length-1].focus()}}else if(i===f.length-1||i<0){e.preventDefault();f[0].focus()}}},true);
+ window.addEventListener("resize",function(){if(isOpen)moveThumb(true)},{passive:true})}
+
+function items(){return mode==="pick"?ddItems():whoItems()}
+function paintHead(){
+ $("pv-badge").innerHTML=mode==="pick"?I.pin:I.list;
+ $("pv-title").textContent=T(mode==="pick"?"pv.pickTitle":"pv.whoTitle");
+ $("pv-x").setAttribute("aria-label",T("pv.close"));
+ var segs=$("pv-seg").querySelectorAll("button");
+ segs[0].textContent=T("pv.segAll");segs[1].textContent=T("pv.segClassic");segs[2].textContent=T("pv.segFr");
+ $("pv-q").placeholder=T("form.pvzSearch");$("pv-q").setAttribute("aria-label",T("form.pvzSearch"));
+ var f=$("pv-filt");f.hidden=mode!=="who"}
+function paintSeg(){[].forEach.call($("pv-seg").querySelectorAll("button"),function(b){b.setAttribute("aria-selected",String(b.getAttribute("data-k")===seg))});moveThumb(false)}
+function moveThumb(instant){var th=$("pv-thumb"),b=$("pv-seg").querySelector('[aria-selected="true"]');if(!th||!b)return;
+ if(instant)th.style.transition="none";th.style.width=b.offsetWidth+"px";th.style.transform="translateX("+b.offsetLeft+"px)";if(instant){void th.offsetWidth;th.style.transition=""}}
+function counts(list,fm){var c={all:list.length,no:0,yes:0,late:0};list.forEach(function(x){var i=fm[x.v];if(i){c.yes++;if(i.late)c.late++}else c.no++});return c}
+function paintFilt(){var f=$("pv-filt");if(mode!=="who")return;var fm=filledMap(),list=items().filter(function(x){return seg==="all"||x.cat===seg}),c=counts(list,fm);
+ var defs=[["all","pv.fAll",c.all],["no","pv.fNo",c.no],["yes","pv.fYes",c.yes],["late","pv.fLate",c.late]];
+ f.innerHTML=defs.map(function(d){return'<button type="button" data-f="'+d[0]+'" class="'+(flt===d[0]?"on":"")+'"'+(d[2]===0&&d[0]!=="all"?" disabled":"")+'>'+esc(T(d[1]))+'<i>'+d[2]+'</i></button>'}).join("")}
+function paintSub(){var sub=$("pv-sub");
+ if(mode==="who"){var fm=filledMap(),all=items(),c=counts(all,fm);sub.textContent=T("pv.whoSub",{a:c.yes,b:c.all,c:c.late})}
+ else{var n=items().length;sub.textContent=T("pv.pickSub",{n:n})}}
+
+function rowHtml(x,fm,cur,i){
+ var inf=fm[x.v],cls="pv-row "+(inf?(inf.late?"bad":"ok"):"pend")+(mode==="pick"&&x.v===cur?" sel":""),
+  tn=terrName(x.terr)||T(x.cat==="franchise"?"pv.segFr":"pv.segClassic"),
+  st=inf?(T(inf.late?"pv.late":"pv.done")+(inf.time?" · "+inf.time:"")):T("pv.pending"),
+  dis=(mode==="who"&&!inf)?" disabled":"";
+ var right=mode==="pick"?(x.v===cur?'<span class="pv-ck">'+I.check+'</span>':(inf?'<span class="pv-pill'+(inf.late?" bad":"")+'">'+esc(T(inf.late?"pv.late":"pv.done"))+'</span>':'<span class="pv-chev">'+I.chev+'</span>'))
+  :(inf?'<span class="pv-chev">'+I.chev+'</span>':"");
+ return'<button type="button" class="'+cls+'" role="option" data-v="'+esc(x.v)+'"'+dis+' style="--i:'+Math.min(i,14)+'"><span class="pv-dot"></span><span class="pv-main"><b>'+esc(x.v)+'</b><small>'+esc(tn)+' · '+esc(st)+'</small></span>'+right+'</button>'}
+function render(resetScroll){
+ var body=$("pv-body"),fm=filledMap(),cur=curPvz(),list=items(),q=qry;
+ if(!list.length){body.innerHTML='<div class="pv-empty">'+I.empty+'<b>'+esc(T("pv.empty"))+'</b><small>'+esc(T("pv.emptySub"))+'</small></div>';return}
+ var vis=list.filter(function(x){
+  if(seg!=="all"&&x.cat!==seg&&!q)return false;
+  if(q&&norm(x.v).indexOf(q)===-1)return false;
+  if(mode==="who"){var i=fm[x.v];if(flt==="no"&&i)return false;if(flt==="yes"&&!i)return false;if(flt==="late"&&!(i&&i.late))return false}
+  return true});
+ if(q)vis.sort(function(a,b){var an=norm(a.v),bn=norm(b.v),as=an.indexOf(q)===0?0:1,bs=bn.indexOf(q)===0?0:1;if(as!==bs)return as-bs;var ai=an.indexOf(q),bi=bn.indexOf(q);if(ai!==bi)return ai-bi;return an.localeCompare(bn,"ru",{numeric:true})});
+ if(!vis.length){body.innerHTML='<div class="pv-empty">'+I.empty+'<b>'+esc(T("pv.empty"))+'</b><small>'+esc(T("pv.emptySub"))+'</small></div>';if(mode==="who")paintFilt();return}
+ var html="",n=0;
+ ["classic","franchise"].forEach(function(cat){var g=vis.filter(function(x){return x.cat===cat});if(!g.length)return;
+  var names=[],done=0;g.forEach(function(x){var tn=terrName(x.terr);if(tn&&names.indexOf(tn)<0)names.push(tn);if(fm[x.v])done++});
+  html+='<div class="pv-gh"><span class="pv-gt">'+esc(T(cat==="franchise"?"pv.segFr":"pv.segClassic"))+(names.length?'<em> · '+esc(names.join(", "))+'</em>':"")+'</span><span class="pv-gc">'+(mode==="who"?done+"/"+g.length:g.length)+'</span></div>';
+  g.forEach(function(x){html+=rowHtml(x,fm,cur,n++)})});
+ body.innerHTML=html;
+ if(resetScroll){body.scrollTop=0;if(mode==="pick"&&!q){var s=body.querySelector(".pv-row.sel");if(s){var top=s.offsetTop-body.clientHeight/2+s.offsetHeight/2;body.scrollTop=Math.max(0,top)}}}
+ if(mode==="who")paintFilt();paintSub()}
+
+function open(m){build();if(isOpen)return;mode=m;qry="";flt="all";
+ var cur=curPvz();seg=m==="pick"?(cur?catOf(cur):"classic"):"all";
+ var q=$("pv-q");q.value="";$("pv-clr").hidden=true;
+ paintHead();paintSeg();render(false);
+ isOpen=true;lastFocus=document.activeElement;
+ ov.classList.add("show");ov.setAttribute("aria-hidden","false");
+ requestAnimationFrame(function(){moveThumb(true);render(true);
+  var coarse=false;try{coarse=matchMedia("(pointer:coarse)").matches}catch(e){}
+  try{(coarse?sh:q).focus({preventScroll:true})}catch(e){}});
+ if(m==="who"){var l=$("entry-list");if(l&&window.MutationObserver){mo=new MutationObserver(function(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;if(isOpen&&mode==="who")render(false)})});mo.observe(l,{childList:true,subtree:true,characterData:true})}}}
+function close(){if(!isOpen)return;isOpen=false;ov.classList.remove("show");ov.setAttribute("aria-hidden","true");if(mo){mo.disconnect();mo=null}
+ try{lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true})}catch(e){}}
+function choose(v){
+ if(mode==="pick"){
+  var prev=curPvz(),l=$("pvz-dd-list"),el=null;if(l)[].forEach.call(l.querySelectorAll(".dd-item"),function(e){if(e.getAttribute("data-value")===v)el=e});
+  if(!el)return;
+  SND("pvzPick");
+  var b=document.querySelector('#pv-body .pv-row[data-v="'+(window.CSS&&CSS.escape?CSS.escape(v):v)+'"]');if(b){[].forEach.call($("pv-body").querySelectorAll(".pv-row.sel"),function(r){r.classList.remove("sel")});b.classList.add("sel")}
+  el.click();
+  if(prev!==v&&window.__slaPvzChanged)window.__slaPvzChanged();
+  setTimeout(close,170)}
+ else{if(typeof window.openPvzReport==="function"){window.openPvzReport(v);close()}}}
+
+/* перехватываем старые кнопки, чтобы вместо тяжёлых вложенных окон открывалась одна шторка */
+document.addEventListener("click",function(e){var t=e.target&&e.target.closest?e.target:null;if(!t)return;
+ var tr=t.closest("#pvz-dd-trigger");if(tr){e.preventDefault();e.stopImmediatePropagation();open("pick");return}
+ var wb=t.closest("#who-filled-btn");if(wb){e.preventDefault();e.stopImmediatePropagation();open("who");return}},true);
+document.addEventListener("uz:lang",function(){if(!built)return;paintHead();paintSeg();if(isOpen){render(false);paintSub()}});
+/* значок-булавка в поле ПВЗ */
+(function(){var f=$("pvz-dd-trigger");if(f&&!f.querySelector(".dd-ic")){var s=document.createElement("span");s.className="dd-ic";s.setAttribute("aria-hidden","true");s.innerHTML=I.pin;f.insertBefore(s,f.firstChild);f.setAttribute("aria-haspopup","dialog")}})();
+window.__uzTerr={open:open,close:close};
+})();
+
+/* ============================================================================
+   СЛА v2 · ДВИЖЕНИЕ: наклон, глаза, пружины, блики, пылинки, адаптивный «регулятор»
+   Всё — через transform/opacity и один общий rAF; вне экрана и в простое ничего не крутится.
+   ============================================================================ */
+(function(){
+"use strict";
+var D=document,H=D.documentElement,RM=false,FINE=false,COARSE=false;
+try{RM=matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
+try{FINE=matchMedia("(hover:hover) and (pointer:fine)").matches;COARSE=matchMedia("(pointer:coarse)").matches}catch(e){}
+function lite(){return H.classList.contains("force-lite")}
+function slow(){return H.classList.contains("uz-slow")}
+function snd(n,a){try{window.UZSND&&window.UZSND.play(n,a)}catch(e){}}
+
+/* ---------- 1. Сила наклона (читает W() главного скрипта) ----------
+   Раньше коэффициент 2.4 насыщался уже при ~4° наклона телефона → карточки «ломались».
+   Теперь: максимум — заметно мягче, эконом — «чуть-чуть»; гироскоп всегда мягче мыши. */
+window.__uzTilt=function(){
+  var g=window.__uzSrc==="g",l=lite();
+  return g?(l?.16:.26):(l?.30:1.6)
+};
+
+/* ---------- 2. Глаза: одно общее моргание + звук точно в момент закрытия века ---------- */
+(function(){
+  if(RM)return;
+  var eyes=[].slice.call(D.querySelectorAll("#eye-l,#eye-r")),lids=[];
+  eyes.forEach(function(e){var l=e.querySelector(".bot-eye-lid");if(l)lids.push(l)});
+  if(!lids.length)return;
+  var CLOSE_MS=156,timer=0;               // eyeBlinkOnce: .34s, пик закрытия на 46%
+  function busy(){
+    for(var i=0;i<eyes.length;i++){var c=eyes[i].classList;if(c.contains("eye-click")||c.contains("eye-happy"))return true}
+    var b=window.__eyeBusy;return !!(b&&(b.l||b.r))
+  }
+  function blink(again){
+    if(D.hidden||busy())return;
+    lids.forEach(function(l){l.classList.remove("auto-blink-now")});
+    void lids[0].offsetWidth;
+    lids.forEach(function(l){l.classList.add("auto-blink-now")});
+    var lat=0;try{lat=window.UZSND&&window.UZSND.latency?window.UZSND.latency():0}catch(e){}
+    var want=Math.max(0,CLOSE_MS-lat*1000-6),t0=performance.now();
+    setTimeout(function(){if(performance.now()-t0>want+260)return;snd("blink")},want);   // главный поток завис → не играем «опоздавший» звук, чтобы он не расходился с веком
+    if(again)setTimeout(function(){blink(false)},420+Math.random()*140)
+  }
+  function next(first){
+    clearTimeout(timer);
+    var r=(Math.random()+Math.random())/2,ms=first?(4200+Math.random()*2600):(8000+r*8000);
+    timer=setTimeout(function(){blink(Math.random()<.14);next(false)},ms)
+  }
+  D.addEventListener("visibilitychange",function(){if(D.hidden)clearTimeout(timer);else next(false)});
+  next(true)
+})();
+
+/* ---------- 3. Пружинки на кнопках: магнит к курсору + «поп» при отпускании (мышь и тач) ---------- */
+(function(){
+  if(RM)return;
+  var SEL=".btn,.dd-trigger,.entry-item,.jira-add-btn,.toggle-opt,.footer-legal-link,.rep-filt button,.tp-chip,.rs-row,.pv-seg button,.rep-copy,.rp-copy1,.rep-quick button,.rep-date-btn,.nrm-c";
+  var NO="#btn-submit,#brand-mark,#eq-toggle,#today-pill,#lang-toggle,#snd-toggle,#perf-toggle,.pv-row,.tp-wheel,.tp-i";
+  var K=330,C=13;                          // жёсткость / демпфирование: ζ≈0.36 — упругий «подпрыг»
+  var S=new Map(),raf=0,last=0,cur=null,pressed=null;
+  function ok(el){return el&&!el.disabled&&el.getAttribute("aria-disabled")!=="true"&&!el.matches(NO)&&!el.closest(NO)}
+  function st(el){
+    var s=S.get(el);
+    if(!s){var r=el.getBoundingClientRect(),big=r.width>190;
+      s={el:el,x:0,y:0,z:1,vx:0,vy:0,vz:0,tx:0,ty:0,tz:1,w:r.width||1,h:r.height||1,hov:big?1.014:1.06,mag:big?3:4.5,mx:big?2:3,live:false,press:el.matches(".btn")?1:.965};
+      S.set(el,s)}
+    return s}
+  function wake(){if(!raf){last=0;raf=requestAnimationFrame(tick)}}
+  function write(s){
+    var e=s.el;e.style.translate=s.x.toFixed(2)+"px "+s.y.toFixed(2)+"px";e.style.scale=s.z.toFixed(4)}
+  function clear(s){var e=s.el;e.style.translate="";e.style.scale="";e.classList.remove("sp-on");S.delete(e)}
+  function tick(t){
+    raf=0;if(!last)last=t;var dt=Math.min((t-last)/1000,1/30);last=t;var alive=false;
+    S.forEach(function(s){
+      var ax=-K*(s.x-s.tx)-C*s.vx,ay=-K*(s.y-s.ty)-C*s.vy,az=-K*(s.z-s.tz)-C*s.vz;
+      s.vx+=ax*dt;s.vy+=ay*dt;s.vz+=az*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.z+=s.vz*dt;
+      var rest=Math.abs(s.x-s.tx)<.05&&Math.abs(s.y-s.ty)<.05&&Math.abs(s.z-s.tz)<.0015&&Math.abs(s.vx)+Math.abs(s.vy)+Math.abs(s.vz*40)<.6;
+      if(rest&&s.tx===0&&s.ty===0&&s.tz===1&&s.el!==cur&&s.el!==pressed){clear(s);return}
+      if(rest){s.x=s.tx;s.y=s.ty;s.z=s.tz;s.vx=s.vy=s.vz=0;write(s);return}
+      write(s);alive=true});
+    if(alive)raf=requestAnimationFrame(tick)
+  }
+  function enter(el){
+    var s=st(el);el.classList.add("sp-on");
+    var r=el.getBoundingClientRect();s.w=r.width||1;s.h=r.height||1;s.rl=r.left;s.rt=r.top;
+    s.tz=s.hov;s.vz+=1.4;wake()}
+  function leave(el){var s=S.get(el);if(!s)return;s.tx=0;s.ty=0;s.tz=1;wake()}
+  function aim(e,el){
+    var s=S.get(el);if(!s)return;
+    var dx=((e.clientX-s.rl)/s.w-.5)*2,dy=((e.clientY-s.rt)/s.h-.5)*2;
+    s.tx=Math.max(-1,Math.min(1,dx))*s.mag;s.ty=Math.max(-1,Math.min(1,dy))*s.mx*.7;wake()}
+  D.addEventListener("pointermove",function(e){
+    if(e.pointerType!=="mouse"||slow())return;
+    var el=e.target&&e.target.closest?e.target.closest(SEL):null;if(el&&!ok(el))el=null;
+    if(el!==cur){if(cur)leave(cur);cur=el;if(el)enter(el)}
+    if(el)aim(e,el)
+  },{passive:true});
+  D.addEventListener("pointerleave",function(){if(cur){leave(cur);cur=null}},{passive:true});
+  D.addEventListener("scroll",function(){if(cur){leave(cur);cur=null}},{passive:true,capture:true});
+  D.addEventListener("pointerdown",function(e){
+    if(slow())return;
+    var el=e.target&&e.target.closest?e.target.closest(SEL):null;if(!ok(el))return;
+    pressed=el;var s=st(el);el.classList.add("sp-on");
+    if(e.pointerType!=="mouse"){var r=el.getBoundingClientRect();s.w=r.width||1;s.h=r.height||1}
+    s.tz=s.press;s.tx=0;s.ty=0;wake()
+  },{passive:true});
+  function up(){
+    var el=pressed;pressed=null;if(!el)return;var s=S.get(el);if(!s)return;
+    s.tz=(el===cur)?s.hov:1;s.vz+=2.6;wake()}
+  D.addEventListener("pointerup",up,{passive:true});D.addEventListener("pointercancel",up,{passive:true});
+  /* перевод в эконом/макс и скрытие вкладки — сбросить хвосты */
+  D.addEventListener("visibilitychange",function(){if(D.hidden){S.forEach(clear);cur=pressed=null}});
+})();
+
+/* ---------- 4. Блики по кромкам (эконом): расфазировка + пауза вне экрана ---------- */
+(function(){
+  var gl=[].slice.call(D.querySelectorAll(".cinematic-glare"));
+  if(!gl.length)return;
+  gl.forEach(function(g,i){g.style.setProperty("--gd",(-(i*1.9+Math.random()*1.2)).toFixed(2)+"s")});
+  if(!("IntersectionObserver" in window))return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){en.target.classList.toggle("gl-off",!en.isIntersecting)})},{rootMargin:"60px"});
+  gl.forEach(function(g){io.observe(g.parentNode)})
+})();
+
+/* ---------- 5. Пылинки света (эконом) ---------- */
+(function(){
+  if(RM||D.getElementById("uz-motes"))return;
+  var box=D.createElement("div");box.id="uz-motes";box.setAttribute("aria-hidden","true");
+  var n=H.classList.contains("is-android")?7:11,h="";
+  for(var i=0;i<n;i++){
+    var x=(6+Math.random()*88).toFixed(1),s=(2.4+Math.random()*3.6).toFixed(1),d=(19+Math.random()*16).toFixed(1),
+        l=(-Math.random()*d).toFixed(1),o=(.28+Math.random()*.36).toFixed(2),dx=((Math.random()-.5)*90).toFixed(0);
+    h+='<i style="--x:'+x+'%;--s:'+s+'px;--d:'+d+'s;--l:'+l+'s;--o:'+o+';--dx:'+dx+'px"></i>'}
+  box.innerHTML=h;D.body.appendChild(box)
+})();
+
+/* ---------- 6. Буквы под курсором: переприменить после смены языка (textContent их стирает) ---------- */
+(function(){
+  function redo(){
+    try{
+      D.querySelectorAll("[data-letter-fx]").forEach(function(el){
+        if(!el.querySelector(".letter-fx")&&el.textContent.trim())delete el.dataset.letterFx});
+      window.__uzFx&&window.__uzFx()
+    }catch(e){}
+  }
+  D.addEventListener("uz:lang",function(){requestAnimationFrame(redo)});
+  setTimeout(function(){try{window.__uzFx&&window.__uzFx()}catch(e){}},400)   // поздно добавленные узлы (норматив, подпись)
+})();
+
+/* ---------- 7. Регулятор: если устройство тянет <30 fps — тихо убираем «необязательное» ---------- */
+(function(){
+  if(/[?&]gov=off/.test(location.search))return;
+  var bad=0,runs=0;
+  function measure(cb){
+    var n=0,sum=0,prev=0;
+    function f(t){
+      if(D.hidden)return cb(null);
+      if(prev){var d=t-prev;if(d<200){sum+=d;n++}}prev=t;
+      if(n<70)requestAnimationFrame(f);else cb(sum/n)}
+    requestAnimationFrame(f)}
+  function check(){
+    if(slow()||runs>3)return;runs++;
+    measure(function(avg){
+      if(avg==null)return;
+      if(avg>36){if(++bad>=2){H.classList.add("uz-slow");try{window.dispatchEvent(new CustomEvent("uz:slow"))}catch(e){}return}}
+      else bad=0;
+      if(runs<3)setTimeout(check,4500)})}
+  setTimeout(check,3200);
+  window.addEventListener("uzum:liteToggled",function(){H.classList.remove("uz-slow");bad=0;runs=0;setTimeout(check,2500)})
+})();
+
 })();
 
 </script>
