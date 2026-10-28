@@ -9,7 +9,59 @@
 
 <html lang="ru">
 <head><style id="lz-boot">html.lz-boot .page-shell{visibility:hidden}</style><script>(function(){var h=document.documentElement;h.classList.add("lz-boot");window.__lzReveal=function(){h.classList.remove("lz-boot")};setTimeout(window.__lzReveal,3500)})()</script>
-<meta charset="utf-8"/>
+<meta charset="utf-8"/><link rel="preconnect" href="https://script.google.com" crossorigin/><link rel="preconnect" href="https://script.googleusercontent.com" crossorigin/><script>(function(){
+var W=window,F=W.fetch,EX="https://script.google.com/macros/s/AKfycbw-W_2XWdTkBekgSZxWQCtoiTY1frGWbtx7vBGOAMWrkoaBOvHetnABKqCyJ2Z6R5pi/exec";
+if(!F||!W.Promise||W.__lzNet)return;
+var TTL=30000,TMO=35000,SW=1000,PRE={},INF={},LSK="sla_net_pvz_v1";
+W.__lzNet=1;
+function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
+function snap(r,to){return r.arrayBuffer().then(function(b){clearTimeout(to);return{b:b,s:r.status,t:r.statusText,c:r.headers.get("content-type")||"application/json"}})}
+function mk(n){var s=n.s,body=(s===204||s===205||s===304)?null:n.b.slice(0);return new Response(body,{status:s,statusText:n.t,headers:{"Content-Type":n.c}})}
+/* один GET: таймаут + один повтор при сетевой ошибке (не при таймауте — иначе ждать 70 с) */
+function load(u){var k=0,pv=u.indexOf("action=pvz_list")>-1;
+ function go(){var ac=typeof AbortController==="function"?new AbortController():null,to=ac?setTimeout(function(){ac.abort()},TMO):0;
+  return F.call(W,u,ac?{signal:ac.signal}:undefined).then(function(r){return snap(r,to)}).catch(function(e){clearTimeout(to);
+   if(k++<1&&!(e&&e.name==="AbortError"))return wait(700).then(go);throw e})}
+ return go().then(function(n){if(pv)pvzSave(n);return n})}
+function url(u){return typeof u==="string"?u:(u&&u.href)||(u&&u.url)||""}
+function pre(q){var u=EX+"?"+q,e={t:Date.now(),p:load(u).catch(function(){return null})};PRE[u]=e;setTimeout(function(){if(PRE[u]===e)delete PRE[u]},TTL+500)}
+function rid(){var a="",c="abcdefghijklmnopqrstuvwxyz0123456789";try{var v=new Uint8Array(12);crypto.getRandomValues(v);for(var i=0;i<12;i++)a+=c[v[i]%36]}catch(e){a=Math.random().toString(36).slice(2,14)}return Date.now().toString(36)+a}
+/* список ПВЗ: копия с прошлого визита */
+function pvzStored(){try{var o=JSON.parse(localStorage.getItem(LSK)||"null");return o&&o.b&&o.t?o:null}catch(e){return null}}
+function pvzSave(n){try{if(n&&n.s===200){var t=new TextDecoder().decode(n.b),j=JSON.parse(t);if(j&&j.ok&&Array.isArray(j.pvzList)&&j.pvzList.length)localStorage.setItem(LSK,JSON.stringify({t:Date.now(),b:t}))}}catch(e){}}
+function pvzFromStore(o){var b=new TextEncoder().encode(o.b).buffer;return{b:b,s:200,t:"OK",c:"application/json"}}
+function get(u){
+ var fresh=!/[?&]_=/.test(u),isPvz=u.indexOf("action=pvz_list")>-1,p;
+ if(fresh){
+  var e=PRE[u];
+  if(e&&Date.now()-e.t<TTL){delete PRE[u];p=e.p.then(function(n){return n||load(u)})}
+  else if(INF[u])p=INF[u];
+ }
+ if(!p){p=load(u);if(fresh){INF[u]=p;var done=function(){if(INF[u]===p)delete INF[u]};p.then(done,done)}}
+ if(isPvz){var st=pvzStored();
+  if(st)p=Promise.race([p.catch(function(){return pvzFromStore(st)}),wait(SW).then(function(){return pvzFromStore(st)})])}
+ return p.then(mk)}
+function post(u,o){
+ var b=o&&o.body,form=false,o2=o;
+ try{var j=JSON.parse(b);if(j&&typeof j==="object"){
+  if(j.type!=="profile_sync"){PRE={};INF={}}
+  if(!j.type){if(!j.rid)j.rid=rid();form=true;o2={};for(var k in o)o2[k]=o[k];o2.body=JSON.stringify(j)}}}catch(e){}
+ var f=function(){return F.call(W,u,o2)};
+ if(!form)return f();
+ return f().catch(function(e){if(e&&e.name==="AbortError")throw e;return wait(900).then(f)})}
+W.fetch=function(u,o){
+ var s=url(u);
+ if(!s||s.indexOf(EX)!==0)return F.apply(this,arguments);
+ var m=String((o&&o.method)||(u&&u.method)||"GET").toUpperCase();
+ if(m==="POST"&&typeof u==="string")return post(u,o);
+ if(m==="GET"&&typeof u==="string"&&!(o&&(o.signal||o.cache||o.headers||o.mode||o.credentials)))return get(u);
+ return F.apply(this,arguments)};
+W.fetch.__lzNet=1;
+/* ранний старт чтений */
+pre("action=pvz_list");pre("action=who_filled_today");
+try{var a=JSON.parse(localStorage.getItem("sla_auth_v1")||"null"),i=a&&String(a.telegramId);if(i&&/^\d{3,20}$/.test(i))pre("action=profile_get&id="+i)}catch(e){}
+})()</script>
+
 <meta name="author" content="Автор проекта СЛА приёмки"/>
 <meta name="copyright" content="© 2026 Автор проекта. Все права защищены. Копирование запрещено."/>
 <meta name="robots" content="noindex, nofollow, noarchive"/>
@@ -594,7 +646,7 @@ window.addEventListener('uzum:liteToggled', function(e){
 <label data-i18n="form.endLabel">Когда закончили приёмку</label>
 <input id="end-time" type="time"/>
 </div>
-<div class="field rp-formed"><div class="rp-lbrow"><label for="formed-count"><span data-i18n="form.formedLabel">Сколько вы приняли заказов</span></label><button type="button" class="rp-tag rp-wms wm-open" aria-haspopup="dialog" data-i18n-attr="aria-label:wms.openAria" aria-label="Посчитать заказы из WMS"><i class="rp-wms-i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M8.5 7.5h7"/><path d="M8.6 12h.01M12 12h.01M15.4 12h.01M8.6 16h.01M12 16h.01M15.4 16h.01"/></svg></i><span data-i18n="wms.open">Посчитать из WMS</span><i class="wm-pc2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></i></button></div><div class="rp-inwrap"><input class="rp-in" id="formed-count" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-i18n-attr="placeholder:form.formedPh" placeholder="например, 27"><button type="button" class="wm-in" data-i18n-attr="aria-label:wms.openAria" aria-label="Посчитать заказы из WMS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M8.5 7.5h7"/><path d="M8.6 12h.01M12 12h.01M15.4 12h.01M8.6 16h.01M12 16h.01M15.4 16h.01"/></svg></button></div></div>
+<div class="field rp-formed"><div class="rp-lbrow"><label for="formed-count"><span data-i18n="form.formedLabel">Сколько вы приняли заказов</span></label></div><div class="rp-inwrap"><input class="rp-in" id="formed-count" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-i18n-attr="placeholder:form.formedPh" placeholder="например, 27"><button type="button" class="wm-in" data-i18n-attr="aria-label:wms.openAria" aria-label="Посчитать заказы из WMS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M8.5 7.5h7"/><path d="M8.6 12h.01M12 12h.01M15.4 12h.01M8.6 16h.01M12 16h.01M15.4 16h.01"/></svg></button></div></div>
 <div class="field">
 <label data-i18n="form.missingLabel">Сколько заказов не приехало</label>
 <div class="stepper-wrap">
@@ -742,10 +794,18 @@ document.querySelectorAll(".stagger").forEach(function(e){e.style.opacity="1",e.
 <script>
 window.UZ_I18N_DICT = {
   ru: {
-    "wms.open": "Посчитать из WMS",
-    "wms.openAria": "Посчитать заказы из WMS",
-    "wms.title": "Счётчик приёмки",
-    "wms.sub": "Вставьте текст — сайт посчитает",
+    "wms.open": "Заполнить из WMS",
+    "wms.openAria": "Заполнить заказы и время из WMS",
+    "wms.title": "Заполнить из WMS",
+    "wms.sub": "Вставьте текст — всё заполнится само",
+    "wms.heroT": "Заполнить из WMS",
+    "wms.heroS": "Вставь текст из WMS — заказы и время заполнятся сами",
+    "wms.heroB": "Вставить из WMS",
+    "wms.heroDoneT": "Заполнено из WMS",
+    "wms.heroDoneS": "{n} шт · с {a} до {b}",
+    "wms.heroAgain": "Заменить",
+    "wms.or": "или впиши вручную",
+    "wms.fillNote": "В форму попадут эти три значения — потом их можно поправить.",
     "wms.close": "Закрыть",
     "wms.ph1": "Вставьте сюда текст из WMS",
     "wms.ph2": "Вставьте ещё текст — он добавится",
@@ -755,15 +815,15 @@ window.UZ_I18N_DICT = {
     "wms.howT": "Как это работает",
     "wms.how1": "В WMS откройте таблицу заказов — вкладку «К выдаче» или «Заказ выдан».",
     "wms.how2": "Выделите строки таблицы мышкой (или Ctrl+A) и скопируйте — Ctrl+C. Колонку с датой отдельно копировать не нужно.",
-    "wms.how3": "Вставьте сюда — сайт сам найдёт дату приёмки и всё посчитает.",
+    "wms.how3": "Вставьте сюда — сайт сам найдёт дату приёмки и заполнит заказы, начало и конец приёмки.",
     "wms.tip": "Для точности вставьте обе вкладки — «К выдаче» и «Заказ выдан». Повторы сайт уберёт сам.",
     "wms.priv": "Текст остаётся на вашем устройстве — никуда не отправляется.",
     "wms.dateL": "Дата приёмки",
     "wms.today": "сегодня",
     "wms.accepted": "Принято заказов",
-    "wms.first": "Первый пик",
+    "wms.first": "Начало приёмки",
     "wms.firstSub": "первый принятый заказ",
-    "wms.last": "Последний пик",
+    "wms.last": "Конец приёмки",
     "wms.lastSub": "последний принятый заказ",
     "wms.span": "Приёмка шла {h} ч {m} мин",
     "wms.spanM": "Приёмка шла {m} мин",
@@ -775,9 +835,9 @@ window.UZ_I18N_DICT = {
     "wms.skip": "Без даты приёмки: {n} — не учтены",
     "wms.notToday": "Это не сегодняшняя дата ({d}) — проверьте выбор.",
     "wms.noToday": "За сегодня заказов в тексте нет — показана последняя дата ({d}).",
-    "wms.apply": "Подставить {n} в поле",
+    "wms.apply": "Заполнить: {n} шт · {a}–{b}",
     "wms.applyNo": "Вставьте текст из WMS",
-    "wms.applied": "Число {n} подставлено в поле",
+    "wms.applied": "Заполнено: {n} шт · {a}–{b}",
     "wms.emptyT": "Не нашёл дату приёмки",
     "wms.emptyS": "Скопируйте строки таблицы целиком — вместе с колонками «Дата заказа» и «Дата приёмки».",
     "wms.clipFail": "Браузер не дал доступ к буферу — нажмите в поле и вставьте вручную (Ctrl+V).",
@@ -819,13 +879,12 @@ window.UZ_I18N_DICT = {
     "lay.tab.me": "Профиль",
     "lay.step1": "Магистраль",
     "lay.step2": "Приёмка",
-    "lay.step3": "Заказы",
     "lay.cap1": "ПВЗ и машина",
-    "lay.cap2": "Время приёмки",
-    "lay.cap3": "Заказы и сохранение",
+    "lay.cap2": "Время и заказы",
     "lay.step1sub": "Выбери ПВЗ и отметь, когда приехала и уехала машина",
-    "lay.step2sub": "Когда начали и закончили принимать заказы",
-    "lay.step3sub": "Сколько заказов приняли и сколько не приехало",
+    "lay.step2sub": "Время приёмки и сколько заказов приняли",
+    "lay.grpTime": "Время приёмки",
+    "lay.grpOrders": "Заказы",
     "lay.back": "← Назад",
     "lay.next": "Далее →",
     "lay.settings": "Настройки",
@@ -1108,10 +1167,18 @@ window.UZ_I18N_DICT = {
     "footer.rights": "Дизайн, структура и код защищены авторским правом · копирование запрещено"
   },
   uz: {
-    "wms.open": "WMS dan hisoblash",
-    "wms.openAria": "Buyurtmalarni WMS dan hisoblash",
-    "wms.title": "Qabul hisoblagichi",
-    "wms.sub": "Matnni qo‘ying — sayt hisoblaydi",
+    "wms.open": "WMS dan to‘ldirish",
+    "wms.openAria": "Buyurtmalar va vaqtni WMS dan to‘ldirish",
+    "wms.title": "WMS dan to‘ldirish",
+    "wms.sub": "Matnni qo‘ying — hammasi o‘zi to‘ladi",
+    "wms.heroT": "WMS dan to‘ldirish",
+    "wms.heroS": "WMS dagi matnni qo‘ying — buyurtmalar va vaqt o‘zi to‘ladi",
+    "wms.heroB": "WMS dan qo‘yish",
+    "wms.heroDoneT": "WMS dan to‘ldirildi",
+    "wms.heroDoneS": "{n} ta · {a} dan {b} gacha",
+    "wms.heroAgain": "Almashtirish",
+    "wms.or": "yoki qo‘lda kiriting",
+    "wms.fillNote": "Formaga shu uchta qiymat tushadi — keyin tuzatish mumkin.",
     "wms.close": "Yopish",
     "wms.ph1": "WMS dagi matnni shu yerga qo‘ying",
     "wms.ph2": "Yana matn qo‘ying — u qo‘shiladi",
@@ -1121,15 +1188,15 @@ window.UZ_I18N_DICT = {
     "wms.howT": "Bu qanday ishlaydi",
     "wms.how1": "WMS da buyurtmalar jadvalini oching — «К выдаче» yoki «Заказ выдан» bo‘limi.",
     "wms.how2": "Jadval qatorlarini sichqoncha bilan belgilang (yoki Ctrl+A) va nusxa oling — Ctrl+C. Sana ustunini alohida nusxalash shart emas.",
-    "wms.how3": "Shu yerga qo‘ying — sayt qabul sanasini o‘zi topib, hammasini hisoblaydi.",
+    "wms.how3": "Shu yerga qo‘ying — sayt qabul sanasini topib, buyurtmalar hamda qabul boshlanishi va tugashini o‘zi to‘ldiradi.",
     "wms.tip": "Aniqroq bo‘lishi uchun ikkala bo‘limni qo‘ying — «К выдаче» va «Заказ выдан». Takrorlarni sayt o‘zi olib tashlaydi.",
     "wms.priv": "Matn qurilmangizda qoladi — hech qayoqqa yuborilmaydi.",
     "wms.dateL": "Qabul sanasi",
     "wms.today": "bugun",
     "wms.accepted": "Qabul qilingan buyurtmalar",
-    "wms.first": "Birinchi cho‘qqi",
+    "wms.first": "Qabul boshlandi",
     "wms.firstSub": "birinchi qabul qilingan buyurtma",
-    "wms.last": "Oxirgi cho‘qqi",
+    "wms.last": "Qabul tugadi",
     "wms.lastSub": "oxirgi qabul qilingan buyurtma",
     "wms.span": "Qabul {h} soat {m} daqiqa davom etdi",
     "wms.spanM": "Qabul {m} daqiqa davom etdi",
@@ -1141,9 +1208,9 @@ window.UZ_I18N_DICT = {
     "wms.skip": "Qabul sanasiz: {n} ta — hisobga olinmadi",
     "wms.notToday": "Bu bugungi sana emas ({d}) — tanlovni tekshiring.",
     "wms.noToday": "Matnda bugun uchun buyurtma yo‘q — oxirgi sana ko‘rsatildi ({d}).",
-    "wms.apply": "{n} ni maydonga qo‘yish",
+    "wms.apply": "To‘ldirish: {n} ta · {a}–{b}",
     "wms.applyNo": "WMS dagi matnni qo‘ying",
-    "wms.applied": "{n} raqami maydonga qo‘yildi",
+    "wms.applied": "To‘ldirildi: {n} ta · {a}–{b}",
     "wms.emptyT": "Qabul sanasi topilmadi",
     "wms.emptyS": "Jadval qatorlarini to‘liq nusxalang — «Дата заказа» va «Дата приёмки» ustunlari bilan.",
     "wms.clipFail": "Brauzer buferga ruxsat bermadi — maydonni bosib, qo‘lda qo‘ying (Ctrl+V).",
@@ -1185,13 +1252,12 @@ window.UZ_I18N_DICT = {
     "lay.tab.me": "Profil",
     "lay.step1": "Magistral",
     "lay.step2": "Qabul",
-    "lay.step3": "Buyurtmalar",
     "lay.cap1": "PVZ va mashina",
-    "lay.cap2": "Qabul vaqti",
-    "lay.cap3": "Buyurtmalar va saqlash",
+    "lay.cap2": "Vaqt va buyurtmalar",
     "lay.step1sub": "PVZni tanlang va mashina qachon kelib, qachon ketganini belgilang",
-    "lay.step2sub": "Buyurtmalarni qabul qilish qachon boshlangani va tugaganini kiriting",
-    "lay.step3sub": "Nechta buyurtma qabul qilingani va nechtasi yetib kelmaganini kiriting",
+    "lay.step2sub": "Qabul vaqti va nechta buyurtma qabul qilingani",
+    "lay.grpTime": "Qabul vaqti",
+    "lay.grpOrders": "Buyurtmalar",
     "lay.back": "← Orqaga",
     "lay.next": "Keyingi →",
     "lay.settings": "Sozlamalar",
@@ -1679,8 +1745,9 @@ document.addEventListener("pointerdown",
 // Вступительный "звон" при первом жесте пользователя (арпеджио + отблеск стекла).
 function(){UZ("welcome")},{once:!0,passive:!0});
 // ============ БУКВЫ, ИГРАЮЩИЕ С КУРСОРОМ ============
-let q=new Map;// container -> { letters, rects }
-function _(e){const __had=q.has(e);q.set(e,{letters:null,rects:null});if(__had)return;let t=null,n=0,i=0;e.addEventListener("pointermove",a=>{a.pointerType&&"mouse"!==a.pointerType||(n=a.clientX,i=a.clientY,t||(t=requestAnimationFrame(()=>{t=null,function(e,t,n){const i=q.get(e);i&&(i.rects&&i.sy===window.scrollY&&performance.now()-i.ts<450||(i.letters=Array.from(e.querySelectorAll(".letter-fx")),i.rects=i.letters.map(e=>e.getBoundingClientRect()),i.sy=window.scrollY,i.ts=performance.now()),i.letters.forEach((e,a)=>{const r=i.rects[a],s=r.left+r.width/2,o=r.top+r.height/2,l=Math.hypot(t-s,n-o);if(l<62){const t=1-l/62,n=t*t*(3-2*t);e.classList.remove("is-releasing"),e.style.transform=`translateY(${(-2.4*n).toFixed(2)}px) scale(${(1+.09*n).toFixed(3)})`,e.style.filter=`drop-shadow(0 0 ${(6*n).toFixed(1)}px rgba(157,77,255,${(.6*n).toFixed(2)}))`,e.classList.remove("is-settling"),e._letterFxNear||v(a),e._letterFxNear=!0}else e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))}))}(e,n,i)})))},{passive:!0}),e.addEventListener("pointerleave",()=>{const t=q.get(e);t&&t.letters&&t.letters.forEach(e=>{e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))})})}window.addEventListener("resize",()=>{q.forEach(e=>{e.rects=null})},{passive:!0});
+let q=new Map,__reg=0,__pt=0;// container -> { letters, rects }
+function __sw(){__pt=0;var mk=0,dead=[];q.forEach(function(v,el){if(el.isConnected)v.dc=0;else if(v.dc)dead.push(el);else{v.dc=1;mk=1}});dead.forEach(function(el){q.delete(el)});if(mk)__pt=setTimeout(__sw,15000);else __reg=0}
+function _(e){const __had=q.has(e);q.set(e,{letters:null,rects:null});if(__had)return;if(++__reg>=48&&!__pt)__pt=setTimeout(__sw,15000);let t=null,n=0,i=0;e.addEventListener("pointermove",a=>{a.pointerType&&"mouse"!==a.pointerType||(n=a.clientX,i=a.clientY,t||(t=requestAnimationFrame(()=>{t=null,function(e,t,n){const i=q.get(e);i&&(i.rects&&i.sy===window.scrollY&&performance.now()-i.ts<450||(i.letters=Array.from(e.querySelectorAll(".letter-fx")),i.rects=i.letters.map(e=>e.getBoundingClientRect()),i.sy=window.scrollY,i.ts=performance.now()),i.letters.forEach((e,a)=>{const r=i.rects[a],s=r.left+r.width/2,o=r.top+r.height/2,l=Math.hypot(t-s,n-o);if(l<62){const t=1-l/62,n=t*t*(3-2*t);e.classList.remove("is-releasing"),e.style.transform=`translateY(${(-2.4*n).toFixed(2)}px) scale(${(1+.09*n).toFixed(3)})`,e.style.filter=`drop-shadow(0 0 ${(6*n).toFixed(1)}px rgba(157,77,255,${(.6*n).toFixed(2)}))`,e.classList.remove("is-settling"),e._letterFxNear||v(a),e._letterFxNear=!0}else e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))}))}(e,n,i)})))},{passive:!0}),e.addEventListener("pointerleave",()=>{const t=q.get(e);t&&t.letters&&t.letters.forEach(e=>{e._letterFxNear&&(e._letterFxNear=!1,e.classList.add("is-releasing"),e.style.transform="",e.style.filter="",e.classList.remove("is-settling"),e.offsetWidth,e.classList.add("is-settling"))})})}window.addEventListener("resize",()=>{q.forEach(e=>{e.rects=null})},{passive:!0});
 // Применяет эффект ко всем ещё не обработанным текстам внутри root (по умолчанию
 // всему документу). Безопасно вызывать повторно — уже обработанные элементы
 // помечаются data-letter-fx и пропускаются, так что можно дёргать эту функцию
@@ -4434,6 +4501,9 @@ body.lay-m .lz-snav{display:flex;gap:10px;margin-top:18px}
 body.lay-m .lz-snav .btn{flex:1;min-height:50px}
 body.lay-m .lz-snav .btn.lz-back{flex:0 0 38%;margin-bottom:5px}
 body.lay-m .lz-snav .btn.primary{animation:none;will-change:auto}
+body.lay-m .lz-grp{display:flex;align-items:center;gap:10px;margin:6px 0 -2px!important;font:800 11px/1.2 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:#bfb2ea}
+body.lay-m .lz-grp::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(190,140,255,.38),transparent)}
+body.lay-m .lz-grp::before{content:"";flex:none;width:6px;height:6px;border-radius:2px;transform:rotate(45deg);background:linear-gradient(135deg,#dcc6ff,#7000ff);box-shadow:0 0 8px rgba(157,77,255,.9)}
 body.lay-m .lz-act{display:flex;flex-direction:column;gap:12px}
 body.lay-m .lz-act .btn{min-height:54px;margin:0!important}
 body.lay-m .lz-need{display:none;width:100%;box-sizing:border-box;padding:11px 14px;border-radius:14px;border:1px solid rgba(255,190,90,.4);background:rgba(255,180,60,.1);color:#ffd8a0;font:inherit;font-size:12.5px;font-weight:700;text-align:left;cursor:pointer}
@@ -4458,7 +4528,7 @@ body.lay-m .lz-sr.miss b{color:#ffd88a;font-weight:700}
  body.lay-m .lz-step.on>.lz-full,body.lay-m .lz-step.on>.lz-stitle,body.lay-m .lz-step.on>.lz-ssub,body.lay-m .lz-step.on>.lz-sum,body.lay-m .lz-step.on>.lz-need,body.lay-m .lz-step.on>.lz-act{grid-column:1/-1}
  body.lay-m .lz-stitle{font-size:22px}
  body.lay-m .lz-ssub{font-size:13.5px;margin:-10px 0 4px}
- body.lay-m .lz-prog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:2px 0 22px}
+ body.lay-m .lz-prog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:2px 0 22px}
  body.lay-m .lz-line{display:none}
  body.lay-m .lz-pi{padding:12px 14px 12px 12px;border-radius:20px;gap:12px;font-size:15px}
  body.lay-m .lz-pi i{width:38px;height:38px;font-size:15px;border-radius:13px}
@@ -4482,7 +4552,7 @@ body.lay-m .lz-sr.miss b{color:#ffd88a;font-weight:700}
 }
 .card>.section-label,.card-head-row>.section-label{flex-wrap:wrap;row-gap:2px;min-width:0}
 @media (max-width:350px){body.lay-m .lz-nav{padding:6px;gap:2px}body.lay-m .lz-tab{font-size:9.5px;padding:8px 0 7px}}
-@media (max-width:480px){body.lay-m .lz-pi:not(.on) .lz-pt{display:none}body.lay-m .lz-pi{padding-right:5px}body.lay-m .lz-pi.on{padding-right:12px}}
+@media (max-width:359px){body.lay-m .lz-pi:not(.on) .lz-pt{display:none}body.lay-m .lz-pi{padding-right:5px}body.lay-m .lz-pi.on{padding-right:12px}}
 @keyframes lzStepIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
 @keyframes lzStepInB{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){body.lay-m .lz-pane.on,body.lay-m .lz-step.on,body.lay-m .lz-need.on{animation:none}}
@@ -4799,14 +4869,8 @@ html.force-lite .pft{box-shadow:0 14px 30px -10px rgba(0,0,0,.9),0 0 18px -6px r
 
 
 /* ===== Счётчик приёмки WMS ===== */
-.rp-tag.rp-wms.wm-open{appearance:none;-webkit-appearance:none;font:inherit;font-size:11.5px;line-height:1.2;cursor:pointer;padding:5px 9px 5px 7px;margin:0;gap:7px;-webkit-tap-highlight-color:transparent;transition:transform .28s var(--spring),box-shadow .25s,background .25s,border-color .25s}
-.rp-tag.rp-wms.wm-open:hover,.rp-tag.rp-wms.wm-open:focus-visible{outline:0;border-color:rgba(226,200,255,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 0 20px -3px rgba(157,77,255,.95)}
-.rp-tag.rp-wms.wm-open:active{transform:scale(.95)}
-.rp-tag.rp-wms.wm-open .wm-pc2{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.18);flex:none;transition:transform .3s var(--spring)}
-.rp-tag.rp-wms.wm-open .wm-pc2 svg{width:10px;height:10px}
-.rp-tag.rp-wms.wm-open:hover .wm-pc2{transform:translateX(2px)}
 .rp-inwrap{position:relative;margin-top:8px}
-.rp-formed .rp-inwrap .rp-in{margin-top:0;background-image:none;cursor:text;padding-right:58px}
+.rp-formed .rp-inwrap .rp-in{margin-top:0;background-image:none;cursor:text;padding-right:58px;min-height:50px;box-sizing:border-box}
 .wm-in{position:absolute;right:6px;top:50%;width:40px;height:40px;margin-top:-20px;padding:0;border-radius:13px;display:grid;place-items:center;cursor:pointer;color:#fff;border:1px solid rgba(214,184,255,.55);
  background:linear-gradient(180deg,#b57cff 0%,#8a2cff 52%,#6c06f4 100%);box-shadow:0 2px 0 var(--vv-lip-p,#37008c),0 8px 16px -6px rgba(112,0,255,.9),inset 0 1px 0 rgba(255,255,255,.45);-webkit-tap-highlight-color:transparent;transition:transform .25s var(--spring),box-shadow .2s}
 .wm-in svg{width:20px;height:20px}
@@ -4814,6 +4878,35 @@ html.force-lite .pft{box-shadow:0 14px 30px -10px rgba(0,0,0,.9),0 0 18px -6px r
 .wm-in:active{transform:translateY(2px) scale(.96);box-shadow:0 0 0 var(--vv-lip-p,#37008c),0 4px 10px -4px rgba(112,0,255,.9),inset 0 1px 0 rgba(255,255,255,.4)}
 .wm-flash .rp-in,.rp-inwrap.wm-flash .rp-in{animation:wmFlash 1.4s var(--ease) 1}
 @keyframes wmFlash{0%{box-shadow:0 0 0 0 rgba(157,77,255,.9);border-color:#c9a2ff;background-color:rgba(157,77,255,.3)}60%{box-shadow:0 0 0 9px rgba(157,77,255,0);border-color:#c9a2ff}100%{box-shadow:0 0 0 0 rgba(157,77,255,0)}}
+
+/* большой блок «Заполнить из WMS» в начале шага «Приёмка» */
+.wm-h2{position:relative;overflow:hidden;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px 14px;align-items:center;padding:16px;border-radius:24px;border:1px solid rgba(190,140,255,.5);
+ background:radial-gradient(120% 170% at 0% 0%,rgba(157,77,255,.42),rgba(157,77,255,.06) 62%),var(--vv-plate);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 20px 30px -22px rgba(112,0,255,1);transition:border-color .35s var(--ease),background .35s var(--ease)}
+.wm-h2g{position:absolute;right:-34px;top:-46px;width:170px;height:170px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(176,110,255,.4),transparent 68%)}
+.wm-h2i{position:relative;display:grid;place-items:center;width:48px;height:48px;border-radius:17px;color:#fff;background:linear-gradient(145deg,#b57cff,#6c06f4);box-shadow:0 10px 20px -8px rgba(112,0,255,.95),inset 0 1px 0 rgba(255,255,255,.45)}
+.wm-h2i svg{width:25px;height:25px}
+.wm-h2t{position:relative;display:grid;gap:3px;min-width:0}
+.wm-h2t b{font:800 17px/1.2 var(--f-disp);letter-spacing:-.025em;color:#fff}
+.wm-h2t small{font:600 13px/1.4 var(--f-text);color:#d6caf3}
+.wm-h2b{position:relative;grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;padding:0 18px;border-radius:17px;cursor:pointer;color:#fff;border:1px solid rgba(214,184,255,.5);font:800 16px/1.1 var(--f-disp);letter-spacing:-.015em;
+ background:var(--vv-violet);box-shadow:0 4px 0 var(--vv-lip-p,#37008c),0 16px 26px -12px rgba(112,0,255,.95),inset 0 1px 0 rgba(255,255,255,.45);-webkit-tap-highlight-color:transparent;transition:transform .2s var(--spring),box-shadow .2s,filter .2s,background .3s}
+.wm-h2b svg{width:20px;height:20px;flex:none}
+.wm-h2b:hover{filter:brightness(1.08)}
+.wm-h2b:active{transform:translateY(3px);box-shadow:0 1px 0 var(--vv-lip-p,#37008c),0 8px 16px -8px rgba(112,0,255,.9),inset 0 1px 0 rgba(255,255,255,.4)}
+.wm-h2b:focus-visible{outline:2px solid #e6d2ff;outline-offset:2px}
+.wm-h2[data-st=done]{border-color:rgba(70,214,150,.55);background:radial-gradient(120% 170% at 0% 0%,rgba(52,211,153,.26),rgba(52,211,153,.04) 62%),var(--vv-plate)}
+.wm-h2[data-st=done] .wm-h2i{background:linear-gradient(145deg,#37d996,#12a566);box-shadow:0 10px 20px -8px rgba(52,199,123,.9),inset 0 1px 0 rgba(255,255,255,.5);animation:wmPop .55s var(--spring) both}
+.wm-h2[data-st=done] .wm-h2g{background:radial-gradient(circle,rgba(52,211,153,.3),transparent 68%)}
+.wm-h2[data-st=done] .wm-h2t small{color:#d4ffe9;font-weight:700;font-variant-numeric:tabular-nums}
+.wm-h2[data-st=done] .wm-h2b{min-height:44px;font-size:14px;background:var(--vv-plate);border-color:rgba(190,140,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}
+.wm-h2[data-st=done] .wm-h2b:hover{background:rgba(157,77,255,.28)}
+.wm-or{display:flex;align-items:center;gap:12px;margin:-2px 0;font:800 10.5px/1 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:#a99bd6}
+.wm-or::before,.wm-or::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(190,140,255,.35))}
+.wm-or::after{background:linear-gradient(270deg,transparent,rgba(190,140,255,.35))}
+input.wm-flash{animation:wmFlash 1.4s var(--ease) 1}
+.wm-fn{display:flex;gap:8px;align-items:flex-start;margin:0;padding:0 4px;font:600 12.5px/1.4 var(--f-text);color:#bfb2ea}
+.wm-fn svg{flex:none;width:15px;height:15px;margin-top:1px;color:var(--green)}
+@media (min-width:641px){.wm-h2{grid-template-columns:auto minmax(0,1fr) auto;padding:16px 18px}.wm-h2b{grid-column:auto;width:auto;min-width:210px}}
 
 .wm-ov{z-index:9710}
 .wm-sheet{width:min(540px,100%);max-height:min(880px,92vh);max-height:min(880px,92dvh);min-height:min(660px,88dvh)}
@@ -4920,7 +5013,7 @@ html.force-lite .pft{box-shadow:0 14px 30px -10px rgba(0,0,0,.9),0 0 18px -6px r
 .wm-apply:disabled{opacity:.42;cursor:default;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
 .wm-apply:focus-visible,.wm-b:focus-visible,.wm-d:focus-visible,.wm-in:focus-visible{outline:2px solid #e6d2ff;outline-offset:2px}
 @media (max-width:380px){.wm-hm b{font-size:54px}.wm-pc b{font-size:28px}.wm-b{padding:0 12px}.wm-hero{padding:16px 14px 16px 16px}}
-@media (prefers-reduced-motion:reduce){.wm-rise,.wm-how li,.wm-col u,.wm-hc,.wm-flash .rp-in{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.wm-rise,.wm-how li,.wm-col u,.wm-hc,.wm-flash .rp-in,input.wm-flash,.wm-h2[data-st=done] .wm-h2i{animation:none!important}}
 
 
 /* ===== Шрифт описаний: Manrope — кнопки, заголовки, цифры · IBM Plex Sans — описания, подсказки, подписи, поля ===== */
@@ -4928,7 +5021,7 @@ html.force-lite .pft{box-shadow:0 14px 30px -10px rgba(0,0,0,.9),0 0 18px -6px r
 body{font-family:var(--f-text);letter-spacing:var(--tx-ls);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-synthesis:none;font-kerning:normal}
 :where(button,[role=button],[role=tab],.btn,.lz-tab,.lz-snav,summary){font-family:var(--f-disp)}
 :where(input,textarea,select){font-family:var(--f-text)}
-body.lay-m .lz-stitle,.lz-prog,.pf-hero b,.pf-lv,body.lay-m .lz-tab,body.lay-m .lz-tab span,.rp-tag.rp-wms.wm-open>span,.wm-b,.wm-apply,.wm-d{font-family:var(--f-disp)}
+body.lay-m .lz-stitle,.lz-prog,.pf-hero b,.pf-lv,body.lay-m .lz-tab,body.lay-m .lz-tab span,.wm-h2b,.wm-h2t b,.wm-or,.lz-grp,.wm-b,.wm-apply,.wm-d{font-family:var(--f-disp)}
 :where(p,.lz-ssub,.hint-text,.late-hint,.sla-note,.sheet-hint,.sheet-legal-content,.entry-summary,.pv-pt,.pf-note,.pf-how,.pf-tip,.wm-how li p,.wm-tip,.wm-priv,.wm-nt){text-wrap:pretty}
 /* описания: мягко «подсвечиваются» при открытии шага — без перегруза, один раз */
 @keyframes dscIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
@@ -5572,9 +5665,10 @@ var vol=1;try{on=localStorage.getItem(KEY)!=="0";var sv=parseFloat(localStorage.
 var coarse=false;try{coarse=!!(window.matchMedia&&matchMedia("(pointer:coarse)").matches)}catch(e){}
 
 /* ---------- графика ---------- */
-function makeIR(c,sec){var sr=c.sampleRate,n=Math.floor(sr*sec),b=c.createBuffer(2,n,sr),pre=Math.floor(sr*.012);
+function makeIR(c,sec){var sr=c.sampleRate,n=Math.floor(sr*sec),b=c.createBuffer(2,n,sr),pre=Math.floor(sr*.012),S=32,m=Math.ceil(n/S)+2,env=new Float32Array(m+1),k;
+ for(k=0;k<=m;k++){var tt=Math.min(1,k*S/n);env[k]=Math.pow(1-tt,2.4)*Math.exp(-tt*2.6)}
  for(var ch=0;ch<2;ch++){var d=b.getChannelData(ch),y=0;
-  for(var i=0;i<n;i++){var t=i/n,x=Math.random()*2-1;y+=(x-y)*(.62-.55*t);d[i]=i<pre?0:y*Math.pow(1-t,2.4)*Math.exp(-t*2.6)}}
+  for(var i=0;i<n;i++){var t=i/n,x=Math.random()*2-1;y+=(x-y)*(.62-.55*t);if(i<pre){d[i]=0;continue}var q=i/S,j=q|0,f=q-j;d[i]=y*(env[j]+(env[j+1]-env[j])*f)}}
  return b}
 var IRC={},NZC={};
 function irFor(c){var k=c.sampleRate;return IRC[k]||(IRC[k]=makeIR(c,1.6))}
@@ -5714,7 +5808,7 @@ function play(n,a){
  if(!on||!AC||document.hidden)return;var f=CUES[n];if(!f)return;
  var now=performance.now(),g=GAP[n]==null?25:GAP[n];if(now-(last[n]||0)<g)return;last[n]=now;
  if(active>30&&LOW[n])return;
- if(coarse&&HAPTIC[n]&&navigator.vibrate){try{navigator.vibrate(HAPTIC[n])}catch(e){}}
+ if(coarse&&HAPTIC[n]&&navigator.vibrate&&(!navigator.userActivation||navigator.userActivation.hasBeenActive)){try{navigator.vibrate(HAPTIC[n])}catch(e){}}
  var ck=ckey(n,a),bs=ck&&CACHE[ck];
  if(bs){run(function(){try{playBuf(n,bs[(Math.random()*bs.length)|0])}catch(e){}});return}
  if(ck)warm(n,a,ck);
@@ -5732,15 +5826,21 @@ function ckey(n,a){if(!CSET[n])return null;
  return a==null?n:null}
 function fade(b){for(var ch=0;ch<b.numberOfChannels;ch++){var d=b.getChannelData(ch),m=Math.min(d.length,Math.floor(b.sampleRate*.07));for(var i=0;i<m;i++)d[d.length-1-i]*=i/m}}
 function playBuf(n,b){var c=E.ctx,s=c.createBufferSource();s.buffer=b;s.connect(E.out);active++;s.onended=function(){active--;try{s.disconnect()}catch(e){}};s.start()}
-function warm(n,a,k){if(CTRY[k]||!(window.OfflineAudioContext||window.webkitOfflineAudioContext))return;CTRY[k]=1;CQ.push([n,a,k]);setTimeout(pump,60)}
+var LASTIN=0,PUMPT=0;
+["pointerdown","keydown","touchstart","touchmove","wheel","scroll"].forEach(function(n){window.addEventListener(n,function(){LASTIN=performance.now()},{capture:true,passive:true})});
+function idleRun(f){if(window.requestIdleCallback)requestIdleCallback(f,{timeout:1500});else setTimeout(f,80)}
+function quiet(){return performance.now()-LASTIN>350}
+function whenQuiet(f,ms){setTimeout(function(){idleRun(function(){if(quiet())f();else whenQuiet(f,250)})},ms)}
+function sched(ms){if(PUMPT)return;PUMPT=1;setTimeout(function(){idleRun(function(){PUMPT=0;if(quiet())pump();else sched(250)})},ms)}
+function warm(n,a,k){if(CTRY[k]||!(window.OfflineAudioContext||window.webkitOfflineAudioContext))return;CTRY[k]=1;CQ.push([n,a,k]);sched(60)}
 function pump(){
  if(CBUSY||!CQ.length||!E)return;
  var j=CQ.shift(),n=j[0],a=j[1],k=j[2],sp=CSET[n],OC=window.OfflineAudioContext||window.webkitOfflineAudioContext,sr=E.ctx.sampleRate,got=[],i=0;CBUSY=true;
  (function one(){
-  if(i>=sp[0]){CACHE[k]=got;CBUSY=false;setTimeout(pump,45);return}
+  if(i>=sp[0]){CACHE[k]=got;CBUSY=false;sched(45);return}
   i++;var oc,keep=E;
   try{oc=new OC(2,Math.ceil(sr*sp[1]),sr);E=build(oc,1);try{runCue(n,a,false)}finally{E=keep}}catch(e){E=keep;CBUSY=false;CTRY[k]=0;return}
-  oc.startRendering().then(function(b){fade(b);got.push(b);setTimeout(one,30)},function(){CBUSY=false;CTRY[k]=0})})()}
+  oc.startRendering().then(function(b){fade(b);got.push(b);whenQuiet(one,30)},function(){CBUSY=false;CTRY[k]=0})})()}
 function warmAll(){
  var list=["hover","tap","chip","press","boop","blink","focus","tick","expand","collapse","toggle"],i;
  for(i=0;i<list.length;i++)warm(list[i],undefined,list[i]);
@@ -6608,7 +6708,7 @@ function go(){
  var Z={D:D,Q:Q,QA:QA,div:div,shell:shell,wrap:wrap,side:side,P:P,F:F};
   try{
  
- var TXT={"lay.tab.form": "Внести", "lay.tab.norms": "Нормы", "lay.tab.report": "Отчёты", "lay.tab.me": "Профиль", "lay.step1": "Магистраль", "lay.step2": "Приёмка", "lay.step3": "Заказы", "lay.cap1": "ПВЗ и машина", "lay.cap2": "Время приёмки", "lay.cap3": "Заказы и сохранение", "lay.step1sub": "Выбери ПВЗ и отметь, когда приехала и уехала машина", "lay.step2sub": "Когда начали и закончили принимать заказы", "lay.step3sub": "Сколько заказов приняли и сколько не приехало", "lay.back": "← Назад", "lay.next": "Далее →", "lay.settings": "Настройки", "lay.need": "Сначала выбери ПВЗ — вернись на шаг 1", "lay.sumTitle": "Проверь перед сохранением", "lay.sumPvz": "ПВЗ", "lay.sumArr": "Приезд", "lay.sumLeave": "Отъезд", "lay.sumJira": "Jira", "lay.sumJiraN": "тикетов: {n}", "lay.sumNo": "нет", "lay.sumAccept": "Приёмка", "lay.sumOrders": "Заказы", "lay.sumBefore": "до открытия", "lay.sumNone": "не указано", "lay.sumAcc": "приняли {n}", "lay.sumMiss": "недовоз {n}", "lay.sumMin": "{n} мин", "rp.who.sub0": "Узнай, кто уже внёс данные сегодня", "rp.who.sub": "Сегодня внесли {a} из {b}", "rp.rep.t": "Взять отчёт СЛА", "rp.rep.sub": "СЛА за день, недовоз, тикеты Jira — копируй в Telegram", "rp.quick": "Быстрый отчёт", "rp.qTodayAll": "Сегодня · все", "rp.qYestAll": "Вчера · все", "rp.qTodayT": "Сегодня · {t}", "pf.guest": "Гость", "pf.tgOn": "Telegram привязан", "pf.tgOff": "Telegram не привязан", "pf.level": "Уровень {n}", "pf.xp": "{a} / {b} XP", "pf.xpMax": "максимальный уровень", "pf.toNext": "До звания «{t}» — {n} XP", "pf.repTitle": "Репутация", "pf.rep.none": "Пока нет данных", "pf.rep.top": "Отличная", "pf.rep.good": "Хорошая", "pf.rep.mid": "Нормальная", "pf.rep.low": "Требует внимания", "pf.repNone": "Сохрани первую запись — и здесь появится твоя репутация", "pf.repHow": "Считается по последним 20 записям: чем полнее заполняешь, тем выше", "pf.b.c": "Заполнено полностью", "pf.b.t": "Время указано верно", "pf.b.j": "Jira при недовозе", "pf.s.n": "Записей", "pf.s.st": "Дней подряд", "pf.s.best": "Лучшая серия", "pf.s.xp": "Всего XP", "pf.s.fs": "Принято заказов", "pf.s.perf": "Записей на 100 баллов", "pf.tipSkip": "Чаще всего пропускаешь: {f}", "pf.tipGood": "Пропусков нет — так держать!", "pf.f.arrive": "время приезда магистрали", "pf.f.leave": "время отъезда магистрали", "pf.f.start": "начало приёмки", "pf.f.end": "конец приёмки", "pf.f.formed": "число принятых заказов", "pf.f.order": "порядок времени (конец позже начала)", "pf.f.jira": "тикет Jira при недовозе", "pf.achTitle": "Достижения", "pf.achCount": "{a} из {b}", "pf.fAll": "Все", "pf.fDone": "Открытые", "pf.secretT": "Секретное достижение", "pf.secretD": "Откроется само, когда придёт время", "pf.new": "Новое", "pf.goalsT": "Ближайшие цели", "pf.goalsNone": "Сохрани первую запись — и здесь появятся цели", "pf.goalsAll": "Все открытые цели выполнены. Ждём новых достижений от тебя!", "pf.left": "ещё {n}", "pf.lbT": "Рейтинг команды", "pf.lbSub": "Лучшие по опыту (XP)", "pf.lbMe": "Вы", "pf.lbGuest": "Привяжи Telegram — и увидишь, на каком ты месте среди коллег", "pf.lbLoad": "Загружаем рейтинг…", "pf.lbOff": "Рейтинг пока недоступен", "pf.lbEmpty": "В рейтинге пока никого — стань первым!", "pf.lbYour": "Твоё место: {n} из {t}", "pf.chipStreak": "{n} дн. подряд", "pf.chipRep": "Точность {n}", "pf.chipTop": "Топ-{n} команды", "pf.chipAch": "{n} достижений", "pf.chipAch1": "{n} достижение", "pf.chipAch2": "{n} достижения", "pf.toastAch": "Достижение получено", "pf.toastAchS": "Достижение", "pf.toastLvl": "Новый уровень", "pf.xpGain": "+{n} XP", "pf.noteGuest": "Профиль пока хранится только на этом устройстве. Привяжи Telegram — он закрепится за аккаунтом и будет общим на всех устройствах.", "pf.noteSync": "Профиль хранится в таблице и привязан к твоему Telegram", "pf.noteLocal": "Связи с таблицей нет — профиль пока на этом устройстве, потом синхронизируется", "pf.score": "баллов", "pf.lastScore": "Последняя запись: {n} из 100", "pf.tgTitle": "Привязка Telegram", "pf.local": "Профиль пока хранится только на этом устройстве. Привяжи Telegram — он закрепится за аккаунтом и будет общим на всех устройствах.", "pf.lv0": "Новичок", "pf.lv1": "Стажёр", "pf.lv2": "Оператор", "pf.lv3": "Уверенный", "pf.lv4": "Профи", "pf.lv5": "Эксперт", "pf.lv6": "Мастер", "pf.lv7": "Наставник", "pf.lv8": "Гуру Uzum", "pf.lv9": "Легенда Uzum", "pf.tier1": "Лёгкие", "pf.tier2": "Средние", "pf.tier3": "Сложные", "pf.tier4": "Мега-сложные", "pf.tier5": "Легендарные"};
+ var TXT={"lay.tab.form": "Внести", "lay.tab.norms": "Нормы", "lay.tab.report": "Отчёты", "lay.tab.me": "Профиль", "lay.step1": "Магистраль", "lay.step2": "Приёмка", "lay.cap1": "ПВЗ и машина", "lay.cap2": "Время и заказы", "lay.step1sub": "Выбери ПВЗ и отметь, когда приехала и уехала машина", "lay.step2sub": "Время приёмки и сколько заказов приняли", "lay.grpTime": "Время приёмки", "lay.grpOrders": "Заказы", "lay.back": "← Назад", "lay.next": "Далее →", "lay.settings": "Настройки", "lay.need": "Сначала выбери ПВЗ — вернись на шаг 1", "lay.sumTitle": "Проверь перед сохранением", "lay.sumPvz": "ПВЗ", "lay.sumArr": "Приезд", "lay.sumLeave": "Отъезд", "lay.sumJira": "Jira", "lay.sumJiraN": "тикетов: {n}", "lay.sumNo": "нет", "lay.sumAccept": "Приёмка", "lay.sumOrders": "Заказы", "lay.sumBefore": "до открытия", "lay.sumNone": "не указано", "lay.sumAcc": "приняли {n}", "lay.sumMiss": "недовоз {n}", "lay.sumMin": "{n} мин", "rp.who.sub0": "Узнай, кто уже внёс данные сегодня", "rp.who.sub": "Сегодня внесли {a} из {b}", "rp.rep.t": "Взять отчёт СЛА", "rp.rep.sub": "СЛА за день, недовоз, тикеты Jira — копируй в Telegram", "rp.quick": "Быстрый отчёт", "rp.qTodayAll": "Сегодня · все", "rp.qYestAll": "Вчера · все", "rp.qTodayT": "Сегодня · {t}", "pf.guest": "Гость", "pf.tgOn": "Telegram привязан", "pf.tgOff": "Telegram не привязан", "pf.level": "Уровень {n}", "pf.xp": "{a} / {b} XP", "pf.xpMax": "максимальный уровень", "pf.toNext": "До звания «{t}» — {n} XP", "pf.repTitle": "Репутация", "pf.rep.none": "Пока нет данных", "pf.rep.top": "Отличная", "pf.rep.good": "Хорошая", "pf.rep.mid": "Нормальная", "pf.rep.low": "Требует внимания", "pf.repNone": "Сохрани первую запись — и здесь появится твоя репутация", "pf.repHow": "Считается по последним 20 записям: чем полнее заполняешь, тем выше", "pf.b.c": "Заполнено полностью", "pf.b.t": "Время указано верно", "pf.b.j": "Jira при недовозе", "pf.s.n": "Записей", "pf.s.st": "Дней подряд", "pf.s.best": "Лучшая серия", "pf.s.xp": "Всего XP", "pf.s.fs": "Принято заказов", "pf.s.perf": "Записей на 100 баллов", "pf.tipSkip": "Чаще всего пропускаешь: {f}", "pf.tipGood": "Пропусков нет — так держать!", "pf.f.arrive": "время приезда магистрали", "pf.f.leave": "время отъезда магистрали", "pf.f.start": "начало приёмки", "pf.f.end": "конец приёмки", "pf.f.formed": "число принятых заказов", "pf.f.order": "порядок времени (конец позже начала)", "pf.f.jira": "тикет Jira при недовозе", "pf.achTitle": "Достижения", "pf.achCount": "{a} из {b}", "pf.fAll": "Все", "pf.fDone": "Открытые", "pf.secretT": "Секретное достижение", "pf.secretD": "Откроется само, когда придёт время", "pf.new": "Новое", "pf.goalsT": "Ближайшие цели", "pf.goalsNone": "Сохрани первую запись — и здесь появятся цели", "pf.goalsAll": "Все открытые цели выполнены. Ждём новых достижений от тебя!", "pf.left": "ещё {n}", "pf.lbT": "Рейтинг команды", "pf.lbSub": "Лучшие по опыту (XP)", "pf.lbMe": "Вы", "pf.lbGuest": "Привяжи Telegram — и увидишь, на каком ты месте среди коллег", "pf.lbLoad": "Загружаем рейтинг…", "pf.lbOff": "Рейтинг пока недоступен", "pf.lbEmpty": "В рейтинге пока никого — стань первым!", "pf.lbYour": "Твоё место: {n} из {t}", "pf.chipStreak": "{n} дн. подряд", "pf.chipRep": "Точность {n}", "pf.chipTop": "Топ-{n} команды", "pf.chipAch": "{n} достижений", "pf.chipAch1": "{n} достижение", "pf.chipAch2": "{n} достижения", "pf.toastAch": "Достижение получено", "pf.toastAchS": "Достижение", "pf.toastLvl": "Новый уровень", "pf.xpGain": "+{n} XP", "pf.noteGuest": "Профиль пока хранится только на этом устройстве. Привяжи Telegram — он закрепится за аккаунтом и будет общим на всех устройствах.", "pf.noteSync": "Профиль хранится в таблице и привязан к твоему Telegram", "pf.noteLocal": "Связи с таблицей нет — профиль пока на этом устройстве, потом синхронизируется", "pf.score": "баллов", "pf.lastScore": "Последняя запись: {n} из 100", "pf.tgTitle": "Привязка Telegram", "pf.local": "Профиль пока хранится только на этом устройстве. Привяжи Telegram — он закрепится за аккаунтом и будет общим на всех устройствах.", "pf.lv0": "Новичок", "pf.lv1": "Стажёр", "pf.lv2": "Оператор", "pf.lv3": "Уверенный", "pf.lv4": "Профи", "pf.lv5": "Эксперт", "pf.lv6": "Мастер", "pf.lv7": "Наставник", "pf.lv8": "Гуру Uzum", "pf.lv9": "Легенда Uzum", "pf.tier1": "Лёгкие", "pf.tier2": "Средние", "pf.tier3": "Сложные", "pf.tier4": "Мега-сложные", "pf.tier5": "Легендарные"};
  function snd(n,a){try{window.UZSND&&window.UZSND.play(n,a)}catch(e){}}
  function TT(k,v){try{var r=window.t(k,v);return r===k?(TXT[k]||k):r}catch(e){return TXT[k]||k}}
  D.body.classList.add('lay-m');P.mascot&&P.mascot.classList.add('lz-mc');
@@ -6624,14 +6724,14 @@ function go(){
  var need=tx(D.createElement('button'),'lay.need');need.type='button';need.className='lz-need';
  var sumEl=div('lz-sum',[]);
  var s1=sec(1,[F.pvz,F.arrive,F.leave]);
- var s2=sec(2,[F.start,F.end,F.dur]);
- var s3=sec(3,[F.formed,F.missing,F.jira,F.norm,F.late,sumEl,need]);
- var act=div('lz-act',[F.submit]);s3.appendChild(act);
- var steps=[s1,s2,s3],cur=0;
+ function grp(k){var d=tx(D.createElement('div'),k);d.className='lz-grp lz-full';return d}
+ var s2=sec(2,[grp('lay.grpTime'),F.start,F.end,F.dur,grp('lay.grpOrders'),F.formed,F.missing,F.jira,F.norm,F.late,sumEl,need]);
+ var act=div('lz-act',[F.submit]);s2.appendChild(act);
+ var steps=[s1,s2],cur=0;
  var prog=div('lz-prog',[]),items=[],lines=[];
- ['1','2','3'].forEach(function(n,i){var b=D.createElement('button');b.type='button';b.className='lz-pi';
+ ['1','2'].forEach(function(n,i){var b=D.createElement('button');b.type='button';b.className='lz-pi';
   b.innerHTML='<i>'+n+'</i><span class="lz-pt"><b data-i18n="lay.step'+n+'">'+TXT['lay.step'+n]+'</b><small data-i18n="lay.cap'+n+'">'+TXT['lay.cap'+n]+'</small></span>';
-  b.addEventListener('click',function(){show(i)});items.push(b);prog.appendChild(b);if(i<2){var l=D.createElement('span');l.className='lz-line';lines.push(l);prog.appendChild(l)}});
+  b.addEventListener('click',function(){show(i)});items.push(b);prog.appendChild(b);if(i<1){var l=D.createElement('span');l.className='lz-line';lines.push(l);prog.appendChild(l)}});
  var back=mk('<span data-i18n="lay.back">'+TXT['lay.back']+'</span>','lz-back',function(){show(cur-1)}),next=mk('<span data-i18n="lay.next">'+TXT['lay.next']+'</span>','primary',function(){show(cur+1)});
  var snav=div('lz-snav',[back,next]);
  var box=div('lz-steps',steps);
@@ -6639,7 +6739,7 @@ function go(){
  head.insertAdjacentElement('afterend',prog);prog.insertAdjacentElement('afterend',box);box.insertAdjacentElement('afterend',snav);
  var phone=window.matchMedia('(max-width:640px)');
  function pvzOk(){var l=Q('#pvz-dd-label');if(!l)return false;var x=(l.textContent||'').trim(),ph=['Выберите ПВЗ...'];try{ph.push(String(window.t('form.pvzPlaceholder')))}catch(e){}return !!x&&ph.indexOf(x)<0}
- function needSync(){need.classList.toggle('on',cur===2&&F.submit.disabled&&pvzOk()===false)}
+ function needSync(){need.classList.toggle('on',cur===1&&F.submit.disabled&&pvzOk()===false)}
  /* --- итоговая проверка + отметки шагов --- */
  var ICO_CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>';
  function val(id){var e=D.getElementById(id);return e?String(e.value||'').trim():''}
@@ -6654,22 +6754,24 @@ function go(){
    ['lay.sumArr',0,ar,!!ar],
    ['lay.sumLeave',0,lv,!!lv],
    ['lay.sumAccept',1,(st||en)?(st||'—')+' – '+(en||'—')+(dur?' · '+dur:''):'',!!(st&&en)],
-   ['lay.sumOrders',2,fo?TT('lay.sumAcc',{n:fo})+' · '+TT('lay.sumMiss',{n:ms}):'',fo>0],
-   ['lay.sumJira',2,jn?TT('lay.sumJiraN',{n:jn}):(ms>0?'':TT('lay.sumNo')),ms>0?jn>0:true]];
-  sumEl.innerHTML='<div class="lz-sumh">'+ICO_CHK+'<span>'+TT('lay.sumTitle')+'</span></div><div class="lz-sumr">'+rows.map(function(r){return'<button type="button" class="lz-sr'+(r[3]?'':' miss')+'" data-s="'+r[1]+'"><span class="k">'+TT(r[0])+'</span><b>'+(r[2]||TT('lay.sumNone'))+'</b><i class="st"></i></button>'}).join('')+'</div>';
-  var ok=[!!pv,!!(st&&en),fo>0];
+   ['lay.sumOrders',1,fo?TT('lay.sumAcc',{n:fo})+' · '+TT('lay.sumMiss',{n:ms}):'',fo>0],
+   ['lay.sumJira',1,jn?TT('lay.sumJiraN',{n:jn}):(ms>0?'':TT('lay.sumNo')),ms>0?jn>0:true]];
+  sumEl.innerHTML='<div class="lz-sumh">'+ICO_CHK+'<span>'+TT('lay.sumTitle')+'</span></div><div class="lz-sumr">'+rows.map(function(r){return'<button type="button" class="lz-sr'+(r[3]?'':' miss')+'" data-s="'+r[1]+'" data-k="'+r[0]+'"><span class="k">'+TT(r[0])+'</span><b>'+(r[2]||TT('lay.sumNone'))+'</b><i class="st"></i></button>'}).join('')+'</div>';
+  var ok=[!!pv,!!(st&&en)&&fo>0];
   items.forEach(function(b,k){b.classList.toggle('ok',ok[k]);b.firstChild.textContent=ok[k]?'✓':String(k+1)});
   needSync()}
  function sumQ(){if(!sumRaf)sumRaf=requestAnimationFrame(sumSync)}
- sumEl.addEventListener('click',function(e){var b=e.target.closest('.lz-sr');if(b)show(+b.getAttribute('data-s'))});
+ sumEl.addEventListener('click',function(e){var b=e.target.closest('.lz-sr');if(!b)return;show(+b.getAttribute('data-s'));
+  var k=b.getAttribute('data-k'),t=k==='lay.sumAccept'?(val('start-time')?D.getElementById('end-time'):D.getElementById('start-time')):k==='lay.sumOrders'?D.getElementById('formed-count'):k==='lay.sumJira'?F.jira:null;
+  if(t)setTimeout(function(){try{(t.closest('.field')||t).scrollIntoView({block:'center',behavior:'smooth'})}catch(_){}},80)});
  ['input','change','click'].forEach(function(ev){form.addEventListener(ev,sumQ,true)});
  try{var mo0=new MutationObserver(sumQ);[Q('#pvz-dd-label'),Q('#duration-val'),F.dur].forEach(function(e){e&&mo0.observe(e,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['style']})})}catch(e){}
  D.addEventListener('uz:lang',sumQ);
- function show(i,quiet){var old=cur;i=Math.max(0,Math.min(2,i));cur=i;
+ function show(i,quiet){var old=cur;i=Math.max(0,Math.min(1,i));cur=i;
   steps.forEach(function(s,k){s.classList.toggle('on',k===i);s.classList.toggle('bwd',i<old)});
   items.forEach(function(b,k){b.classList.toggle('on',k===i);b.setAttribute('aria-current',k===i?'step':'false')});lines.forEach(function(l,k){l.classList.toggle('on',k<i)});
-  back.style.display=i>0?'':'none';next.style.display=i<2?'':'none';snav.style.display=i<2?'':'none';
-  if(i===2)sumSync();else needSync();
+  back.style.display=i>0?'':'none';next.style.display=i<1?'':'none';
+  if(i===1)sumSync();else needSync();
   if(i!==old&&!quiet){snd('step',i>old?1:-1);if(phone.matches){var r=form.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.45)form.scrollIntoView({block:'start',behavior:'smooth'})}}}
  need.addEventListener('click',function(){show(0)});
  try{new MutationObserver(needSync).observe(F.submit,{attributes:true,attributeFilter:['disabled']})}catch(e){}
@@ -7073,7 +7175,7 @@ if(D.readyState==='loading')D.addEventListener('DOMContentLoaded',go);else go();
 </script>
 <script id="uz-wms-js">
 (function(){"use strict";
-var D=document,TXT={"wms.open": "Посчитать из WMS", "wms.openAria": "Посчитать заказы из WMS", "wms.title": "Счётчик приёмки", "wms.sub": "Вставьте текст — сайт посчитает", "wms.close": "Закрыть", "wms.ph1": "Вставьте сюда текст из WMS", "wms.ph2": "Вставьте ещё текст — он добавится", "wms.paste": "Вставить из буфера", "wms.file": "Файл", "wms.clear": "Очистить", "wms.howT": "Как это работает", "wms.how1": "В WMS откройте таблицу заказов — вкладку «К выдаче» или «Заказ выдан».", "wms.how2": "Выделите строки таблицы мышкой (или Ctrl+A) и скопируйте — Ctrl+C. Колонку с датой отдельно копировать не нужно.", "wms.how3": "Вставьте сюда — сайт сам найдёт дату приёмки и всё посчитает.", "wms.tip": "Для точности вставьте обе вкладки — «К выдаче» и «Заказ выдан». Повторы сайт уберёт сам.", "wms.priv": "Текст остаётся на вашем устройстве — никуда не отправляется.", "wms.dateL": "Дата приёмки", "wms.today": "сегодня", "wms.accepted": "Принято заказов", "wms.first": "Первый пик", "wms.firstSub": "первый принятый заказ", "wms.last": "Последний пик", "wms.lastSub": "последний принятый заказ", "wms.span": "Приёмка шла {h} ч {m} мин", "wms.spanM": "Приёмка шла {m} мин", "wms.spanOne": "Заказ принят в одно время", "wms.hist": "Приёмка по часам", "wms.busy": "Самый плотный час: {a}–{b} · {n} шт.", "wms.found": "Строк в тексте: {r} · дат приёмки: {d}", "wms.dup": "Повторов убрано: {n}", "wms.skip": "Без даты приёмки: {n} — не учтены", "wms.notToday": "Это не сегодняшняя дата ({d}) — проверьте выбор.", "wms.noToday": "За сегодня заказов в тексте нет — показана последняя дата ({d}).", "wms.apply": "Подставить {n} в поле", "wms.applyNo": "Вставьте текст из WMS", "wms.applied": "Число {n} подставлено в поле", "wms.emptyT": "Не нашёл дату приёмки", "wms.emptyS": "Скопируйте строки таблицы целиком — вместе с колонками «Дата заказа» и «Дата приёмки».", "wms.clipFail": "Браузер не дал доступ к буферу — нажмите в поле и вставьте вручную (Ctrl+V).", "wms.clipEmpty": "Буфер пуст — сначала скопируйте таблицу в WMS.", "wms.fileBig": "Файл слишком большой (больше 4 МБ).", "wms.fileErr": "Не удалось прочитать файл.", "wms.cut": "Текст очень большой — взята первая часть (4 МБ)."};
+var D=document,TXT={"wms.open": "Заполнить из WMS", "wms.openAria": "Заполнить заказы и время из WMS", "wms.title": "Заполнить из WMS", "wms.sub": "Вставьте текст — всё заполнится само", "wms.heroT": "Заполнить из WMS", "wms.heroS": "Вставь текст из WMS — заказы и время заполнятся сами", "wms.heroB": "Вставить из WMS", "wms.heroDoneT": "Заполнено из WMS", "wms.heroDoneS": "{n} шт · с {a} до {b}", "wms.heroAgain": "Заменить", "wms.or": "или впиши вручную", "wms.fillNote": "В форму попадут эти три значения — потом их можно поправить.", "wms.close": "Закрыть", "wms.ph1": "Вставьте сюда текст из WMS", "wms.ph2": "Вставьте ещё текст — он добавится", "wms.paste": "Вставить из буфера", "wms.file": "Файл", "wms.clear": "Очистить", "wms.howT": "Как это работает", "wms.how1": "В WMS откройте таблицу заказов — вкладку «К выдаче» или «Заказ выдан».", "wms.how2": "Выделите строки таблицы мышкой (или Ctrl+A) и скопируйте — Ctrl+C. Колонку с датой отдельно копировать не нужно.", "wms.how3": "Вставьте сюда — сайт сам найдёт дату приёмки и заполнит заказы, начало и конец приёмки.", "wms.tip": "Для точности вставьте обе вкладки — «К выдаче» и «Заказ выдан». Повторы сайт уберёт сам.", "wms.priv": "Текст остаётся на вашем устройстве — никуда не отправляется.", "wms.dateL": "Дата приёмки", "wms.today": "сегодня", "wms.accepted": "Принято заказов", "wms.first": "Начало приёмки", "wms.firstSub": "первый принятый заказ", "wms.last": "Конец приёмки", "wms.lastSub": "последний принятый заказ", "wms.span": "Приёмка шла {h} ч {m} мин", "wms.spanM": "Приёмка шла {m} мин", "wms.spanOne": "Заказ принят в одно время", "wms.hist": "Приёмка по часам", "wms.busy": "Самый плотный час: {a}–{b} · {n} шт.", "wms.found": "Строк в тексте: {r} · дат приёмки: {d}", "wms.dup": "Повторов убрано: {n}", "wms.skip": "Без даты приёмки: {n} — не учтены", "wms.notToday": "Это не сегодняшняя дата ({d}) — проверьте выбор.", "wms.noToday": "За сегодня заказов в тексте нет — показана последняя дата ({d}).", "wms.apply": "Заполнить: {n} шт · {a}–{b}", "wms.applyNo": "Вставьте текст из WMS", "wms.applied": "Заполнено: {n} шт · {a}–{b}", "wms.emptyT": "Не нашёл дату приёмки", "wms.emptyS": "Скопируйте строки таблицы целиком — вместе с колонками «Дата заказа» и «Дата приёмки».", "wms.clipFail": "Браузер не дал доступ к буферу — нажмите в поле и вставьте вручную (Ctrl+V).", "wms.clipEmpty": "Буфер пуст — сначала скопируйте таблицу в WMS.", "wms.fileBig": "Файл слишком большой (больше 4 МБ).", "wms.fileErr": "Не удалось прочитать файл.", "wms.cut": "Текст очень большой — взята первая часть (4 МБ)."};
 function $(i){return D.getElementById(i)}
 function T(k,v){var r;try{r=window.t?window.t(k,v):k}catch(e){r=k}
  if(r===k||r==null){r=TXT[k]||k;if(v)r=r.replace(/\{(\w+)\}/g,function(m,n){return v[n]!=null?v[n]:m})}return r}
@@ -7248,6 +7350,7 @@ function resHtml(){
  out+='<div class="wm-pk wm-rise" style="--i:2"><div class="wm-pc f"><i>'+IC.play+'</i><small>'+esc(T("wms.first"))+'</small><b>'+WMSP.hm(d.first)+'</b><span>'+esc(T("wms.firstSub"))+'</span></div>'
   +'<div class="wm-pc l"><i>'+IC.flag+'</i><small>'+esc(T("wms.last"))+'</small><b>'+WMSP.hm(d.last)+'</b><span>'+esc(T("wms.lastSub"))+'</span></div></div>';
  out+='<p class="wm-span wm-rise" style="--i:3">'+esc(spanTxt)+'</p>';
+ out+='<p class="wm-fn wm-rise" style="--i:3">'+IC.check+'<span>'+esc(T("wms.fillNote"))+'</span></p>';
  /* гистограмма по часам */
  var hs=hourSpan(d),mx=0,bi=0,k;for(k=0;k<24;k++)if(d.h[k]>mx){mx=d.h[k];bi=k}
  var cols="";for(k=hs[0];k<=hs[1];k++){var c=d.h[k],h=mx?c/mx:0,lab=(hs[1]-hs[0]>11)?(k%2===0):true;
@@ -7281,7 +7384,7 @@ function paint(mode){
  pane.classList.remove("m0","m1");if(!mode)pane.classList.add("m0");else if(mode===1)pane.classList.add("m1");
  if(mode&&S.animKey!==key){countUp($("wm-cnt"),n)}
  S.animKey=key;
- ap.disabled=false;ap.innerHTML=IC.check+'<span>'+esc(T("wms.apply",{n:n}))+'</span>';
+ ap.disabled=false;var dd=r.days[S.sel];ap.innerHTML=IC.check+'<span>'+esc(T("wms.apply",{n:n,a:WMSP.hm(dd.first),b:WMSP.hm(dd.last)}))+'</span>';
  /* прокручиваем выбранную дату в видимую область */
  var on=pane.querySelector(".wm-d.on"),box=pane.querySelector(".wm-dates");
  if(on&&box){var l=on.offsetLeft-box.clientWidth/2+on.offsetWidth/2;box.scrollLeft=Math.max(0,l)}
@@ -7290,13 +7393,38 @@ function paint(mode){
 /* ---------- результат: в поле формы + ачивки ---------- */
 function curN(){var r=S.res;return(r&&r.n&&S.sel&&r.days[S.sel])?r.days[S.sel].n:0}
 function credit(){var n=curN();if(!n)return;var k=S.sel+"|"+n;if(S.counted[k])return;S.counted[k]=1;try{window.__pfBump&&window.__pfBump("wm")}catch(e){}}
+function setField(el,v){if(!el)return;el.value=v;
+ try{el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}))}catch(e){}
+ var w=el.closest(".rp-inwrap")||el;w.classList.remove("wm-flash");void w.offsetWidth;w.classList.add("wm-flash");setTimeout(function(){w.classList.remove("wm-flash")},1500)}
 function apply(){
- var n=curN();if(!n)return;
- var f=$("formed-count");
- if(f){f.value=String(n);try{f.dispatchEvent(new Event("input",{bubbles:true}));f.dispatchEvent(new Event("change",{bubbles:true}))}catch(e){}
-  var w=f.closest(".rp-inwrap")||f;w.classList.remove("wm-flash");void w.offsetWidth;w.classList.add("wm-flash");setTimeout(function(){w.classList.remove("wm-flash")},1500)}
+ var n=curN();if(!n)return;var d=S.res.days[S.sel],a=WMSP.hm(d.first),b=WMSP.hm(d.last);
+ setField($("formed-count"),String(n));setField($("start-time"),a);setField($("end-time"),b);
+ HA={n:n,a:a,b:b};heroPaint();
  SND("success");close();
- setTimeout(function(){toast(T("wms.applied",{n:n}),"success");credit()},260)}
+ setTimeout(function(){toast(T("wms.applied",{n:n,a:a,b:b}),"success");credit()},260)}
+
+/* ---------- большой блок «Заполнить из WMS» в начале шага ---------- */
+var HA=null;
+function fv(id){var e=$(id);return e?String(e.value||"").trim():""}
+function isDone(){return!!HA&&fv("formed-count")===String(HA.n)&&fv("start-time")===HA.a&&fv("end-time")===HA.b}
+function heroPaint(){var h=$("wm-h2");if(!h)return;var done=isDone();
+ h.setAttribute("data-st",done?"done":"idle");
+ var i=h.querySelector(".wm-h2i");var want=done?"c":"k";if(i.getAttribute("data-k")!==want){i.setAttribute("data-k",want);i.innerHTML=done?IC.check:IC.calc}
+ $("wm-h2-t").textContent=T(done?"wms.heroDoneT":"wms.heroT");
+ $("wm-h2-s").textContent=done?T("wms.heroDoneS",{n:HA.n,a:HA.a,b:HA.b}):T("wms.heroS");
+ var b=$("wm-h2-b");b.lastChild.textContent=T(done?"wms.heroAgain":"wms.heroB");b.setAttribute("aria-label",T("wms.openAria"));
+ var o=$("wm-or");if(o)o.textContent=T("wms.or")}
+function heroBuild(){
+ if($("wm-h2"))return;var st=$("start-time");if(!st)return;
+ var h=D.createElement("section");h.className="wm-h2 lz-full";h.id="wm-h2";h.setAttribute("data-st","idle");
+ h.innerHTML='<div class="wm-h2g" aria-hidden="true"></div><span class="wm-h2i" aria-hidden="true"></span><div class="wm-h2t"><b id="wm-h2-t"></b><small id="wm-h2-s"></small></div><button type="button" class="wm-h2b wm-open" id="wm-h2-b">'+IC.clip+'<span></span></button>';
+ var o=D.createElement("div");o.className="wm-or lz-full";o.id="wm-or";o.setAttribute("aria-hidden","true");
+ var step=st.closest(".lz-step"),an=step&&step.querySelector(".lz-ssub");
+ if(an){an.insertAdjacentElement("afterend",h)}else{var f=st.closest(".field")||st;f.parentNode.insertBefore(h,f)}
+ h.insertAdjacentElement("afterend",o);heroPaint();
+ ["input","change"].forEach(function(n){D.addEventListener(n,function(e){var id=e.target&&e.target.id;if(id==="formed-count"||id==="start-time"||id==="end-time")heroPaint()},true)});
+ var pa=window.__slaAfterSave;window.__slaAfterSave=function(){try{pa&&pa.apply(this,arguments)}finally{HA=null;heroPaint();setTimeout(heroPaint,900)}}}
+if(D.readyState==="loading")D.addEventListener("DOMContentLoaded",heroBuild);else heroBuild();
 
 /* ---------- окно ---------- */
 function open(){build();if(isOpen)return;isOpen=true;lastFocus=D.activeElement;
@@ -7307,7 +7435,7 @@ function close(){if(!isOpen)return;isOpen=false;clearTimeout(tmr);commit();ov.cl
  credit();try{lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true})}catch(e){}}
 
 D.addEventListener("click",function(e){var t=e.target&&e.target.closest?e.target.closest(".wm-open,.wm-in"):null;if(!t)return;e.preventDefault();SND("tap");open()});
-D.addEventListener("uz:lang",function(){if(!built)return;paintStatic();paint(0)});
+D.addEventListener("uz:lang",function(){heroPaint();if(!built)return;paintStatic();paint(0)});
 window.__wmsCount=function(text,iso){return WMSP.parse(text)};
 })();
 </script>
